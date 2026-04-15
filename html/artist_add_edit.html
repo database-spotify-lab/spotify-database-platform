@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MusicBox Admin • Add / Edit Artist</title>
+  <style>
+    :root{
+      --bg:#0b0b0b;
+      --text:#eaeaea;
+      --muted:#a7a7a7;
+      --border:#2b2b2b;
+      --accent:#00f5a0;
+      --radius:18px;
+      --shadow: 0 12px 34px rgba(0,0,0,.45);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 50% -200px, rgba(0,245,160,.22), transparent 60%),
+        radial-gradient(900px 500px at 90% 0px, rgba(0,194,255,.10), transparent 55%),
+        var(--bg);
+    }
+    .wrap{max-width:1040px;margin:22px auto;padding:0 18px 60px;}
+    .shell{
+      border:1px solid var(--border);
+      border-radius:22px;
+      background:rgba(18,18,18,.78);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .top{
+      padding:18px 20px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+    }
+    .brandwrap{display:flex;align-items:center;gap:14px;}
+    .logo-badge{
+      width:34px;height:34px;border-radius:10px;
+      background:linear-gradient(135deg,var(--accent),rgba(0,245,160,.25));
+      display:grid;place-items:center;
+      color:#000;font-weight:900;font-size:18px;line-height:1;
+      flex:0 0 auto;
+    }
+    .brand .name{font-weight:1000;letter-spacing:.2px;font-size:16px;line-height:1.1;}
+    .brand .crumb{margin-top:4px;font-family:var(--mono);color:var(--muted);font-size:12px;}
+    .btn{
+      border-radius:16px;
+      border:1px solid rgba(0,245,160,.45);
+      background:rgba(0,245,160,.14);
+      color:var(--accent);
+      font-weight:1000;
+      padding:10px 14px;
+      cursor:pointer;
+      font-size:13px;
+      font-family:var(--mono);
+      white-space:nowrap;
+    }
+    .btn:hover{background:rgba(0,245,160,.18)}
+    .btn.secondary{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+    }
+    .btn.danger{
+      border:1px solid rgba(255,90,90,.45);
+      background:rgba(255,90,90,.10);
+      color:#ff6b6b;
+    }
+    .linkback{
+      display:inline-flex;align-items:center;gap:10px;
+      margin:14px 0 0 20px;
+      color:var(--muted);
+      font-family:var(--mono);
+      font-size:13px;
+      text-decoration:none;
+      width:fit-content;
+    }
+    .linkback:hover{color:var(--text)}
+    .linkback .pill{
+      width:38px;height:38px;border-radius:14px;
+      display:grid;place-items:center;
+      background:rgba(0,245,160,.10);
+      border:1px solid rgba(0,245,160,.35);
+      color:var(--accent);
+      font-weight:1000;
+    }
+    .content{padding:18px 20px 22px;}
+    .section{
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(0,0,0,.18);
+      border-radius:20px;
+      padding:16px 16px 14px;
+      margin-top:14px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.25);
+    }
+    .section h3{
+      margin:0 0 12px;
+      font-family:var(--mono);
+      font-size:12px;
+      letter-spacing:1px;
+      color:var(--muted);
+      text-transform:uppercase;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 190px 1fr;
+      gap:12px 14px;
+      align-items:center;
+    }
+    label{
+      font-family:var(--mono);
+      font-size:12px;
+      letter-spacing:.6px;
+      color:rgba(167,167,167,.95);
+    }
+    input{
+      width:100%;
+      border-radius:14px;
+      padding:12px 12px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      outline:none;
+      font-size:13px;
+      font-family:var(--mono);
+    }
+    .status-badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      border:1px solid rgba(0,245,160,.45);
+      background:rgba(0,245,160,.14);
+      color:var(--accent);
+      font-family:var(--mono);
+      font-size:12px;
+      font-weight:700;
+      padding:6px 12px;
+    }
+    .pills{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .pill-radio{
+      position:relative;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.04);
+      cursor:pointer;
+      font-family:var(--mono);
+      font-size:12px;
+      color:var(--text);
+      user-select:none;
+      transition: border-color .12s ease, background .12s ease;
+    }
+    .pill-radio:hover{border-color:rgba(0,245,160,.35)}
+    .pill-radio input{position:absolute;opacity:0;pointer-events:none;}
+    .pill-radio.active{
+      border-color: rgba(0,245,160,.55);
+      background: rgba(0,245,160,.10);
+      box-shadow: 0 0 0 4px rgba(0,245,160,.10);
+    }
+    .footer{
+      margin-top:18px;
+      padding-top:16px;
+      border-top:1px solid rgba(255,255,255,.06);
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+    }
+    @media (max-width: 780px){
+      .grid{grid-template-columns:1fr;}
+      .linkback{margin-left:16px}
+      .content{padding:16px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="shell">
+      <div class="top">
+        <div class="brandwrap">
+          <div class="logo-badge"><span style="display:inline-block;transform:translateY(1px);">♪</span></div>
+          <div class="brand">
+            <div class="name">MusicBox <span style="color:var(--muted);font-weight:900">Admin</span></div>
+            <div class="crumb">Artist • Add / Edit</div>
+          </div>
+        </div>
+        <button class="btn secondary" type="button" onclick="alert('Saved (mock)')">Save</button>
+      </div>
+
+      <a class="linkback" href="#" onclick="return false;">
+        <span class="pill">←</span>
+        <span>Back to list</span>
+      </a>
+
+      <div class="content">
+        <div class="section">
+          <h3>Artist Info</h3>
+          <div class="grid">
+            <label for="artist_name">Artist Name</label>
+            <input id="artist_name" type="text" placeholder="e.g., Taylor Swift" />
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Artist Genre</h3>
+          <div class="grid">
+            <label>Genre</label>
+            <div class="pills" id="genrePills">
+              <label class="pill-radio"><input type="checkbox" name="genres[]" value="Pop">Pop</label>
+              <label class="pill-radio"><input type="checkbox" name="genres[]" value="Rock">Rock</label>
+              <label class="pill-radio"><input type="checkbox" name="genres[]" value="Hip-Hop">Hip-Hop</label>
+              <label class="pill-radio"><input type="checkbox" name="genres[]" value="R&amp;B">R&amp;B</label>
+              <label class="pill-radio"><input type="checkbox" name="genres[]" value="Jazz">Jazz</label>
+              <label class="pill-radio"><input type="checkbox" name="genres[]" value="Classical">Classical</label>
+              <label class="pill-radio"><input type="checkbox" name="genres[]" value="Electronic">Electronic</label>
+              <label class="pill-radio"><input type="checkbox" name="genres[]" value="Country">Country</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <button class="btn secondary" type="button">Back</button>
+          <button class="btn" type="button">Save</button>
+          <button class="btn danger" type="button">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll("#genrePills .pill-radio").forEach((lab) => {
+      const input = lab.querySelector('input[type="checkbox"]');
+      if (!input) return;
+
+      lab.addEventListener("click", (e) => {
+        e.preventDefault();
+        input.checked = !input.checked;
+        lab.classList.toggle("active", input.checked);
+      });
+    });
+  </script>
+</body>
+</html>

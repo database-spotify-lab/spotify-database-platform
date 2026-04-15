@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MusicBox — Admin</title>
+  <style>
+    :root{
+      --bg:#070707;
+      --panel:rgba(18,18,18,.86);
+      --panelSolid:#101010;
+      --stroke:rgba(255,255,255,.10);
+      --stroke2:rgba(255,255,255,.08);
+      --text:#f1f1f1;
+      --muted:rgba(241,241,241,.72);
+      --muted2:rgba(241,241,241,.48);
+      --accent:#18f3a3;
+      --accent2:#0bd48c;
+      --danger:#ff5e5e;
+      --shadow:0 18px 60px rgba(0,0,0,.55);
+      --radius:26px;
+      --radiusSm:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background:
+        radial-gradient(1000px 360px at 20% 0%, rgba(24,243,163,.18), transparent 55%),
+        radial-gradient(800px 300px at 90% 10%, rgba(24,243,163,.10), transparent 60%),
+        radial-gradient(900px 500px at 50% 120%, rgba(255,255,255,.05), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      font-family:var(--sans);
+    }
+
+    .wrap{ max-width:1400px; margin:22px auto 40px; padding:0 18px; }
+
+    /* Top bar */
+    .topbar{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      padding:18px 20px;
+      border-radius:999px;
+      background:linear-gradient(180deg, rgba(30,30,30,.70), rgba(18,18,18,.55));
+      border:1px solid var(--stroke);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .logo{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:220px;
+      font-weight:800;
+    }
+
+    .logo-badge{
+      width:34px;height:34px;border-radius:10px;
+      background:linear-gradient(135deg,var(--accent),rgba(24,243,163,.25));
+      display:grid;place-items:center;color:#000;font-weight:900;
+    }
+
+    .brand{
+      display:flex;
+      flex-direction:column;
+      line-height:1.05;
+    }
+    .brand .name{ font-weight:800; letter-spacing:.2px; font-size:20px; }
+    .brand .sub{ font-family:var(--mono); color:var(--muted2); font-size:12px; }
+
+    .spacer{ flex:1; }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background:rgba(17,17,17,.55);
+      color:var(--muted);
+      font-family:var(--mono);
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:12px;
+    }
+    .pill b{ color:var(--text); letter-spacing:0; text-transform:none; font-family:var(--sans); font-size:13px; }
+    .logout{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      font-family:var(--mono);
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      user-select:none;
+    }
+    .createBtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid rgba(24,243,163,.40);
+      background:rgba(24,243,163,.10);
+      color:var(--accent);
+      font-family:var(--mono);
+      font-size:12px;
+      letter-spacing:.03em;
+      cursor:pointer;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .createBtn:hover{ background:rgba(24,243,163,.14); }
+
+    /* Sections */
+    .section{
+      margin-top:18px;
+      border-radius:var(--radius);
+      border:1px solid var(--stroke);
+      background:linear-gradient(180deg, rgba(22,22,22,.75), rgba(14,14,14,.60));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .sectionHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:18px 22px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+
+    .titleWrap{ display:flex; flex-direction:column; gap:3px; }
+    .title{
+      font-size:26px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-family:var(--sans);
+    }
+
+    .cardBody{ padding:18px 18px 22px; }
+
+    /* Table-like form */
+    .gridHeader, .row{
+      display:grid;
+      grid-template-columns: minmax(220px, 1.4fr) minmax(160px, 220px) minmax(140px, 200px) minmax(120px, auto);
+      gap:14px;
+      align-items:center;
+      font-family:var(--mono);
+    }
+    .userAction{
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .gridHeader{
+      padding:12px 14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+      font-size:12px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:var(--muted2);
+    }
+
+    .row{
+      padding:12px 14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(10,10,10,.35);
+      margin-top:10px;
+    }
+
+    .input{
+      width:100%;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(18,18,18,.6);
+      color:var(--text);
+      font-family:var(--mono);
+      outline:none;
+    }
+    .input::placeholder{ color:rgba(241,241,241,.35); }
+
+    .select{
+      width:100%;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(18,18,18,.6);
+      color:var(--text);
+      font-family:var(--mono);
+      outline:none;
+      appearance:none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, rgba(241,241,241,.7) 50%),
+        linear-gradient(135deg, rgba(241,241,241,.7) 50%, transparent 50%);
+      background-position:
+        calc(100% - 18px) 50%,
+        calc(100% - 12px) 50%;
+      background-size:6px 6px, 6px 6px;
+      background-repeat:no-repeat;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:11px 14px;
+      border-radius:999px;
+      border:1px solid rgba(24,243,163,.40);
+      background:rgba(24,243,163,.10);
+      color:var(--accent);
+      font-weight:800;
+      letter-spacing:.04em;
+      cursor:default;
+      user-select:none;
+      min-width:92px;
+      font-family:var(--sans);
+    }
+
+    /* Review history */
+    .reviewFilters{
+      display:grid;
+      grid-template-columns: minmax(100px,1fr) minmax(110px,1fr) minmax(120px,160px) auto auto;
+      gap:10px;
+      align-items:center;
+      margin-bottom:12px;
+    }
+    .reviewBtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      padding:10px 16px;
+      font-family:var(--mono);
+      font-size:12px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .reviewBtn.primary{
+      border-color: rgba(24,243,163,.45);
+      background: rgba(24,243,163,.14);
+      color: var(--accent);
+    }
+    .reviewTable{
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      overflow:hidden;
+      background:rgba(10,10,10,.30);
+    }
+    .reviewGridHeader, .reviewRow{
+      display:grid;
+      grid-template-columns: 1.5fr 1.4fr 0.9fr 1.4fr 0.8fr 0.9fr 1fr;
+      gap:10px;
+      align-items:center;
+      font-family:var(--mono);
+      padding:12px 14px;
+    }
+    .reviewGridHeader{
+      border-bottom:1px solid rgba(255,255,255,.08);
+      font-size:12px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--muted2);
+      background:rgba(255,255,255,.02);
+    }
+    .reviewRow{
+      border-bottom:1px solid rgba(255,255,255,.06);
+      font-size:13px;
+      color:var(--muted);
+    }
+    .reviewRow:last-child{ border-bottom:0; }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      color:var(--text);
+      background:rgba(18,18,18,.55);
+      font-family:var(--mono);
+      font-size:12px;
+      width:fit-content;
+    }
+    .chip.status{
+      border-color: rgba(24,243,163,.42);
+      background: rgba(24,243,163,.12);
+      color: var(--accent);
+    }
+    .reviewAction{
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .reviewAction .reviewBtn{ padding:8px 12px; }
+
+    .btnNeutral{
+      border-color: rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+    }
+
+    .btnDanger{
+      border-color: rgba(255,94,94,.50);
+      background: rgba(255,94,94,.10);
+      color: var(--danger);
+    }
+
+    .btnAccent{
+      border-color: rgba(24,243,163,.45);
+      background: rgba(24,243,163,.12);
+      color: var(--accent);
+    }
+
+    @media (max-width: 980px){
+      .gridHeader, .row{ grid-template-columns: 1fr; }
+      .reviewFilters{ grid-template-columns: 1fr; }
+      .reviewGridHeader, .reviewRow{ grid-template-columns: 1fr; }
+      .btn{ width:100%; }
+      .userAction{ justify-content:stretch; }
+      .reviewAction{ justify-content:stretch; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="logo">
+        <div class="logo-badge">♪</div>
+        <div class="brand">
+          <div class="name">MusicBox</div>
+          <div class="sub">Discover your sound.</div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="pill"><span>ROLE</span> <b>ADMIN</b></div>
+      <div class="logout">Logout</div>
+    </div>
+
+    <!-- USER MANAGEMENT -->
+    <section class="section" aria-label="User Management">
+      <div class="sectionHeader">
+        <div class="titleWrap">
+          <div class="title">USER MANAGEMENT</div>
+        </div>
+        <button class="createBtn" id="createUserBtn" type="button">+ Create New User</button>
+      </div>
+
+      <div class="cardBody" id="userMgmtBody">
+        <div class="gridHeader">
+          <div>User</div>
+          <div>Role</div>
+          <div>Status</div>
+          <div class="userAction">Action</div>
+        </div>
+
+        <div class="row">
+          <input class="input" placeholder="new.user@musicbox.com" />
+          <select class="select">
+            <option>Admin</option>
+            <option selected>Analyst</option>
+          </select>
+          <select class="select">
+            <option selected>Active</option>
+            <option>Disabled</option>
+          </select>
+          <div class="userAction"><span class="btn">Save</span></div>
+        </div>
+
+        <div class="row">
+          <input class="input" value="muhui.wang" />
+          <select class="select">
+            <option>Admin</option>
+            <option selected>Analyst</option>
+          </select>
+          <select class="select">
+            <option selected>Active</option>
+            <option>Disabled</option>
+          </select>
+          <div class="userAction"><span class="btn">Save</span></div>
+        </div>
+
+        <div class="row">
+          <input class="input" value="sherry.wang" />
+          <select class="select">
+            <option selected>Admin</option>
+            <option>Analyst</option>
+          </select>
+          <select class="select">
+            <option selected>Active</option>
+            <option>Disabled</option>
+          </select>
+          <div class="userAction"><span class="btn">Save</span></div>
+        </div>
+
+        <div class="row">
+          <input class="input" value="alex.chen" />
+          <select class="select">
+            <option selected>Admin</option>
+            <option>Analyst</option>
+          </select>
+          <select class="select">
+            <option selected>Active</option>
+            <option>Disabled</option>
+          </select>
+          <div class="userAction"><span class="btn">Save</span></div>
+        </div>
+
+        <div class="row">
+          <input class="input" value="eva.park" />
+          <select class="select">
+            <option selected>Admin</option>
+            <option>Analyst</option>
+          </select>
+          <select class="select">
+            <option>Active</option>
+            <option selected>Disabled</option>
+          </select>
+          <div class="userAction"><span class="btn">Save</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REVIEW HISTORY -->
+    <section class="section" aria-label="Content Review">
+      <div class="sectionHeader">
+        <div class="titleWrap">
+          <div class="title">REVIEW HISTORY</div>
+        </div>
+      </div>
+
+      <div class="cardBody">
+        <div class="reviewFilters">
+          <input class="input" placeholder="Item" />
+          <input class="input" placeholder="Artist" />
+          <select class="select">
+            <option selected>All types</option>
+            <option>Track</option>
+            <option>Album</option>
+            <option>Artist</option>
+          </select>
+          <button class="reviewBtn primary" type="button">Search</button>
+          <button class="reviewBtn" type="button">Clear</button>
+        </div>
+
+        <div class="reviewTable">
+          <div class="reviewGridHeader">
+            <div>Item</div>
+            <div>Artist</div>
+            <div>Submitted By</div>
+            <div>Reviewed By</div>
+            <div>Type</div>
+            <div>Status</div>
+            <div style="text-align:right;">Action</div>
+          </div>
+
+          <div class="reviewRow">
+            <div><span class="chip">Bad Blood</span></div>
+            <div>Taylor Swift</div>
+            <div><span class="chip">-</span></div>
+            <div><span class="chip">admin@musicbox.local</span></div>
+            <div><span class="chip">Track</span></div>
+            <div><span class="chip status">Approved</span></div>
+            <div class="reviewAction">
+              <button class="reviewBtn primary" type="button">Undo</button>
+              <button class="reviewBtn" type="button">Details</button>
+            </div>
+          </div>
+
+          <div class="reviewRow">
+            <div><span class="chip">Two Is Better Than One (feat. Taylor Swift)</span></div>
+            <div>BOYS LIKE GIRLS, Taylor Swift</div>
+            <div><span class="chip">-</span></div>
+            <div><span class="chip">admin@musicbox.local</span></div>
+            <div><span class="chip">Track</span></div>
+            <div><span class="chip status">Approved</span></div>
+            <div class="reviewAction">
+              <button class="reviewBtn primary" type="button">Undo</button>
+              <button class="reviewBtn" type="button">Details</button>
+            </div>
+          </div>
+
+          <div class="reviewRow">
+            <div><span class="chip">Anti-Hero</span></div>
+            <div>Taylor Swift</div>
+            <div><span class="chip">-</span></div>
+            <div><span class="chip">admin@musicbox.local</span></div>
+            <div><span class="chip">Track</span></div>
+            <div><span class="chip status">Approved</span></div>
+            <div class="reviewAction">
+              <button class="reviewBtn primary" type="button">Undo</button>
+              <button class="reviewBtn" type="button">Details</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+  <script>
+    const createUserBtn = document.getElementById("createUserBtn");
+    const userMgmtBody = document.getElementById("userMgmtBody");
+
+    createUserBtn.addEventListener("click", () => {
+      const row = `
+        <div class="row" data-new-user-row="true">
+          <input class="input" placeholder="new.user@musicbox.com" />
+          <select class="select">
+            <option>Admin</option>
+            <option selected>Analyst</option>
+          </select>
+          <select class="select">
+            <option selected>Active</option>
+            <option>Disabled</option>
+          </select>
+          <div class="userAction">
+            <button class="btn btnNeutral cancelNewUserBtn" type="button" style="cursor:pointer;">Cancel</button>
+            <button class="btn" type="button" style="cursor:pointer;">Save</button>
+          </div>
+        </div>
+      `;
+      const header = userMgmtBody.querySelector(".gridHeader");
+      if (header) header.insertAdjacentHTML("afterend", row);
+    });
+
+    userMgmtBody.addEventListener("click", (e) => {
+      const cancelBtn = e.target.closest(".cancelNewUserBtn");
+      if (!cancelBtn) return;
+      const row = cancelBtn.closest('[data-new-user-row="true"]');
+      if (row) row.remove();
+    });
+  </script>
+</body>
+</html>
