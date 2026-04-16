@@ -18,3 +18,10 @@ INSERT INTO ALBUMS (album_id, album_name, release_date, album_image_url, status,
 ('al3', 'GUTS', '2023-09-08', 'https://example.com/guts.jpg', 'pending', 4, NULL),
 ('al4', 'SOS', '2022-12-09', 'https://example.com/sos.jpg', 'approved', 4, 3),
 ('al5', 'Take Care', '2011-11-15', 'https://example.com/takecare.jpg', 'rejected', 2, 1);
+
+INSERT INTO TRACKS (track_id, track_name, popularity, duration_ms, explicit, preview_url, status, submitted_by, reviewed_by) VALUES
+('t1', 'Blank Space', 95, 231000, FALSE, 'https://example.com/blankspace.mp3', 'approved', 2, 1),
+('t2', 'Blinding Lights', 98, 200040, FALSE, 'https://example.com/blindinglights.mp3', 'approved', 2, 1),
+('t3', 'vampire', 92, 219724, TRUE, 'https://example.com/vampire.mp3', 'pending', 4, NULL),
+('t4', 'Kill Bill', 94, 153947, TRUE, 'https://example.com/killbill.mp3', 'approved', 4, 3),
+('t5', 'Marvins Room', 88, 347133, TRUE, 'https://example.com/marvinsroom.mp3', 'rejected', 2, 1);
