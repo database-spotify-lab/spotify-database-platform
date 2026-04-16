@@ -25,3 +25,17 @@ INSERT INTO TRACKS (track_id, track_name, popularity, duration_ms, explicit, pre
 ('t3', 'vampire', 92, 219724, TRUE, 'https://example.com/vampire.mp3', 'pending', 4, NULL),
 ('t4', 'Kill Bill', 94, 153947, TRUE, 'https://example.com/killbill.mp3', 'approved', 4, 3),
 ('t5', 'Marvins Room', 88, 347133, TRUE, 'https://example.com/marvinsroom.mp3', 'rejected', 2, 1);
+
+INSERT INTO TRACK_ARTISTS (track_id, artist_id) VALUES
+('t1', 'a1'),
+('t2', 'a2'),
+('t3', 'a3'),
+('t4', 'a4'),
+('t5', 'a5');
+
+INSERT INTO ALBUM_ARTISTS (album_id, artist_id) VALUES
+('al1', 'a1'),
+('al2', 'a2'),
+('al3', 'a3'),
+('al4', 'a4'),
+('al5', 'a5');
