@@ -1,0 +1,6 @@
+artist_id,artist_name,status,submitted_by,reviewed_by
+a1,Taylor Swift,approved,2,1
+a2,The Weeknd,approved,2,1
+a3,Olivia Rodrigo,pending,4,
+a4,SZA,approved,4,3
+a5,Drake,rejected,2,1
