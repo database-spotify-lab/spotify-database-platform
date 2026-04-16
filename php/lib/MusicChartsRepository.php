@@ -1,0 +1,759 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * SQL aligned with schema: users, artists, albums, tracks,
+ * track_artists, album_tracks, album_artists, artist_genres, audio_features.
+ */
+final class MusicChartsRepository
+{
+    public function __construct(private PDO $pdo)
+    {
+    }
+
+    /**
+     * TOP CHARTS — Song: rank by tracks.popularity.
+     * Cover: first album image (by earliest release_date among albums containing the track).
+     */
+    public function topSongs(?array $decadeRange, ?string $search): array
+    {
+        $params = [':st' => CATALOG_STATUS_APPROVED];
+        $decadeSql = $this->albumReleaseDecadeSql('t.track_id', $decadeRange, $params);
+        $searchSql = '';
+        if ($search !== null && $search !== '') {
+            $searchSql = ' AND (t.track_name LIKE :sq OR EXISTS (
+                SELECT 1 FROM track_artists ta_s
+                JOIN artists ar_s ON ar_s.artist_id = ta_s.artist_id
+                WHERE ta_s.track_id = t.track_id AND ar_s.artist_name LIKE :sq
+            ))';
+            $params[':sq'] = '%' . $search . '%';
+        }
+
+        $sql = "
+            SELECT
+                t.track_id,
+                t.track_name,
+                t.popularity,
+                t.preview_url,
+                (
+                    SELECT alx.album_image_url
+                    FROM album_tracks atx
+                    JOIN albums alx ON alx.album_id = atx.album_id
+                    WHERE atx.track_id = t.track_id AND alx.status = :st
+                    ORDER BY alx.release_date ASC, alx.album_id ASC
+                    LIMIT 1
+                ) AS album_image_url,
+                (
+                    SELECT GROUP_CONCAT(DISTINCT arn.artist_name ORDER BY arn.artist_name SEPARATOR ', ')
+                    FROM track_artists tan
+                    JOIN artists arn ON arn.artist_id = tan.artist_id
+                    WHERE tan.track_id = t.track_id AND arn.status = :st
+                ) AS artist_names
+            FROM tracks t
+            WHERE t.status = :st
+            {$decadeSql}
+            {$searchSql}
+            ORDER BY t.popularity DESC
+            LIMIT 100
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll();
+        $rank = 1;
+        foreach ($rows as &$row) {
+            $row['rank'] = $rank++;
+        }
+        unset($row);
+        return $rows;
+    }
+
+    /**
+     * TOP CHARTS — Artist: aggregate track popularity per artist.
+     */
+    public function topArtists(?array $decadeRange): array
+    {
+        $params = [':st' => CATALOG_STATUS_APPROVED];
+        $decadeSql = $this->artistHasTrackInDecadeSql('ar.artist_id', $decadeRange, $params);
+
+        $sql = "
+            SELECT
+                ar.artist_id,
+                ar.artist_name,
+                SUM(t.popularity) AS popularity_sum,
+                (
+                    SELECT t2.track_name
+                    FROM track_artists ta2
+                    JOIN tracks t2 ON t2.track_id = ta2.track_id AND t2.status = :st
+                    WHERE ta2.artist_id = ar.artist_id
+                    ORDER BY t2.popularity DESC
+                    LIMIT 1
+                ) AS top_track_name,
+                (
+                    SELECT t2.preview_url
+                    FROM track_artists ta2
+                    JOIN tracks t2 ON t2.track_id = ta2.track_id AND t2.status = :st
+                    WHERE ta2.artist_id = ar.artist_id
+                    ORDER BY t2.popularity DESC
+                    LIMIT 1
+                ) AS top_track_preview_url
+            FROM artists ar
+            JOIN track_artists ta ON ta.artist_id = ar.artist_id
+            JOIN tracks t ON t.track_id = ta.track_id AND t.status = :st
+            WHERE ar.status = :st
+            {$decadeSql}
+            GROUP BY ar.artist_id, ar.artist_name
+            ORDER BY popularity_sum DESC
+            LIMIT 100
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll();
+        $rank = 1;
+        foreach ($rows as &$row) {
+            $row['rank'] = $rank++;
+        }
+        unset($row);
+        return $rows;
+    }
+
+    /**
+     * TOP CHARTS — Album: sum of constituent track popularity.
+     */
+    public function topAlbums(?array $decadeRange): array
+    {
+        $params = [':st' => CATALOG_STATUS_APPROVED];
+        $having = '';
+        if ($decadeRange !== null) {
+            $having = ' HAVING YEAR(MIN(al.release_date)) BETWEEN :dy0 AND :dy1 ';
+            $params[':dy0'] = $decadeRange[0];
+            $params[':dy1'] = $decadeRange[1];
+        }
+
+        $sql = "
+            SELECT
+                al.album_id,
+                al.album_name,
+                al.release_date,
+                al.album_image_url,
+                COALESCE(SUM(t.popularity), 0) AS popularity_sum,
+                (
+                    SELECT GROUP_CONCAT(DISTINCT arx.artist_name ORDER BY arx.artist_name SEPARATOR ', ')
+                    FROM album_artists aax
+                    JOIN artists arx ON arx.artist_id = aax.artist_id
+                    WHERE aax.album_id = al.album_id AND arx.status = :st
+                ) AS artist_names
+            FROM albums al
+            JOIN album_tracks at ON at.album_id = al.album_id
+            JOIN tracks t ON t.track_id = at.track_id AND t.status = :st
+            WHERE al.status = :st
+            GROUP BY al.album_id, al.album_name, al.release_date, al.album_image_url
+            {$having}
+            ORDER BY popularity_sum DESC
+            LIMIT 100
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll();
+        $rank = 1;
+        foreach ($rows as &$row) {
+            $row['rank'] = $rank++;
+        }
+        unset($row);
+        return $rows;
+    }
+
+    /** Top bar search: match artist_name. */
+    public function searchArtists(string $q, int $limit = 40): array
+    {
+        $sql = "
+            SELECT artist_id, artist_name
+            FROM artists
+            WHERE status = :st AND artist_name LIKE :q
+            ORDER BY artist_name ASC
+            LIMIT " . max(1, min(100, $limit));
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':st' => CATALOG_STATUS_APPROVED,
+            ':q' => '%' . $q . '%',
+        ]);
+        return $stmt->fetchAll();
+    }
+
+    /** EXPLORE BY GENRES — list distinct genres for sidebar. */
+    public function listGenres(): array
+    {
+        $sql = "
+            SELECT DISTINCT ag.genre
+            FROM artist_genres ag
+            JOIN artists ar ON ar.artist_id = ag.artist_id AND ar.status = :st
+            ORDER BY ag.genre ASC
+        ";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':st' => CATALOG_STATUS_APPROVED]);
+        return array_column($stmt->fetchAll(), 'genre');
+    }
+
+    /**
+     * Style analytics payload for analytics_charts "Style Analytics".
+     * Genre filter is optional; pass null or "all" to disable filtering.
+     */
+    public function styleAnalytics(?string $genre): array
+    {
+        $genreFilter = $this->normalizeGenreFilter($genre);
+        $avg = $this->styleFeatureAverages($genreFilter);
+        $trendFeatures = ['danceability', 'energy', 'valence', 'acousticness', 'tempo', 'loudness'];
+
+        $featureTrends = [];
+        foreach ($trendFeatures as $feature) {
+            $featureTrends[$feature] = $this->featureTrendByDecade($feature, $genreFilter);
+        }
+
+        return [
+            'style_map' => [
+                'genre_filter' => $genreFilter ?? 'all',
+                'feature_averages' => $avg,
+            ],
+            'style_evolution' => [
+                'genre_mix' => $this->genreMixByDecade(),
+                'feature_trends' => $featureTrends,
+            ],
+        ];
+    }
+
+    /**
+     * EXPLORE — cards for a genre: type = songs | artists | albums.
+     */
+    public function exploreByGenre(string $genre, string $type, ?array $decadeRange, int $limit = 24): array
+    {
+        $type = strtolower($type);
+        return match ($type) {
+            'songs' => $this->exploreSongsByGenre($genre, $decadeRange, $limit),
+            'artists' => $this->exploreArtistsByGenre($genre, $decadeRange, $limit),
+            'albums' => $this->exploreAlbumsByGenre($genre, $decadeRange, $limit),
+            default => [],
+        };
+    }
+
+    /**
+     * Artist search result page payload:
+     * - artist basic profile
+     * - top tracks
+     * - albums
+     *
+     * @return array<string,mixed>|null
+     */
+    public function artistSearchResult(?int $artistId, ?string $artistName): ?array
+    {
+        $artist = $this->findArtist($artistId, $artistName);
+        if ($artist === null) {
+            return null;
+        }
+
+        $artistIdInt = (int) $artist['artist_id'];
+        $tracks = $this->artistTopTracks($artistIdInt);
+        $albums = $this->artistAlbums($artistIdInt);
+        $popularitySum = $this->artistPopularitySum($artistIdInt);
+        $artistRank = $this->artistRankByPopularity($artistIdInt, $popularitySum);
+
+        $artist['popularity_sum'] = $popularitySum;
+        $artist['artist_rank'] = $artistRank;
+        $artist['hero_cover'] = $albums[0]['album_image_url'] ?? null;
+
+        return [
+            'artist' => $artist,
+            'top_tracks' => $tracks,
+            'albums' => $albums,
+        ];
+    }
+
+    private function exploreSongsByGenre(string $genre, ?array $decadeRange, int $limit): array
+    {
+        $params = [':st' => CATALOG_STATUS_APPROVED, ':genre' => $genre];
+        $decadeSql = $this->albumReleaseDecadeSql('t.track_id', $decadeRange, $params);
+
+        $sql = "
+            SELECT
+                t.track_id,
+                t.track_name,
+                t.popularity,
+                t.preview_url,
+                (
+                    SELECT alx.album_image_url
+                    FROM album_tracks atx
+                    JOIN albums alx ON alx.album_id = atx.album_id
+                    WHERE atx.track_id = t.track_id AND alx.status = :st
+                    ORDER BY alx.release_date ASC, alx.album_id ASC
+                    LIMIT 1
+                ) AS album_image_url,
+                (
+                    SELECT GROUP_CONCAT(DISTINCT arn.artist_name ORDER BY arn.artist_name SEPARATOR ', ')
+                    FROM track_artists tan
+                    JOIN artists arn ON arn.artist_id = tan.artist_id
+                    WHERE tan.track_id = t.track_id AND arn.status = :st
+                ) AS artist_names
+            FROM tracks t
+            JOIN track_artists ta ON ta.track_id = t.track_id
+            JOIN artists ar ON ar.artist_id = ta.artist_id AND ar.status = :st
+            JOIN artist_genres ag ON ag.artist_id = ar.artist_id AND ag.genre = :genre
+            WHERE t.status = :st
+            {$decadeSql}
+            GROUP BY t.track_id, t.track_name, t.popularity, t.preview_url
+            ORDER BY t.popularity DESC
+            LIMIT " . max(1, min(100, $limit));
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll();
+        $rank = 1;
+        foreach ($rows as &$row) {
+            $row['rank'] = $rank++;
+        }
+        unset($row);
+        return $rows;
+    }
+
+    private function exploreArtistsByGenre(string $genre, ?array $decadeRange, int $limit): array
+    {
+        $params = [':st' => CATALOG_STATUS_APPROVED, ':genre' => $genre];
+        $decadeSql = $this->artistHasTrackInDecadeSql('ar.artist_id', $decadeRange, $params);
+
+        $sql = "
+            SELECT
+                ar.artist_id,
+                ar.artist_name,
+                SUM(t.popularity) AS popularity_sum
+            FROM artists ar
+            JOIN artist_genres ag ON ag.artist_id = ar.artist_id AND ag.genre = :genre
+            JOIN track_artists ta ON ta.artist_id = ar.artist_id
+            JOIN tracks t ON t.track_id = ta.track_id AND t.status = :st
+            WHERE ar.status = :st
+            {$decadeSql}
+            GROUP BY ar.artist_id, ar.artist_name
+            ORDER BY popularity_sum DESC
+            LIMIT " . max(1, min(100, $limit));
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll();
+        $rank = 1;
+        foreach ($rows as &$row) {
+            $row['rank'] = $rank++;
+            $row['cover_placeholder'] = null;
+        }
+        unset($row);
+        return $rows;
+    }
+
+    private function exploreAlbumsByGenre(string $genre, ?array $decadeRange, int $limit): array
+    {
+        $params = [':st' => CATALOG_STATUS_APPROVED, ':genre' => $genre];
+        $decadeWhere = '';
+        if ($decadeRange !== null) {
+            $decadeWhere = ' AND YEAR(al.release_date) BETWEEN :dy0 AND :dy1 ';
+            $params[':dy0'] = $decadeRange[0];
+            $params[':dy1'] = $decadeRange[1];
+        }
+
+        $sql = "
+            SELECT
+                al.album_id,
+                al.album_name,
+                al.release_date,
+                al.album_image_url,
+                ts.popularity_sum,
+                (
+                    SELECT GROUP_CONCAT(DISTINCT arx.artist_name ORDER BY arx.artist_name SEPARATOR ', ')
+                    FROM album_artists aax
+                    JOIN artists arx ON arx.artist_id = aax.artist_id
+                    WHERE aax.album_id = al.album_id AND arx.status = :st
+                ) AS artist_names
+            FROM albums al
+            INNER JOIN (
+                SELECT at2.album_id, COALESCE(SUM(t2.popularity), 0) AS popularity_sum
+                FROM album_tracks at2
+                INNER JOIN tracks t2 ON t2.track_id = at2.track_id AND t2.status = :st
+                GROUP BY at2.album_id
+            ) ts ON ts.album_id = al.album_id
+            WHERE al.status = :st
+            {$decadeWhere}
+            AND EXISTS (
+                SELECT 1
+                FROM album_artists aa
+                JOIN artists ar ON ar.artist_id = aa.artist_id AND ar.status = :st
+                JOIN artist_genres ag ON ag.artist_id = ar.artist_id AND ag.genre = :genre
+                WHERE aa.album_id = al.album_id
+            )
+            ORDER BY ts.popularity_sum DESC
+            LIMIT " . max(1, min(100, $limit));
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll();
+        $rank = 1;
+        foreach ($rows as &$row) {
+            $row['rank'] = $rank++;
+        }
+        unset($row);
+        return $rows;
+    }
+
+    private function findArtist(?int $artistId, ?string $artistName): ?array
+    {
+        if ($artistId !== null && $artistId > 0) {
+            $sql = "
+                SELECT ar.artist_id, ar.artist_name
+                FROM artists ar
+                WHERE ar.status = :st AND ar.artist_id = :artist_id
+                LIMIT 1
+            ";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                ':st' => CATALOG_STATUS_APPROVED,
+                ':artist_id' => $artistId,
+            ]);
+            $row = $stmt->fetch();
+            if ($row !== false) {
+                return $row;
+            }
+        }
+
+        if ($artistName !== null && $artistName !== '') {
+            $sql = "
+                SELECT ar.artist_id, ar.artist_name
+                FROM artists ar
+                WHERE ar.status = :st AND ar.artist_name = :artist_name
+                ORDER BY ar.artist_id ASC
+                LIMIT 1
+            ";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                ':st' => CATALOG_STATUS_APPROVED,
+                ':artist_name' => $artistName,
+            ]);
+            $row = $stmt->fetch();
+            if ($row !== false) {
+                return $row;
+            }
+        }
+
+        return null;
+    }
+
+    private function artistTopTracks(int $artistId, int $limit = 10): array
+    {
+        $sql = "
+            SELECT
+                t.track_id,
+                t.track_name,
+                t.popularity,
+                t.preview_url,
+                (
+                    SELECT alx.album_name
+                    FROM album_tracks atx
+                    JOIN albums alx ON alx.album_id = atx.album_id AND alx.status = :st
+                    WHERE atx.track_id = t.track_id
+                    ORDER BY alx.release_date ASC, alx.album_id ASC
+                    LIMIT 1
+                ) AS album_name,
+                (
+                    SELECT alx.album_image_url
+                    FROM album_tracks atx
+                    JOIN albums alx ON alx.album_id = atx.album_id AND alx.status = :st
+                    WHERE atx.track_id = t.track_id
+                    ORDER BY alx.release_date ASC, alx.album_id ASC
+                    LIMIT 1
+                ) AS album_image_url
+            FROM track_artists ta
+            JOIN tracks t ON t.track_id = ta.track_id AND t.status = :st
+            WHERE ta.artist_id = :artist_id
+            ORDER BY t.popularity DESC, t.track_id ASC
+            LIMIT " . max(1, min(100, $limit));
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':st' => CATALOG_STATUS_APPROVED,
+            ':artist_id' => $artistId,
+        ]);
+        $rows = $stmt->fetchAll();
+        $rank = 1;
+        foreach ($rows as &$row) {
+            $row['rank'] = $rank++;
+        }
+        unset($row);
+        return $rows;
+    }
+
+    private function artistAlbums(int $artistId, int $limit = 30): array
+    {
+        $sql = "
+            SELECT
+                al.album_id,
+                al.album_name,
+                al.release_date,
+                al.album_image_url,
+                COALESCE(SUM(t.popularity), 0) AS popularity_sum
+            FROM album_artists aa
+            JOIN albums al ON al.album_id = aa.album_id AND al.status = :st
+            LEFT JOIN album_tracks at ON at.album_id = al.album_id
+            LEFT JOIN tracks t ON t.track_id = at.track_id AND t.status = :st
+            WHERE aa.artist_id = :artist_id
+            GROUP BY al.album_id, al.album_name, al.release_date, al.album_image_url
+            ORDER BY al.release_date DESC, popularity_sum DESC
+            LIMIT " . max(1, min(200, $limit));
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':st' => CATALOG_STATUS_APPROVED,
+            ':artist_id' => $artistId,
+        ]);
+        return $stmt->fetchAll();
+    }
+
+    private function artistPopularitySum(int $artistId): int
+    {
+        $sql = "
+            SELECT COALESCE(SUM(t.popularity), 0) AS popularity_sum
+            FROM track_artists ta
+            JOIN tracks t ON t.track_id = ta.track_id AND t.status = :st
+            JOIN artists ar ON ar.artist_id = ta.artist_id AND ar.status = :st
+            WHERE ta.artist_id = :artist_id
+        ";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':st' => CATALOG_STATUS_APPROVED,
+            ':artist_id' => $artistId,
+        ]);
+        $row = $stmt->fetch();
+        return (int) ($row['popularity_sum'] ?? 0);
+    }
+
+    private function artistRankByPopularity(int $artistId, int $popularitySum): int
+    {
+        $sql = "
+            SELECT COUNT(*) + 1 AS artist_rank
+            FROM (
+                SELECT ar2.artist_id, COALESCE(SUM(t2.popularity), 0) AS popularity_sum
+                FROM artists ar2
+                JOIN track_artists ta2 ON ta2.artist_id = ar2.artist_id
+                JOIN tracks t2 ON t2.track_id = ta2.track_id AND t2.status = :st
+                WHERE ar2.status = :st
+                GROUP BY ar2.artist_id
+            ) ranked
+            WHERE ranked.popularity_sum > :popularity_sum
+               OR (ranked.popularity_sum = :popularity_sum AND ranked.artist_id < :artist_id)
+        ";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':st' => CATALOG_STATUS_APPROVED,
+            ':popularity_sum' => $popularitySum,
+            ':artist_id' => $artistId,
+        ]);
+        $row = $stmt->fetch();
+        return (int) ($row['artist_rank'] ?? 0);
+    }
+
+    private function normalizeGenreFilter(?string $genre): ?string
+    {
+        if ($genre === null) {
+            return null;
+        }
+        $g = trim($genre);
+        if ($g === '' || strtolower($g) === 'all') {
+            return null;
+        }
+        return $g;
+    }
+
+    private function styleFeatureAverages(?string $genre): array
+    {
+        $params = [':st' => CATALOG_STATUS_APPROVED];
+        $genreSql = '';
+        if ($genre !== null) {
+            $genreSql = "
+                AND EXISTS (
+                    SELECT 1
+                    FROM track_artists tag
+                    JOIN artists ar_g ON ar_g.artist_id = tag.artist_id AND ar_g.status = :st
+                    JOIN artist_genres ag_g ON ag_g.artist_id = ar_g.artist_id AND ag_g.genre = :genre
+                    WHERE tag.track_id = t.track_id
+                )
+            ";
+            $params[':genre'] = $genre;
+        }
+
+        $sql = "
+            SELECT
+                AVG(af.danceability) AS danceability,
+                AVG(af.energy) AS energy,
+                AVG(af.valence) AS valence,
+                AVG(af.acousticness) AS acousticness,
+                AVG(af.tempo) AS tempo,
+                AVG(af.loudness) AS loudness,
+                AVG(t.duration_ms) AS avg_duration_ms
+            FROM tracks t
+            JOIN audio_features af ON af.track_id = t.track_id
+            WHERE t.status = :st
+            {$genreSql}
+        ";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $row = $stmt->fetch() ?: [];
+
+        $durationMs = (int) round((float) ($row['avg_duration_ms'] ?? 0));
+        $durationMin = intdiv($durationMs, 60000);
+        $durationSec = intdiv($durationMs % 60000, 1000);
+
+        return [
+            'danceability' => round((float) ($row['danceability'] ?? 0), 3),
+            'energy' => round((float) ($row['energy'] ?? 0), 3),
+            'valence' => round((float) ($row['valence'] ?? 0), 3),
+            'acousticness' => round((float) ($row['acousticness'] ?? 0), 3),
+            'tempo' => round((float) ($row['tempo'] ?? 0), 2),
+            'loudness' => round((float) ($row['loudness'] ?? 0), 2),
+            'avg_duration_ms' => $durationMs,
+            'avg_duration_label' => sprintf('%d:%02d', $durationMin, $durationSec),
+        ];
+    }
+
+    private function genreMixByDecade(): array
+    {
+        $params = [':st' => CATALOG_STATUS_APPROVED];
+        $sql = "
+            SELECT
+                CASE
+                    WHEN YEAR(al.release_date) BETWEEN 1980 AND 1989 THEN '1980s'
+                    WHEN YEAR(al.release_date) BETWEEN 1990 AND 1999 THEN '1990s'
+                    WHEN YEAR(al.release_date) BETWEEN 2000 AND 2009 THEN '2000s'
+                    WHEN YEAR(al.release_date) BETWEEN 2010 AND 2019 THEN '2010s'
+                    WHEN YEAR(al.release_date) BETWEEN 2020 AND 2029 THEN '2020s'
+                    ELSE NULL
+                END AS decade_label,
+                ag.genre,
+                COUNT(DISTINCT t.track_id) AS track_count
+            FROM tracks t
+            JOIN album_tracks at ON at.track_id = t.track_id
+            JOIN albums al ON al.album_id = at.album_id AND al.status = :st
+            JOIN track_artists ta ON ta.track_id = t.track_id
+            JOIN artists ar ON ar.artist_id = ta.artist_id AND ar.status = :st
+            JOIN artist_genres ag ON ag.artist_id = ar.artist_id
+            WHERE t.status = :st
+            GROUP BY decade_label, ag.genre
+            HAVING decade_label IS NOT NULL
+            ORDER BY decade_label ASC, track_count DESC
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll();
+
+        $mix = [];
+        foreach ($rows as $row) {
+            $d = (string) $row['decade_label'];
+            if (!isset($mix[$d])) {
+                $mix[$d] = [];
+            }
+            $mix[$d][] = [
+                'genre' => (string) $row['genre'],
+                'track_count' => (int) $row['track_count'],
+            ];
+        }
+        return $mix;
+    }
+
+    private function featureTrendByDecade(string $feature, ?string $genre): array
+    {
+        $allowed = ['danceability', 'energy', 'valence', 'acousticness', 'tempo', 'loudness'];
+        if (!in_array($feature, $allowed, true)) {
+            return [];
+        }
+
+        $params = [':st' => CATALOG_STATUS_APPROVED];
+        $genreSql = '';
+        if ($genre !== null) {
+            $genreSql = " AND ag.genre = :genre ";
+            $params[':genre'] = $genre;
+        }
+
+        $sql = "
+            SELECT
+                CASE
+                    WHEN YEAR(al.release_date) BETWEEN 1980 AND 1989 THEN '1980s'
+                    WHEN YEAR(al.release_date) BETWEEN 1990 AND 1999 THEN '1990s'
+                    WHEN YEAR(al.release_date) BETWEEN 2000 AND 2009 THEN '2000s'
+                    WHEN YEAR(al.release_date) BETWEEN 2010 AND 2019 THEN '2010s'
+                    WHEN YEAR(al.release_date) BETWEEN 2020 AND 2029 THEN '2020s'
+                    ELSE NULL
+                END AS decade_label,
+                AVG(af.{$feature}) AS feature_avg
+            FROM tracks t
+            JOIN audio_features af ON af.track_id = t.track_id
+            JOIN album_tracks at ON at.track_id = t.track_id
+            JOIN albums al ON al.album_id = at.album_id AND al.status = :st
+            JOIN track_artists ta ON ta.track_id = t.track_id
+            JOIN artists ar ON ar.artist_id = ta.artist_id AND ar.status = :st
+            JOIN artist_genres ag ON ag.artist_id = ar.artist_id
+            WHERE t.status = :st
+            {$genreSql}
+            GROUP BY decade_label
+            HAVING decade_label IS NOT NULL
+            ORDER BY decade_label ASC
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll();
+
+        $series = [];
+        foreach ($rows as $row) {
+            $series[] = [
+                'decade' => (string) $row['decade_label'],
+                'value' => round((float) $row['feature_avg'], 4),
+            ];
+        }
+        return $series;
+    }
+
+    /**
+     * Track is included if any linked album has release_date year in range.
+     * Appends :dy0 / :dy1 to $params when range is set.
+     */
+    private function albumReleaseDecadeSql(string $trackIdExpr, ?array $decadeRange, array &$params): string
+    {
+        if ($decadeRange === null) {
+            return '';
+        }
+        $params[':dy0'] = $decadeRange[0];
+        $params[':dy1'] = $decadeRange[1];
+        return " AND EXISTS (
+            SELECT 1 FROM album_tracks atd
+            JOIN albums ald ON ald.album_id = atd.album_id AND ald.status = :st
+            WHERE atd.track_id = {$trackIdExpr}
+            AND YEAR(ald.release_date) BETWEEN :dy0 AND :dy1
+        ) ";
+    }
+
+    /**
+     * Artist is included if any of their tracks appears on an album with release in decade.
+     */
+    private function artistHasTrackInDecadeSql(string $artistIdExpr, ?array $decadeRange, array &$params): string
+    {
+        if ($decadeRange === null) {
+            return '';
+        }
+        if (!isset($params[':dy0'], $params[':dy1'])) {
+            $params[':dy0'] = $decadeRange[0];
+            $params[':dy1'] = $decadeRange[1];
+        }
+        return " AND EXISTS (
+            SELECT 1 FROM track_artists tax
+            JOIN album_tracks atx ON atx.track_id = tax.track_id
+            JOIN albums alx ON alx.album_id = atx.album_id AND alx.status = :st
+            WHERE tax.artist_id = {$artistIdExpr}
+            AND YEAR(alx.release_date) BETWEEN :dy0 AND :dy1
+        ) ";
+    }
+}

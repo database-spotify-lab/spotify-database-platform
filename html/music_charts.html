@@ -43,6 +43,7 @@
     .logo{
       display:flex;align-items:center;gap:10px;min-width:180px;
       font-weight:800;
+      cursor:pointer;
     }
     .logo-badge{
       width:34px;height:34px;border-radius:10px;
@@ -247,15 +248,27 @@
     .card:hover{transform: translateY(-2px); border-color: rgba(0,245,160,.45);}
     .card .img{height:150px; position:relative;background:rgba(255,255,255,.04);}
     .card img{width:100%;height:100%;object-fit:cover;display:block}
-    .badge{
-      position:absolute;left:12px;bottom:12px;
-      width:44px;height:44px;border-radius:14px;
+    .card-play{
+      position:absolute;
+      right:10px;
+      bottom:10px;
+      z-index:2;
       background:var(--accent);
       color:#000;
-      display:grid;place-items:center;
+      border-color:rgba(0,245,160,.55);
+      font-size:16px;
+      line-height:1;
+    }
+    .badge{
+      position:absolute;
+      left:12px;
+      top:10px;
+      color:var(--accent);
+      display:block;
       font-weight:1000;
+      font-size:24px;
       font-family:var(--mono);
-      box-shadow: 0 10px 18px rgba(0,245,160,.25);
+      text-shadow: 0 2px 8px rgba(0,0,0,.55);
     }
     .card .meta{padding:12px}
     .card .meta .t{font-weight:900}
@@ -278,7 +291,7 @@
   <div class="wrap">
     <!-- Top bar (右侧链接已删除) -->
     <div class="topbar">
-      <div class="logo">
+      <div class="logo" id="logoLoginEntry" title="Go to login">
         <div class="logo-badge">♪</div>
         <div>
           <div style="font-size:14px;line-height:1">MusicBox</div>
@@ -341,7 +354,7 @@
               <th style="width:56px">RANK</th>
               <th>ARTIST</th>
               <th>TOP TRACK</th>
-              <th style="width:110px">PREVIEW</th>
+              <th style="width:110px">OPEN</th>
             </tr>
           </thead>
           <tbody id="artistBody"></tbody>
@@ -354,7 +367,6 @@
               <th>COVER</th>
               <th>ALBUM</th>
               <th>ARTIST</th>
-              <th style="width:110px">OPEN</th>
             </tr>
           </thead>
           <tbody id="albumBody"></tbody>
@@ -419,11 +431,11 @@ const TOP_SONGS = [
 ];
 
 const TOP_ARTISTS = [
-  {rank:1, artist:"The Weeknd", topTrack:"Blinding Lights", decade:"2020s"},
-  {rank:2, artist:"Adele", topTrack:"Rolling in the Deep", decade:"2010s"},
-  {rank:3, artist:"OutKast", topTrack:"Hey Ya!", decade:"2000s"},
-  {rank:4, artist:"Radiohead", topTrack:"Karma Police", decade:"1990s"},
-  {rank:5, artist:"Michael Jackson", topTrack:"Billie Jean", decade:"1980s"}
+  {rank:1, artistId:1, artist:"The Weeknd", topTrack:"Blinding Lights", decade:"2020s"},
+  {rank:2, artistId:2, artist:"Adele", topTrack:"Rolling in the Deep", decade:"2010s"},
+  {rank:3, artistId:3, artist:"OutKast", topTrack:"Hey Ya!", decade:"2000s"},
+  {rank:4, artistId:4, artist:"Radiohead", topTrack:"Karma Police", decade:"1990s"},
+  {rank:5, artistId:5, artist:"Michael Jackson", topTrack:"Billie Jean", decade:"1980s"}
 ];
 
 const TOP_ALBUMS = [
@@ -442,7 +454,8 @@ const GENRES = [
   {key:"R&B", items:[]},
   {key:"Jazz", items:[]},
   {key:"Classical", items:[]},
-  {key:"Electronic", items:[]}
+  {key:"Electronic", items:[]},
+  {key:"Country", items:[]}
 ];
 
 // seed some demo cards into Pop for illustration
@@ -457,6 +470,11 @@ const $$ = (s)=>Array.from(document.querySelectorAll(s));
 
 function playMock(label){
   alert("Preview (mock): " + label);
+}
+
+function openArtistResult(artistId, artistName){
+  const url = `artist_search_result.html?artist_id=${encodeURIComponent(String(artistId))}&artist_name=${encodeURIComponent(artistName)}`;
+  window.location.href = url;
 }
 
 // render TOP charts
@@ -484,7 +502,7 @@ function renderTop(decade="all"){
       <td class="rank">#${a.rank}</td>
       <td><div class="main">${a.artist}</div></td>
       <td><div class="sub">${a.topTrack}</div></td>
-      <td><button class="play" onclick="playMock('${a.topTrack}')">▶</button></td>
+      <td><button class="play" onclick="openArtistResult('${a.artistId}', '${a.artist}')">↗</button></td>
     </tr>
   `).join("");
 
@@ -496,7 +514,6 @@ function renderTop(decade="all"){
       <td><div class="cover"><img src="${a.cover}" loading="lazy"/></div></td>
       <td><div class="main">${a.album}</div></td>
       <td><div class="sub">${a.artist}</div></td>
-      <td><button class="play" onclick="alert('Open: ${a.album}')">↗</button></td>
     </tr>
   `).join("");
 }
@@ -530,7 +547,14 @@ function renderGenreGrid(){
     <div class="card" onclick="alert('Open: ${x.title}')">
       <div class="img">
         <img src="${x.cover}" loading="lazy"/>
-        <div class="badge">${x.rank}</div>
+        <div class="badge">#${x.rank}</div>
+        ${activeGenreTab==="songs" ? `
+          <button
+            class="play card-play"
+            onclick="event.stopPropagation(); playMock('${x.title}')"
+            title="Preview"
+          >▶</button>
+        ` : ``}
       </div>
       <div class="meta">
         <div class="t">${x.title}</div>
@@ -566,6 +590,10 @@ $("#genreDecade").addEventListener("change", renderGenreGrid);
 // init
 renderTop("all");
 renderGenreGrid();
+
+$("#logoLoginEntry").addEventListener("click", ()=>{
+  window.location.href = "login_page.html";
+});
 </script>
 </body>
 </html>

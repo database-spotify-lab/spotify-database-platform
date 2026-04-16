@@ -43,6 +43,7 @@
     .logo{
       display:flex;align-items:center;gap:10px;min-width:180px;
       font-weight:800;
+      cursor:pointer;
     }
     .logo-badge{
       width:34px;height:34px;border-radius:10px;
@@ -280,16 +281,16 @@
   <div class="wrap">
     <!-- Top bar -->
     <div class="topbar">
-      <div class="logo">
+      <div class="logo" id="logoLoginEntry" title="Go to login">
         <div class="logo-badge">♪</div>
         <div>
           <div style="font-size:14px;line-height:1">MusicBox</div>
           <div class="slogan">Discover your sound.</div>
         </div>
       </div>
-      <div class="search" title="Search songs / artists / albums">
+      <div class="search" title="Search artists">
         <span style="color:var(--muted);font-family:var(--mono)">⌕</span>
-        <input id="searchInput" placeholder="Search songs, artists, albums..." />
+        <input id="searchInput" placeholder="Search artists..." />
       </div>
     </div>
 <!-- HERO -->
@@ -301,9 +302,10 @@
             <div class="artist-name" id="artistName">Adele</div>
           </div>
           <div class="hero-metrics">
+            <div id="artistRankText" style="color:var(--accent);font-family:var(--mono);font-size:28px;font-weight:1000;line-height:1;margin-bottom:8px;">#2</div>
             <div class="metric-label">POPULARITY</div>
             <div class="metric-value" style="margin-top:8px;justify-content:flex-start;">
-              <span id="artistPopText">89 / 100</span>
+              <span id="artistPopText">444</span>
             </div>
           </div>
         </div>
@@ -353,6 +355,7 @@ const ADELE_21_COVER =
 // Demo data (Adele)
 const artist = {
   name: "Adele",
+  rank: 2,
   heroCover: ADELE_21_COVER,
   topTracks: [
     {rank:1, cover:ADELE_21_COVER, track:"Rolling in the Deep", album:"21", popularity:98, preview:true},
@@ -372,6 +375,45 @@ const artist = {
 };
 
 const $ = (s)=>document.querySelector(s);
+const SEARCH_API_URL = "../php/charts/search_artists.php";
+
+function getQueryParams(){
+  const params = new URLSearchParams(window.location.search);
+  return {
+    artistId: (params.get("artist_id") || "").trim(),
+    artistName: (params.get("artist_name") || "").trim(),
+  };
+}
+
+function hydrateArtistFromQuery(){
+  const { artistId, artistName } = getQueryParams();
+  if (artistName) {
+    artist.name = artistName;
+    $("#searchInput").value = artistName;
+  }
+  if (artistId && !artistName) {
+    artist.name = `Artist #${artistId}`;
+  }
+}
+
+async function searchArtistAndOpen(query){
+  const q = (query || "").trim();
+  if (!q) return;
+  try {
+    const res = await fetch(`${SEARCH_API_URL}?q=${encodeURIComponent(q)}`);
+    const payload = await res.json();
+    if (!payload.ok || !Array.isArray(payload.data) || payload.data.length === 0) {
+      alert("No artist found.");
+      return;
+    }
+    const first = payload.data[0];
+    const artistId = first.artist_id;
+    const artistName = first.artist_name;
+    window.location.href = `artist_search_result.html?artist_id=${encodeURIComponent(String(artistId))}&artist_name=${encodeURIComponent(artistName)}`;
+  } catch (err) {
+    alert("Search failed. Please try again.");
+  }
+}
 
 function setHero(){
   $("#artistName").textContent = artist.name;
@@ -419,9 +461,10 @@ function renderAlbums(){
   `).join("");
 }
 
-function computePopularity(){
-  const avg = Math.round(artist.topTracks.reduce((s,x)=>s+x.popularity,0)/artist.topTracks.length);
-$("#artistPopText").textContent = `${avg} / 100`;
+function computeArtistMetrics(){
+  const popularitySum = artist.topTracks.reduce((s,x)=>s+x.popularity,0);
+  $("#artistPopText").textContent = `${popularitySum}`;
+  $("#artistRankText").textContent = artist.rank ? `#${artist.rank}` : "-";
 }
 
 function previewMock(label){
@@ -429,16 +472,25 @@ function previewMock(label){
 }
 
 $("#backBtn").addEventListener("click", ()=>{
-  // 返回上一页；如果没有历史记录就回主页（你可改成 index.html）
-  if (history.length > 1) history.back();
-  else window.location.href = "music_charts_mockup_v2.html";
+  window.location.href = "music_charts.html";
+});
+
+$("#searchInput").addEventListener("keydown", (e)=>{
+  if (e.key !== "Enter") return;
+  e.preventDefault();
+  searchArtistAndOpen(e.currentTarget.value);
+});
+
+$("#logoLoginEntry").addEventListener("click", ()=>{
+  window.location.href = "login_page.html";
 });
 
 // init
+hydrateArtistFromQuery();
 setHero();
 renderTopTracks();
 renderAlbums();
-computePopularity();
+computeArtistMetrics();
 </script>
 </body>
 </html>
