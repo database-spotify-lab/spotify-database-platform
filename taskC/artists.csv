@@ -1,6 +1,3818 @@
 artist_id,artist_name,status,submitted_by,reviewed_by
-a1,Taylor Swift,approved,2,1
-a2,The Weeknd,approved,2,1
-a3,Olivia Rodrigo,pending,4,
-a4,SZA,approved,4,3
-a5,Drake,rejected,2,1
+a1,The Temper Trap,approved,2,1
+a2,Frankie Valli & The Four Seasons,approved,2,1
+a3,Mike Posner,approved,2,1
+a4,Seeb,approved,2,1
+a5,Foxes,approved,2,1
+a6,Captain & Tennille,approved,2,1
+a7,ZAYN,approved,2,1
+a8,PARTYNEXTDOOR,approved,2,1
+a9,Rita Ora,approved,2,1
+a10,Coldplay,approved,2,1
+a11,Faith Hill,approved,2,1
+a12,The Police,approved,2,1
+a13,Chicago,approved,2,1
+a14,Urban Cookie Collective,approved,2,1
+a15,Guns N' Roses,approved,2,1
+a16,Rod Stewart,approved,2,1
+a17,We Five,approved,2,1
+a18,Daft Punk,approved,2,1
+a19,Pharrell Williams,approved,2,1
+a20,Nile Rodgers,approved,2,1
+a21,Christine Anu,approved,2,1
+a22,Vance Joy,approved,2,1
+a23,Guy Mitchell,approved,2,1
+a24,Wham!,approved,2,1
+a25,Tori Kelly,approved,2,1
+a26,Kungs,approved,2,1
+a27,The Monkees,approved,2,1
+a28,Jeff St John,approved,2,1
+a29,The Copperwine,approved,2,1
+a30,Delta Goodrem,approved,2,1
+a31,The Angels,approved,2,1
+a32,Sister Hazel,approved,2,1
+a33,Garbage,approved,2,1
+a34,Bobby Bloom,approved,2,1
+a35,Billie Eilish,approved,2,1
+a36,John Farnham,approved,2,1
+a37,The Weeknd,approved,2,1
+a38,Silverchair,approved,2,1
+a39,Boston,approved,2,1
+a40,Taylor Swift,approved,2,1
+a41,Hilltop Hoods,approved,2,1
+a42,Fleetwood Mac,approved,2,1
+a43,Salt-N-Pepa,approved,2,1
+a44,P!nk,approved,2,1
+a45,Gavin DeGraw,approved,2,1
+a46,The Look,approved,2,1
+a47,Yellowstone And Voice,approved,2,1
+a48,Jimmy Soul,approved,2,1
+a49,Jason Donovan,approved,2,1
+a50,Deborah Conway,approved,2,1
+a51,Jonas Brothers,approved,2,1
+a52,Paul Russell,approved,2,1
+a53,Kelly Clarkson,approved,2,1
+a54,Fergie,approved,2,1
+a55,Ludacris,approved,2,1
+a56,En Vogue,approved,2,1
+a57,Musical Creations Karaoke,approved,2,1
+a58,Eskimo Joe,approved,2,1
+a59,Troye Sivan,approved,2,1
+a60,Ariana Grande,approved,2,1
+a61,Ben Lee,approved,2,1
+a62,Young Divas,approved,2,1
+a63,Conway Twitty,approved,2,1
+a64,Groove Armada,approved,2,1
+a65,Lifehouse,approved,2,1
+a66,Marshmello,approved,2,1
+a67,Imanbek,approved,2,1
+a68,USHER,approved,2,1
+a69,Keith Urban,approved,2,1
+a70,Dr. Hook,approved,2,1
+a71,Fifth Harmony,approved,2,1
+a72,Ty Dolla $ign,approved,2,1
+a73,Craig David,approved,2,1
+a74,Katy Perry,approved,2,1
+a75,Cyndi Lauper,approved,2,1
+a76,Korn,approved,2,1
+a77,Bill & Boyd,approved,2,1
+a78,The Buggles,approved,2,1
+a79,Melanie,approved,2,1
+a80,The Edwin Hawkins Singers,approved,2,1
+a81,Lady Gaga,approved,2,1
+a82,Conor Maynard,approved,2,1
+a83,Estelle,approved,2,1
+a84,Kanye West,approved,2,1
+a85,Maroon 5,approved,2,1
+a86,T.I.,approved,2,1
+a87,Justin Timberlake,approved,2,1
+a88,Janet Jackson,approved,2,1
+a89,Lizzo,approved,2,1
+a90,Robyn,approved,2,1
+a91,Amerie,approved,2,1
+a92,The Darkness,approved,2,1
+a93,Lou Christie,approved,2,1
+a94,Boz Scaggs,approved,2,1
+a95,Dave Dobbyn,approved,2,1
+a96,Cyrus Villanueva,approved,2,1
+a97,Barbra Streisand,approved,2,1
+a98,Céline Dion,approved,2,1
+a99,Mental As Anything,approved,2,1
+a100,Dizzee Rascal,approved,2,1
+a101,Calvin Harris,approved,2,1
+a102,Chrom3,approved,2,1
+a103,The B-52's,approved,2,1
+a104,Nelly,approved,2,1
+a105,Julian Casablancas,approved,2,1
+a106,The Overlanders,approved,2,1
+a107,C & C Music Factory,approved,2,1
+a108,Freedom Williams,approved,2,1
+a109,The Pussycat Dolls,approved,2,1
+a110,The Living End,approved,2,1
+a111,The Style Council,approved,2,1
+a112,Quad City DJ's,approved,2,1
+a113,Dami Im,approved,2,1
+a114,John Paul Young,approved,2,1
+a115,Youth Group,approved,2,1
+a116,Liam Payne,approved,2,1
+a117,Billy Field,approved,2,1
+a118,P.J. Proby,approved,2,1
+a119,Men At Work,approved,2,1
+a120,E^ST,approved,2,1
+a121,Fountains Of Wayne,approved,2,1
+a122,Michael Bolton,approved,2,1
+a123,Adrian Lux,approved,2,1
+a124,Don Omar,approved,2,1
+a125,Lucenzo,approved,2,1
+a126,Spiderbait,approved,2,1
+a127,Chocolate Starfish,approved,2,1
+a128,Culture Beat,approved,2,1
+a129,Miley Cyrus,approved,2,1
+a130,Samantha Jade,approved,2,1
+a131,The Marvelettes,approved,2,1
+a132,Stevie Wonder,approved,2,1
+a133,Damien Leith,approved,2,1
+a134,Bonnie Tyler,approved,2,1
+a135,Chris de Burgh,approved,2,1
+a136,Marvin Gaye,approved,2,1
+a137,Tammi Terrell,approved,2,1
+a138,Evermore,approved,2,1
+a139,Elvis Presley,approved,2,1
+a140,Zedd,approved,2,1
+a141,Griff,approved,2,1
+a142,Itch,approved,2,1
+a143,Megan Joy,approved,2,1
+a144,Peter Allen,approved,2,1
+a145,Bee Gees,approved,2,1
+a146,Roddy Ricch,approved,2,1
+a147,Shawn Mendes,approved,2,1
+a148,Hootie & The Blowfish,approved,2,1
+a149,Mariah Carey,approved,2,1
+a150,Ne-Yo,approved,2,1
+a151,The Exciters,approved,2,1
+a152,Eminem,approved,2,1
+a153,Rihanna,approved,2,1
+a154,The La De Da's,approved,2,1
+a155,Seether,approved,2,1
+a156,Amy Lee,approved,2,1
+a157,James Chatburn,approved,2,1
+a158,Gotye,approved,2,1
+a159,Kimbra,approved,2,1
+a160,Bluejuice,approved,2,1
+a161,Paramore,approved,2,1
+a162,Ugly Kid Joe,approved,2,1
+a163,Night Ranger,approved,2,1
+a164,The Drifters,approved,2,1
+a165,Selena Gomez,approved,2,1
+a166,Far East Movement,approved,2,1
+a167,Cover Drive,approved,2,1
+a168,Johnny Diesel & The Injectors,approved,2,1
+a169,Ed Sheeran,approved,2,1
+a170,Steve Perry,approved,2,1
+a171,Backstreet Boys,approved,2,1
+a172,Gucci Mane,approved,2,1
+a173,Scorpions,approved,2,1
+a174,Jimmy Gilmer,approved,2,1
+a175,The Fireballs,approved,2,1
+a176,Green Day,approved,2,1
+a177,Tom Petty and the Heartbreakers,approved,2,1
+a178,Mike + The Mechanics,approved,2,1
+a179,Billy Swan,approved,2,1
+a180,The Dave Clark Five,approved,2,1
+a181,Train,approved,2,1
+a182,Vanessa Amorosi,approved,2,1
+a183,The Beatles,approved,2,1
+a184,Ella Henderson,approved,2,1
+a185,Dragon,approved,2,1
+a186,The KLF,approved,2,1
+a187,Percy Sledge,approved,2,1
+a188,Grandmaster Flash & The Furious Five,approved,2,1
+a189,Elton John,approved,2,1
+a190,Britney Spears,approved,2,1
+a191,Sneaky Sound System,approved,2,1
+a192,Shab,approved,2,1
+a193,Martinez Twins,approved,2,1
+a194,Morgan Wallen,approved,2,1
+a195,Johnny Logan,approved,2,1
+a196,Gene Vincent & His Blue Caps,approved,2,1
+a197,Midnight Oil,approved,2,1
+a198,Anne-Marie,approved,2,1
+a199,Doja Cat,approved,2,1
+a200,SZA,approved,2,1
+a201,Camila Cabello,approved,2,1
+a202,KC & The Sunshine Band,approved,2,1
+a203,The Cure,approved,2,1
+a204,Madonna,approved,2,1
+a205,E.Y.C.,approved,2,1
+a206,Franz Ferdinand,approved,2,1
+a207,Taylor Dayne,approved,2,1
+a208,Johnny Cash,approved,2,1
+a209,June Carter Cash,approved,2,1
+a210,50 Cent,approved,2,1
+a211,The Rolling Stones,approved,2,1
+a212,The Rubens,approved,2,1
+a213,Drax Project,approved,2,1
+a214,Hailee Steinfeld,approved,2,1
+a215,Leona Lewis,approved,2,1
+a216,Eagles,approved,2,1
+a217,Marty Robbins,approved,2,1
+a218,Dr. Alban,approved,2,1
+a219,The Ting Tings,approved,2,1
+a220,Placebo,approved,2,1
+a221,Buddy Holly,approved,2,1
+a222,The Crickets,approved,2,1
+a223,Alannah Myles,approved,2,1
+a224,Rogue Traders,approved,2,1
+a225,Patti Smith,approved,2,1
+a226,R.E.M.,approved,2,1
+a227,Eric Carmen,approved,2,1
+a228,Lazaro's Dog,approved,2,1
+a229,Gary Moore,approved,2,1
+a230,Havana Brown,approved,2,1
+a231,Nickelback,approved,2,1
+a232,Khalid,approved,2,1
+a233,Do Re Mi,approved,2,1
+a234,Sixpence None The Richer,approved,2,1
+a235,Chase Martin,approved,2,1
+a236,Sigma,approved,2,1
+a237,Labrinth,approved,2,1
+a238,LeAnn Rimes,approved,2,1
+a239,Phil Collins,approved,2,1
+a240,Steps,approved,2,1
+a241,The Everly Brothers,approved,2,1
+a242,Passengers,approved,2,1
+a243,Luciano Pavarotti,approved,2,1
+a244,Bob Seger,approved,2,1
+a245,Penny McLean,approved,2,1
+a246,Friendly Fires,approved,2,1
+a247,Tom Jones,approved,2,1
+a248,Amy Grant,approved,2,1
+a249,The Smashing Pumpkins,approved,2,1
+a250,Kylie Minogue,approved,2,1
+a251,Charli xcx,approved,2,1
+a252,Russell Watson,approved,2,1
+a253,Savage Garden,approved,2,1
+a254,Ultra Naté,approved,2,1
+a255,Sunset City,approved,2,1
+a256,Steve Miller Band,approved,2,1
+a257,AronChupa,approved,2,1
+a258,Little Sis Nora,approved,2,1
+a259,Culture Club,approved,2,1
+a260,Billy Thorpe & The Aztecs,approved,2,1
+a261,Bon Jovi,approved,2,1
+a262,Dave Berry,approved,2,1
+a263,CHVRCHES,approved,2,1
+a264,Michael Bublé,approved,2,1
+a265,Fuel,approved,2,1
+a266,The Potbelleez,approved,2,1
+a267,Donovan,approved,2,1
+a268,Five,approved,2,1
+a269,Stargate,approved,2,1
+a270,Lionel Richie,approved,2,1
+a271,Tones And I,approved,2,1
+a272,Timbaland,approved,2,1
+a273,Rudimental,approved,2,1
+a274,Emeli Sandé,approved,2,1
+a275,Nas,approved,2,1
+a276,Dua Lipa,approved,2,1
+a277,Dom Dolla,approved,2,1
+a278,Billy Joel,approved,2,1
+a279,Sam Brown,approved,2,1
+a280,Pete Brown,approved,2,1
+a281,Muse,approved,2,1
+a282,The Pointer Sisters,approved,2,1
+a283,Empire Of The Sun,approved,2,1
+a284,Pearl Jam,approved,2,1
+a285,Black Eyed Peas,approved,2,1
+a286,Earth\,approved,2,1
+a287,Wind & Fire,approved,2,1
+a288,Ace of Base,approved,2,1
+a289,Cage The Elephant,approved,2,1
+a290,Liam Gallagher,approved,2,1
+a291,Jessie Ware,approved,2,1
+a292,The Orlons,approved,2,1
+a293,The Getaway Plan,approved,2,1
+a294,Shaggy,approved,2,1
+a295,Brian & Tony Gold,approved,2,1
+a296,Glen Campbell,approved,2,1
+a297,Monte Video,approved,2,1
+a298,Guy Sebastian,approved,2,1
+a299,The Supremes,approved,2,1
+a300,Kate Miller-Heidke,approved,2,1
+a301,Andy Gibb,approved,2,1
+a302,Sigala,approved,2,1
+a303,David Guetta,approved,2,1
+a304,Sam Ryder,approved,2,1
+a305,Little Cesar & The Romans,approved,2,1
+a306,Steely Dan,approved,2,1
+a307,Gary U.S. Bonds,approved,2,1
+a308,Thandi Phoenix,approved,2,1
+a309,Bachelor Girl,approved,2,1
+a310,Clean Bandit,approved,2,1
+a311,Sean Paul,approved,2,1
+a312,Leo Sayer,approved,2,1
+a313,Birdy,approved,2,1
+a314,Manfred Mann's Earth Band,approved,2,1
+a315,The Church,approved,2,1
+a316,Kygo,approved,2,1
+a317,Justin Jesso,approved,2,1
+a318,Birds Of Tokyo,approved,2,1
+a319,Serena Ryder,approved,2,1
+a320,Nico & Vinz,approved,2,1
+a321,Bill Blacks Combo,approved,2,1
+a322,Las Ketchup,approved,2,1
+a323,"""Jesus Christ Superstar"" 1992 Australian Cast",approved,2,1
+a324,Jon Stevens,approved,2,1
+a325,Kate Cebrano,approved,2,1
+a326,Absolutely Fabulous,approved,2,1
+a327,The Verve,approved,2,1
+a328,Journey,approved,2,1
+a329,Matter Of Mind,approved,2,1
+a330,M2M,approved,2,1
+a331,Tenacious D,approved,2,1
+a332,Jo Jo Zep and The Falcons,approved,2,1
+a333,360,approved,2,1
+a334,PEZ,approved,2,1
+a335,ABBA,approved,2,1
+a336,Good Charlotte,approved,2,1
+a337,Illy,approved,2,1
+a338,Vera Blue,approved,2,1
+a339,DEVO,approved,2,1
+a340,Queen,approved,2,1
+a341,The Marcels,approved,2,1
+a342,Mandy Moore,approved,2,1
+a343,Christina Aguilera,approved,2,1
+a344,Willie Nelson,approved,2,1
+a345,Bobby Brown,approved,2,1
+a346,Macklemore,approved,2,1
+a347,Skylar Grey,approved,2,1
+a348,Edison Lighthouse,approved,2,1
+a349,Creedence Clearwater Revival,approved,2,1
+a350,Maria McKee,approved,2,1
+a351,Bastille,approved,2,1
+a352,Scouting For Girls,approved,2,1
+a353,Halsey,approved,2,1
+a354,KISS,approved,2,1
+a355,Adele,approved,2,1
+a356,Donna Summer,approved,2,1
+a357,José Carreras,approved,2,1
+a358,Sarah Brightman,approved,2,1
+a359,Dave Dee\,approved,2,1
+a360,Dozy\,approved,2,1
+a361,Beaky\,approved,2,1
+a362,Mick & Tich,approved,2,1
+a363,SNAP!,approved,2,1
+a364,Silentó,approved,2,1
+a365,Britney Holmes,approved,2,1
+a366,Pete Shelley,approved,2,1
+a367,Masked Wolf,approved,2,1
+a368,Drake,approved,2,1
+a369,Felix,approved,2,1
+a370,Reece Mastin,approved,2,1
+a371,Bay City Rollers,approved,2,1
+a372,The Reels,approved,2,1
+a373,The Lumineers,approved,2,1
+a374,The Guess Who,approved,2,1
+a375,Des O'Connor,approved,2,1
+a376,Tony Christie,approved,2,1
+a377,Cold Chisel,approved,2,1
+a378,A Flock Of Seagulls,approved,2,1
+a379,Tom Petty,approved,2,1
+a380,Carpenters,approved,2,1
+a381,Joe Walsh,approved,2,1
+a382,Ronin,approved,2,1
+a383,Flo Rida,approved,2,1
+a384,Whitesnake,approved,2,1
+a385,Andy Grammer,approved,2,1
+a386,John Newman,approved,2,1
+a387,Andrea True Connection,approved,2,1
+a388,Outkast,approved,2,1
+a389,The Aston Shuffle,approved,2,1
+a390,Nicole Scherzinger,approved,2,1
+a391,Des'ree,approved,2,1
+a392,B*Witched,approved,2,1
+a393,Graham Bonnet,approved,2,1
+a394,Frankie J,approved,2,1
+a395,Sue Thompson,approved,2,1
+a396,John Lennon,approved,2,1
+a397,Hockey,approved,2,1
+a398,Foster The People,approved,2,1
+a399,Alexandra Stan,approved,2,1
+a400,The Cars,approved,2,1
+a401,Budjerah,approved,2,1
+a402,Kesha,approved,2,1
+a403,Laura Branigan,approved,2,1
+a404,Galantis,approved,2,1
+a405,Shania Twain,approved,2,1
+a406,Eurythmics,approved,2,1
+a407,Annie Lennox,approved,2,1
+a408,Dave Stewart,approved,2,1
+a409,Eruption,approved,2,1
+a410,Pitbull,approved,2,1
+a411,G.R.L.,approved,2,1
+a412,Commodores,approved,2,1
+a413,Ella Eyre,approved,2,1
+a414,Lady A,approved,2,1
+a415,KT Tunstall,approved,2,1
+a416,Van Halen,approved,2,1
+a417,Avril Lavigne,approved,2,1
+a418,Conrad Sewell,approved,2,1
+a419,Example,approved,2,1
+a420,MKTO,approved,2,1
+a421,Imagine Dragons,approved,2,1
+a422,Hans Poulsen,approved,2,1
+a423,The Mighty Mighty Bosstones,approved,2,1
+a424,Gene Pitney,approved,2,1
+a425,Cedric Gervais,approved,2,1
+a426,Franklin,approved,2,1
+a427,Amber,approved,2,1
+a428,Jocelyn Enriquez,approved,2,1
+a429,Creed,approved,2,1
+a430,Spandau Ballet,approved,2,1
+a431,Village People,approved,2,1
+a432,The Offspring,approved,2,1
+a433,David Cassidy,approved,2,1
+a434,The Partridge Family,approved,2,1
+a435,John Waite,approved,2,1
+a436,Christina Perri,approved,2,1
+a437,Pablo Cruise,approved,2,1
+a438,Bobby Rydell,approved,2,1
+a439,Michael Jackson,approved,2,1
+a440,Jack Blanchard & Misty Morgan,approved,2,1
+a441,Misty Morgen,approved,2,1
+a442,Kim Carnes,approved,2,1
+a443,Bag Raiders,approved,2,1
+a444,Bucks Fizz,approved,2,1
+a445,Pauline Pantsdown,approved,2,1
+a446,Dean Martin,approved,2,1
+a447,Dick Stabile And His Orchestra,approved,2,1
+a448,Morcheeba,approved,2,1
+a449,Ruby And The Romantics,approved,2,1
+a450,S Club,approved,2,1
+a451,The Korgis,approved,2,1
+a452,Dee Dee Sharp,approved,2,1
+a453,Procol Harum,approved,2,1
+a454,iann dior,approved,2,1
+a455,Warren G,approved,2,1
+a456,Adina Howard,approved,2,1
+a457,Nina Simone,approved,2,1
+a458,Arctic Monkeys,approved,2,1
+a459,Jamie Lawson,approved,2,1
+a460,Big Country,approved,2,1
+a461,Prince,approved,2,1
+a462,Mabel,approved,2,1
+a463,24kGoldn,approved,2,1
+a464,The Corrs,approved,2,1
+a465,The Fortunes,approved,2,1
+a466,The Presidents Of The United States Of America,approved,2,1
+a467,Nicki Minaj,approved,2,1
+a468,Freestylers,approved,2,1
+a469,Amy Winehouse,approved,2,1
+a470,Human Nature,approved,2,1
+a471,Calum Scott,approved,2,1
+a472,Sheila E.,approved,2,1
+a473,All Saints,approved,2,1
+a474,Jo Dee Messina,approved,2,1
+a475,Lou Gramm,approved,2,1
+a476,Ronan Keating,approved,2,1
+a477,Lilly Wood and The Prick,approved,2,1
+a478,Robin Schulz,approved,2,1
+a479,Roxette,approved,2,1
+a480,Petula Clark,approved,2,1
+a481,DaBaby,approved,2,1
+a482,Sam Smith,approved,2,1
+a483,Patrick Swayze,approved,2,1
+a484,Wendy Fraser,approved,2,1
+a485,Melissa Etheridge,approved,2,1
+a486,Big Audio Dynamite,approved,2,1
+a487,Paul McCartney,approved,2,1
+a488,Fatboy Slim,approved,2,1
+a489,Joan Armatrading,approved,2,1
+a490,Hot Chelle Rae,approved,2,1
+a491,Karmin,approved,2,1
+a492,Martika,approved,2,1
+a493,Dorothy Moore,approved,2,1
+a494,Foo Fighters,approved,2,1
+a495,Killing Heidi,approved,2,1
+a496,Dion,approved,2,1
+a497,Barry McGuire,approved,2,1
+a498,GATC,approved,2,1
+a499,Blake Shelton,approved,2,1
+a500,Taio Cruz,approved,2,1
+a501,Dusty Springfield,approved,2,1
+a502,Billy Ocean,approved,2,1
+a503,blink-182,approved,2,1
+a504,The Proclaimers,approved,2,1
+a505,Bob Marley & The Wailers,approved,2,1
+a506,Joe Jackson,approved,2,1
+a507,Grey,approved,2,1
+a508,Louie Austen,approved,2,1
+a509,Tyler Stone,approved,2,1
+a510,Dead By Sunrise,approved,2,1
+a511,Grinspoon,approved,2,1
+a512,Ladyhawke,approved,2,1
+a513,Little Birdy,approved,2,1
+a514,Nirvana,approved,2,1
+a515,The Chicks,approved,2,1
+a516,Thirsty Merc,approved,2,1
+a517,U2,approved,2,1
+a518,JAY-Z,approved,2,1
+a519,Luke Steele,approved,2,1
+a520,RAYE,approved,2,1
+a521,Sore,approved,2,1
+a522,Az Yet,approved,2,1
+a523,AFROJACK,approved,2,1
+a524,Mike Taylor,approved,2,1
+a525,Cal Smith,approved,2,1
+a526,Showtek,approved,2,1
+a527,VASSY,approved,2,1
+a528,Brian Hyland,approved,2,1
+a529,Belinda Carlisle,approved,2,1
+a530,Simon & Garfunkel,approved,2,1
+a531,Herman's Hermits,approved,2,1
+a532,The Shirelles,approved,2,1
+a533,Bachman-Turner Overdrive,approved,2,1
+a534,Jess Glynne,approved,2,1
+a535,London Grammar,approved,2,1
+a536,High Contrast,approved,2,1
+a537,Mary Wells,approved,2,1
+a538,The Righteous Brothers,approved,2,1
+a539,Lorde,approved,2,1
+a540,J Balvin,approved,2,1
+a541,Willy William,approved,2,1
+a542,The Killers,approved,2,1
+a543,UB40,approved,2,1
+a544,Twiztid,approved,2,1
+a545,Ice Nine Kills,approved,2,1
+a546,New Radicals,approved,2,1
+a547,Hot Chocolate,approved,2,1
+a548,Nitty Gritty Dirt Band,approved,2,1
+a549,WALK THE MOON,approved,2,1
+a550,Hey Monday,approved,2,1
+a551,Alessia Cara,approved,2,1
+a552,Ron Holden,approved,2,1
+a553,Sananda Maitreya,approved,2,1
+a554,Haysi Fantayzee,approved,2,1
+a555,Alicia Keys,approved,2,1
+a556,Monifah,approved,2,1
+a557,Len,approved,2,1
+a558,Gwen Stefani,approved,2,1
+a559,The Doors,approved,2,1
+a560,Metro Station,approved,2,1
+a561,Tammy Wynette,approved,2,1
+a562,Neil Sedaka,approved,2,1
+a563,5 Seconds of Summer,approved,2,1
+a564,Maxi Priest,approved,2,1
+a565,Stan Walker,approved,2,1
+a566,Gym Class Heroes,approved,2,1
+a567,Adam Levine,approved,2,1
+a568,The Jackson 5,approved,2,1
+a569,Steppenwolf,approved,2,1
+a570,The Miracles,approved,2,1
+a571,Lost Frequencies,approved,2,1
+a572,End Of Fashion,approved,2,1
+a573,Tom Grennan,approved,2,1
+a574,David Foster,approved,2,1
+a575,Gabriella Cilmi,approved,2,1
+a576,Holly Valance,approved,2,1
+a577,Sean Quinn,approved,2,1
+a578,Gus Cullen,approved,2,1
+a579,Chaka Khan,approved,2,1
+a580,Eric Clapton,approved,2,1
+a581,Aqua,approved,2,1
+a582,Niall Horan,approved,2,1
+a583,Colbie Caillat,approved,2,1
+a584,Cheat Codes,approved,2,1
+a585,Kris Kross Amsterdam,approved,2,1
+a586,Mumford & Sons,approved,2,1
+a587,Lupe Fiasco,approved,2,1
+a588,Bette Midler,approved,2,1
+a589,The Wanted,approved,2,1
+a590,The Presets,approved,2,1
+a591,Lil Wayne,approved,2,1
+a592,Wiz Khalifa,approved,2,1
+a593,X Ambassadors,approved,2,1
+a594,Logic,approved,2,1
+a595,Vengaboys,approved,2,1
+a596,The Swinging Blue Jeans,approved,2,1
+a597,Jan Bradley,approved,2,1
+a598,Slip-On Stereo,approved,2,1
+a599,The Master's Apprentices,approved,2,1
+a600,Kaoma,approved,2,1
+a601,The Heights,approved,2,1
+a602,Sherbet,approved,2,1
+a603,La Roux,approved,2,1
+a604,Judy Stone,approved,2,1
+a605,The Box Tops,approved,2,1
+a606,Sia,approved,2,1
+a607,Roberta Flack,approved,2,1
+a608,Regard,approved,2,1
+a609,Jonas Blue,approved,2,1
+a610,Jason Derulo,approved,2,1
+a611,MEDUZA,approved,2,1
+a612,Goodboys,approved,2,1
+a613,Gary Glitter,approved,2,1
+a614,Roger Sanchez,approved,2,1
+a615,Kelly Rowland,approved,2,1
+a616,Travis McCoy,approved,2,1
+a617,Ray Brown And The Whispers,approved,2,1
+a618,Luis Fonsi,approved,2,1
+a619,Daddy Yankee,approved,2,1
+a620,Justin Bieber,approved,2,1
+a621,Autumn,approved,2,1
+a622,Incubus,approved,2,1
+a623,Pink Floyd,approved,2,1
+a624,LCD,approved,2,1
+a625,Led Zeppelin,approved,2,1
+a626,Steve Lawrence,approved,2,1
+a627,Blur,approved,2,1
+a628,Zara Larsson,approved,2,1
+a629,MNEK,approved,2,1
+a630,Back In Black,approved,2,1
+a631,Floyd Cramer,approved,2,1
+a632,Ronnie Burns,approved,2,1
+a633,Destiny's Child,approved,2,1
+a634,The Bellamy Brothers,approved,2,1
+a635,Rag'n'Bone Man,approved,2,1
+a636,The Who,approved,2,1
+a637,Iggy Azalea,approved,2,1
+a638,George Michael,approved,2,1
+a639,Of Monsters and Men,approved,2,1
+a640,Ultimate Kaos,approved,2,1
+a641,Akon,approved,2,1
+a642,Ferlin Husky,approved,2,1
+a643,Hank Locklin,approved,2,1
+a644,Coi Leray,approved,2,1
+a645,Martin Solveig,approved,2,1
+a646,Kele,approved,2,1
+a647,Bruno Mars,approved,2,1
+a648,INXS,approved,2,1
+a649,All Time Low,approved,2,1
+a650,98º,approved,2,1
+a651,Jolyon Petch,approved,2,1
+a652,Reigan,approved,2,1
+a653,Tinashe,approved,2,1
+a654,The Veronicas,approved,2,1
+a655,Helen Reddy,approved,2,1
+a656,Kate Alexa,approved,2,1
+a657,Robbie Williams,approved,2,1
+a658,Nicole Kidman,approved,2,1
+a659,Jimmie Rodgers,approved,2,1
+a660,Jive Bunny and the Mastermixers,approved,2,1
+a661,Jack & Jack,approved,2,1
+a662,Travis,approved,2,1
+a663,Cosima De Vito,approved,2,1
+a664,Duran Duran,approved,2,1
+a665,Daya,approved,2,1
+a666,Jessica Mauboy,approved,2,1
+a667,Blue Swede,approved,2,1
+a668,Björn Skifs,approved,2,1
+a669,Rixton,approved,2,1
+a670,Marilyn Manson,approved,2,1
+a671,BloodPop®,approved,2,1
+a672,Jagged Edge,approved,2,1
+a673,RUN,approved,2,1
+a674,Lamarquis Jefferson,approved,2,1
+a675,3OH!3,approved,2,1
+a676,Jewel,approved,2,1
+a677,Dire Straits,approved,2,1
+a678,Armand Van Helden,approved,2,1
+a679,Rizzle Kicks,approved,2,1
+a680,Swanee,approved,2,1
+a681,Billy Joe & The Checkmates,approved,2,1
+a682,Simply Red,approved,2,1
+a683,JP Cooper,approved,2,1
+a684,Lily Allen,approved,2,1
+a685,Taxiride,approved,2,1
+a686,City Spud,approved,2,1
+a687,The Seekers,approved,2,1
+a688,The Mixtures,approved,2,1
+a689,Mark Ronson,approved,2,1
+a690,Hunters & Collectors,approved,2,1
+a691,Dannii,approved,2,1
+a692,Cary Brothers,approved,2,1
+a693,Ellie Goulding,approved,2,1
+a694,Meghan Trainor,approved,2,1
+a695,John Legend,approved,2,1
+a696,Normie Rowe,approved,2,1
+a697,Beyoncé,approved,2,1
+a698,James Blunt,approved,2,1
+a699,Spice Girls,approved,2,1
+a700,Fall Out Boy,approved,2,1
+a701,The Goo Goo Dolls,approved,2,1
+a702,Ben E. King,approved,2,1
+a703,Demi Lovato,approved,2,1
+a704,Love Affair,approved,2,1
+a705,Swedish House Mafia,approved,2,1
+a706,Debbie Harry,approved,2,1
+a707,Animotion,approved,2,1
+a708,Eddie Hodges,approved,2,1
+a709,Gin Blossoms,approved,2,1
+a710,Flowers,approved,2,1
+a711,NOTD,approved,2,1
+a712,Bea Miller,approved,2,1
+a713,Wings,approved,2,1
+a714,Lou Rawls,approved,2,1
+a715,GROUPLOVE,approved,2,1
+a716,George Harrison,approved,2,1
+a717,Bob Lind,approved,2,1
+a718,Timomatic,approved,2,1
+a719,One Direction,approved,2,1
+a720,John Mayer,approved,2,1
+a721,Faron Young,approved,2,1
+a722,Hush,approved,2,1
+a723,Carole King,approved,2,1
+a724,BTS,approved,2,1
+a725,Shannon Noll,approved,2,1
+a726,Cliff Richard & The Drifters,approved,2,1
+a727,The Script,approved,2,1
+a728,Juice Newton,approved,2,1
+a729,Soulja Boy,approved,2,1
+a730,Sammie,approved,2,1
+a731,Linda Ronstadt,approved,2,1
+a732,Kool & The Gang,approved,2,1
+a733,Technotronic,approved,2,1
+a734,Hozier,approved,2,1
+a735,Nancy Sinatra,approved,2,1
+a736,George Baker Selection,approved,2,1
+a737,Bosson,approved,2,1
+a738,Bob Dylan,approved,2,1
+a739,John Williamson,approved,2,1
+a740,Sly & The Family Stone,approved,2,1
+a741,Eydie Gormé,approved,2,1
+a742,The Clash,approved,2,1
+a743,Nicky Romero,approved,2,1
+a744,Krewella,approved,2,1
+a745,Olivia,approved,2,1
+a746,Jim Capaldi,approved,2,1
+a747,Jimmy Cliff,approved,2,1
+a748,Dick & Dee Dee,approved,2,1
+a749,The Murmaids,approved,2,1
+a750,Jackie Wilson,approved,2,1
+a751,Mel & Kim,approved,2,1
+a752,Fine Young Cannibals,approved,2,1
+a753,Air Supply,approved,2,1
+a754,Cassie Davis,approved,2,1
+a755,Little Mix,approved,2,1
+a756,Trini Lopez,approved,2,1
+a757,Bardot,approved,2,1
+a758,John Travolta,approved,2,1
+a759,Olivia Newton-John,approved,2,1
+a760,Badfinger,approved,2,1
+a761,Jordin Sparks,approved,2,1
+a762,Chumbawamba,approved,2,1
+a763,Sarah Blasko,approved,2,1
+a764,Tammin Sursok,approved,2,1
+a765,Ray Hedges,approved,2,1
+a766,Eric Hutchinson,approved,2,1
+a767,will.i.am,approved,2,1
+a768,Oasis,approved,2,1
+a769,HRVY,approved,2,1
+a770,Matt Flinders,approved,2,1
+a771,No Doubt,approved,2,1
+a772,Chart Collective,approved,2,1
+a773,Kodaline,approved,2,1
+a774,The Turtles,approved,2,1
+a775,OMI,approved,2,1
+a776,Dru Hill,approved,2,1
+a777,Simple Plan,approved,2,1
+a778,The Beach Boys,approved,2,1
+a779,Cassette Kids,approved,2,1
+a780,The Kid LAROI,approved,2,1
+a781,Joan Jett & the Blackhearts,approved,2,1
+a782,Frankie Valli,approved,2,1
+a783,Andy Williams,approved,2,1
+a784,Bounty Killer,approved,2,1
+a785,Crowded House,approved,2,1
+a786,Shakira,approved,2,1
+a787,Silk,approved,2,1
+a788,Lesley Gore,approved,2,1
+a789,John Fogerty,approved,2,1
+a790,Avicii,approved,2,1
+a791,Missy Higgins,approved,2,1
+a792,The Archies,approved,2,1
+a793,Bad Meets Evil,approved,2,1
+a794,Chris Brown,approved,2,1
+a795,Young Thug,approved,2,1
+a796,A$AP Rocky,approved,2,1
+a797,Split Enz,approved,2,1
+a798,Spiller,approved,2,1
+a799,Sophie Ellis-Bextor,approved,2,1
+a800,The Human League,approved,2,1
+a801,Brenda Lee,approved,2,1
+a802,Go West,approved,2,1
+a803,Cardi B,approved,2,1
+a804,Dawn,approved,2,1
+a805,Tony Orlando,approved,2,1
+a806,Denis Leary,approved,2,1
+a807,John Butler Trio,approved,2,1
+a808,The Hooters,approved,2,1
+a809,Gene Chandler,approved,2,1
+a810,Absent Friends,approved,2,1
+a811,Wendy Matthews,approved,2,1
+a812,Electric Light Orchestra,approved,2,1
+a813,Florence + The Machine,approved,2,1
+a814,Eric Burdon & the Animals,approved,2,1
+a815,Tommy Roe,approved,2,1
+a816,Bryan Adams,approved,2,1
+a817,Melanie C,approved,2,1
+a818,The Temptations,approved,2,1
+a819,The Simon Park Orchestra,approved,2,1
+a820,De Wolfe Music,approved,2,1
+a821,Ray Stevens,approved,2,1
+a822,The Serendipity Singers,approved,2,1
+a823,Dolly Parton,approved,2,1
+a824,Megan Davies,approved,2,1
+a825,Anna Kendrick,approved,2,1
+a826,Wizkid,approved,2,1
+a827,Kyla,approved,2,1
+a828,Boyce Avenue,approved,2,1
+a829,Jennifer Hudson,approved,2,1
+a830,Cheap Trick,approved,2,1
+a831,Post Malone,approved,2,1
+a832,Röyksopp,approved,2,1
+a833,Matchbox Twenty,approved,2,1
+a834,Brian McFadden,approved,2,1
+a835,Chantoozies,approved,2,1
+a836,Mondo Rock,approved,2,1
+a837,Jax Jones,approved,2,1
+a838,Ina Wroldsen,approved,2,1
+a839,Dimitri Vegas & Like Mike,approved,2,1
+a840,Dimitri Vegas,approved,2,1
+a841,Real McCoy,approved,2,1
+a842,Michael Nesmith,approved,2,1
+a843,The First National Band,approved,2,1
+a844,Irene Cara,approved,2,1
+a845,Jimmy Smith,approved,2,1
+a846,Lee Hazlewood,approved,2,1
+a847,Elkie Brooks,approved,2,1
+a848,R. Kelly,approved,2,1
+a849,Public Announcement,approved,2,1
+a850,Roy Orbison,approved,2,1
+a851,Alice Merton,approved,2,1
+a852,Kendrick Lamar,approved,2,1
+a853,Tommy Tutone,approved,2,1
+a854,Spectrum,approved,2,1
+a855,Snoop Dogg,approved,2,1
+a856,Chuck Berry,approved,2,1
+a857,Tony Bennett,approved,2,1
+a858,French Montana,approved,2,1
+a859,Swae Lee,approved,2,1
+a860,The McCoys,approved,2,1
+a861,Thirty Seconds To Mars,approved,2,1
+a862,DJ Fresh,approved,2,1
+a863,Becky Hill,approved,2,1
+a864,Eagle-Eye Cherry,approved,2,1
+a865,Katy B,approved,2,1
+a866,Ms. Dynamite,approved,2,1
+a867,Justice Crew,approved,2,1
+a868,Johnny Crawford,approved,2,1
+a869,Texas,approved,2,1
+a870,Eve,approved,2,1
+a871,Adam Lambert,approved,2,1
+a872,Asaf Avidan,approved,2,1
+a873,The Mojos,approved,2,1
+a874,Wankelmut,approved,2,1
+a875,Jamiroquai,approved,2,1
+a876,Ram Jam,approved,2,1
+a877,Inner Circle,approved,2,1
+a878,The Tony Rich Project,approved,2,1
+a879,PNAU,approved,2,1
+a880,Depeche Mode,approved,2,1
+a881,Lenny Kravitz,approved,2,1
+a882,Little Boots,approved,2,1
+a883,CoCo Lee,approved,2,1
+a884,Sam Cooke,approved,2,1
+a885,Flume,approved,2,1
+a886,Baby Animals,approved,2,1
+a887,Macklemore & Ryan Lewis,approved,2,1
+a888,Mary Lambert,approved,2,1
+a889,Kaiser Chiefs,approved,2,1
+a890,Hermitude,approved,2,1
+a891,Mataya,approved,2,1
+a892,Young Tapz,approved,2,1
+a893,Billy Idol,approved,2,1
+a894,Fugees,approved,2,1
+a895,Ms. Lauryn Hill,approved,2,1
+a896,Yellowcard,approved,2,1
+a897,Matthew Wilder,approved,2,1
+a898,Busby Marou,approved,2,1
+a899,The Chemical Brothers,approved,2,1
+a900,R.B. Greaves,approved,2,1
+a901,Angus & Julia Stone,approved,2,1
+a902,Bread,approved,2,1
+a903,TLC,approved,2,1
+a904,Jackson Browne,approved,2,1
+a905,Jeremy Zucker,approved,2,1
+a906,P.M. Dawn,approved,2,1
+a907,5000 Volts,approved,2,1
+a908,Bratz,approved,2,1
+a909,The All-American Rejects,approved,2,1
+a910,The Chantays,approved,2,1
+a911,Joe,approved,2,1
+a912,The Cardigans,approved,2,1
+a913,Alan Walker,approved,2,1
+a914,Room 5,approved,2,1
+a915,Oliver Cheatham,approved,2,1
+a916,Twenty One Pilots,approved,2,1
+a917,The Doobie Brothers,approved,2,1
+a918,Deni Hines,approved,2,1
+a919,Toni Pearen,approved,2,1
+a920,Liv Maessen,approved,2,1
+a921,Love Ghost,approved,2,1
+a922,Talking Heads,approved,2,1
+a923,Brian Cadd,approved,2,1
+a924,Sinitta,approved,2,1
+a925,Alanis Morissette,approved,2,1
+a926,Cliff Richard,approved,2,1
+a927,Live,approved,2,1
+a928,Kenny Rogers & The First Edition,approved,2,1
+a929,T'Pau,approved,2,1
+a930,Ringo Starr,approved,2,1
+a931,Ian Carey,approved,2,1
+a932,Bobby Anthony,approved,2,1
+a933,Diesel,approved,2,1
+a934,Counting Crows,approved,2,1
+a935,De La Soul,approved,2,1
+a936,Duncan Laurence,approved,2,1
+a937,Man 2 Man,approved,2,1
+a938,Westlife,approved,2,1
+a939,Hoobastank,approved,2,1
+a940,CID,approved,2,1
+a941,Bahary,approved,2,1
+a942,The Flying Lizards,approved,2,1
+a943,Dario G,approved,2,1
+a944,Sophie B. Hawkins,approved,2,1
+a945,Gyroscope,approved,2,1
+a946,Ollie Gabriel,approved,2,1
+a947,Baccara,approved,2,1
+a948,Martin Garrix,approved,2,1
+a949,MGMT,approved,2,1
+a950,Kevin Rudolf,approved,2,1
+a951,Jack White,approved,2,1
+a952,The Firm,approved,2,1
+a953,Milky Chance,approved,2,1
+a954,Dan Hartman,approved,2,1
+a955,James Reyne,approved,2,1
+a956,Panic! At The Disco,approved,2,1
+a957,Harry Styles,approved,2,1
+a958,Sandy Posey,approved,2,1
+a959,Oliver,approved,2,1
+a960,Mis-Teeq,approved,2,1
+a961,Kings of Leon,approved,2,1
+a962,Kenny Ball,approved,2,1
+a963,Heart,approved,2,1
+a964,Pretenders,approved,2,1
+a965,Vader the Villin,approved,2,1
+a966,Weezer,approved,2,1
+a967,Nelson,approved,2,1
+a968,Divinyls,approved,2,1
+a969,Chase & Status,approved,2,1
+a970,Louis Mattrs,approved,2,1
+a971,HOSH,approved,2,1
+a972,1979,approved,2,1
+a973,Jalja,approved,2,1
+a974,Barry Blue,approved,2,1
+a975,Josefine,approved,2,1
+a976,DJ Boat,approved,2,1
+a977,Robbie Nevil,approved,2,1
+a978,Sam & Dave,approved,2,1
+a979,Ja Rule,approved,2,1
+a980,Case,approved,2,1
+a981,Madison Avenue,approved,2,1
+a982,Edwyn Collins,approved,2,1
+a983,Cash Cash,approved,2,1
+a984,The Crystals,approved,2,1
+a985,The Chiffons,approved,2,1
+a986,Jimmy Barnes,approved,2,1
+a987,Tina Arena,approved,2,1
+a988,No Mercy,approved,2,1
+a989,Pia Mia,approved,2,1
+a990,Tyga,approved,2,1
+a991,James Arthur,approved,2,1
+a992,John Denver,approved,2,1
+a993,Bernard Fanning,approved,2,1
+a994,Robinson,approved,2,1
+a995,Charlie Puth,approved,2,1
+a996,Eiffel 65,approved,2,1
+a997,YUNGBLUD,approved,2,1
+a998,Bingo Players,approved,2,1
+a999,Aerosmith,approved,2,1
+a1000,Anderson .Paak,approved,2,1
+a1001,Silk Sonic,approved,2,1
+a1002,Tiësto,approved,2,1
+a1003,The Easybeats,approved,2,1
+a1004,The Chainsmokers,approved,2,1
+a1005,Joel Corry,approved,2,1
+a1006,The Vamps,approved,2,1
+a1007,Five For Fighting,approved,2,1
+a1008,Barry Manilow,approved,2,1
+a1009,AC/DC,approved,2,1
+a1010,The Fray,approved,2,1
+a1011,Bloodhound Gang,approved,2,1
+a1012,MAGIC!,approved,2,1
+a1013,"Bobby ""Boris"" Pickett",approved,2,1
+a1014,The Crypt-Kickers,approved,2,1
+a1015,JX,approved,2,1
+a1016,Starsailor,approved,2,1
+a1017,Random,approved,2,1
+a1018,Jay Sean,approved,2,1
+a1019,Mac Miller,approved,2,1
+a1020,Diana Ross,approved,2,1
+a1021,Erasure,approved,2,1
+a1022,Youssou N'Dour,approved,2,1
+a1023,Neneh Cherry,approved,2,1
+a1024,Eternal,approved,2,1
+a1025,P Jervier,approved,2,1
+a1026,Steve Jervier,approved,2,1
+a1027,Wales,approved,2,1
+a1028,Bazzi,approved,2,1
+a1029,James Blundell,approved,2,1
+a1030,JoJo,approved,2,1
+a1031,The Brothers Four,approved,2,1
+a1032,James Bay,approved,2,1
+a1033,Player 1,approved,2,1
+a1034,Motiv8,approved,2,1
+a1035,RÜFÜS DU SOL,approved,2,1
+a1036,Ashanti,approved,2,1
+a1037,Kate Bush,approved,2,1
+a1038,Alex Party,approved,2,1
+a1039,Felix Jaehn,approved,2,1
+a1040,LunchMoney Lewis,approved,2,1
+a1041,GABRIELLE,approved,2,1
+a1042,Gossip,approved,2,1
+a1043,Nick Jonas,approved,2,1
+a1044,2Pac,approved,2,1
+a1045,Talent,approved,2,1
+a1046,Gramma Funk,approved,2,1
+a1047,Mr. Probz,approved,2,1
+a1048,Richard Marx,approved,2,1
+a1049,Why Don't We,approved,2,1
+a1050,John Rowles,approved,2,1
+a1051,Roger Voudouris,approved,2,1
+a1052,Plain White T's,approved,2,1
+a1053,Luther Vandross,approved,2,1
+a1054,Vydamo,approved,2,1
+a1055,Hurts,approved,2,1
+a1056,Sir Douglas Quintet,approved,2,1
+a1057,Gorillaz,approved,2,1
+a1058,Small Faces,approved,2,1
+a1059,Neil Diamond,approved,2,1
+a1060,Fetty Wap,approved,2,1
+a1061,Sandie Shaw,approved,2,1
+a1062,38 Special,approved,2,1
+a1063,Lukas Graham,approved,2,1
+a1064,BENEE,approved,2,1
+a1065,Gus Dapperton,approved,2,1
+a1066,Linkin Park,approved,2,1
+a1067,The Band Perry,approved,2,1
+a1068,Corona,approved,2,1
+a1069,Minnie Riperton,approved,2,1
+a1070,Babylon Zoo,approved,2,1
+a1071,Frank Sinatra,approved,2,1
+a1072,a-ha,approved,2,1
+a1073,*NSYNC,approved,2,1
+a1074,Ted Mulry Gang,approved,2,1
+a1075,Rayvon,approved,2,1
+a1076,The J. Geils Band,approved,2,1
+a1077,Freda Payne,approved,2,1
+a1078,t.A.T.u.,approved,2,1
+a1079,Judah Kelly,approved,2,1
+a1080,Europe,approved,2,1
+a1081,Lobo,approved,2,1
+a1082,The Kinks,approved,2,1
+a1083,Rotimi,approved,2,1
+a1084,Sabrina Carpenter,approved,2,1
+a1085,The Yardbirds,approved,2,1
+a1086,George Ezra,approved,2,1
+a1087,alt-J,approved,2,1
+a1088,Fern Kinney,approved,2,1
+a1089,J-Kwon,approved,2,1
+a1090,Black Box,approved,2,1
+a1091,J Rice,approved,2,1
+a1092,Howard Jones,approved,2,1
+a1093,Foreigner,approved,2,1
+a1094,Robin Thicke,approved,2,1
+a1095,Amy Shark,approved,2,1
+a1096,OneRepublic,approved,2,1
+a1097,Skyhooks,approved,2,1
+a1098,Lewis Capaldi,approved,2,1
+a1099,Lawrence Reynolds,approved,2,1
+a1100,Rick Astley,approved,2,1
+a1101,Engelbert Humperdinck,approved,2,1
+a1102,Paul Mac,approved,2,1
+a1103,Ryan Lewis,approved,2,1
+a1104,B.o.B,approved,2,1
+a1105,Diddy,approved,2,1
+a1106,Faith Evans,approved,2,1
+a1107,112,approved,2,1
+a1108,Saigon Kick,approved,2,1
+a1109,Monty Python,approved,2,1
+a1110,Uncanny X-Men,approved,2,1
+a1111,Five Man Electrical Band,approved,2,1
+a1112,East 17,approved,2,1
+a1113,Status Quo,approved,2,1
+a1114,The Rubettes,approved,2,1
+a1115,Olly Murs,approved,2,1
+a1116,Tiki Taane,approved,2,1
+a1117,Ava Max,approved,2,1
+a1118,D12,approved,2,1
+a1119,Dead Or Alive,approved,2,1
+a1120,Rockmelons,approved,2,1
+a1121,The Cat Empire,approved,2,1
+a1122,Roy Head And The Traits,approved,2,1
+a1123,Ethan Sak,approved,2,1
+a1124,Liz Becker,approved,2,1
+a1125,Iggy Pop,approved,2,1
+a1126,The Bootleg Family Band,approved,2,1
+a1127,David Essex,approved,2,1
+a1128,Kevin Parker,approved,2,1
+a1129,Pixies,approved,2,1
+a1130,Zendaya,approved,2,1
+a1131,Linda Scott,approved,2,1
+a1132,Pop Smoke,approved,2,1
+a1133,Lil Baby,approved,2,1
+a1134,Connie Francis,approved,2,1
+a1135,Paper Lace,approved,2,1
+a1136,American Authors,approved,2,1
+a1137,Amy Meredith,approved,2,1
+a1138,Tiffany,approved,2,1
+a1139,George Tobin,approved,2,1
+a1140,Bill Smith,approved,2,1
+a1141,Whitney Houston,approved,2,1
+a1142,The Move,approved,2,1
+a1143,Adam & The Ants,approved,2,1
+a1144,Soul Asylum,approved,2,1
+a1145,Disciples,approved,2,1
+a1146,YellaCatt,approved,2,1
+a1147,Quiet Riot,approved,2,1
+a1148,Los Lobos,approved,2,1
+a1149,Max-A-Million,approved,2,1
+a1150,Frankee,approved,2,1
+a1151,William Singe,approved,2,1
+a1152,Parson James,approved,2,1
+a1153,Moby,approved,2,1
+a1154,Lynyrd Skynyrd,approved,2,1
+a1155,Feist,approved,2,1
+a1156,Natalie Imbruglia,approved,2,1
+a1157,Dawin,approved,2,1
+a1158,Children Collide,approved,2,1
+a1159,Donna Fargo,approved,2,1
+a1160,Powderfinger,approved,2,1
+a1161,New Order,approved,2,1
+a1162,Morgan Evans,approved,2,1
+a1163,Evanescence,approved,2,1
+a1164,Groove Coverage,approved,2,1
+a1165,Crazy Frog,approved,2,1
+a1166,MØ,approved,2,1
+a1167,Middle Of The Road,approved,2,1
+a1168,Montaigne,approved,2,1
+a1169,Mario,approved,2,1
+a1170,Anthony Callea,approved,2,1
+a1171,James Morrison,approved,2,1
+a1172,Alesso,approved,2,1
+a1173,DJ Jazzy Jeff & The Fresh Prince,approved,2,1
+a1174,Russell Morris,approved,2,1
+a1175,Diplo,approved,2,1
+a1176,LSD,approved,2,1
+a1177,Daryl Hall & John Oates,approved,2,1
+a1178,Arrested Development,approved,2,1
+a1179,AFI,approved,2,1
+a1180,Lonestar,approved,2,1
+a1181,Del Shannon with Orchestra,approved,2,1
+a1182,The New Seekers,approved,2,1
+a1183,Big Brovaz,approved,2,1
+a1184,Ashnikko,approved,2,1
+a1185,Kelis,approved,2,1
+a1186,Joel Daydé,approved,2,1
+a1187,Wretch 32,approved,2,1
+a1188,Crystal Gayle,approved,2,1
+a1189,Gabry Ponte,approved,2,1
+a1190,Jamie Foxx,approved,2,1
+a1191,Dragonette,approved,2,1
+a1192,Purple Disco Machine,approved,2,1
+a1193,Sophie and the Giants,approved,2,1
+a1194,Hilary Duff,approved,2,1
+a1195,Peter Gabriel,approved,2,1
+a1196,Nelly Furtado,approved,2,1
+a1197,Chubby Checker,approved,2,1
+a1198,LF SYSTEM,approved,2,1
+a1199,Deep Blue Something,approved,2,1
+a1200,Toni Fisher,approved,2,1
+a1201,Marc Almond,approved,2,1
+a1202,Enrique Iglesias,approved,2,1
+a1203,Tasmin Archer,approved,2,1
+a1204,Lil Nas X,approved,2,1
+a1205,The Hollies,approved,2,1
+a1206,Bec Cartwright,approved,2,1
+a1207,Patsy Gallant,approved,2,1
+a1208,The Bucketheads,approved,2,1
+a1209,Tina Cousins,approved,2,1
+a1210,Matt B,approved,2,1
+a1211,Kansas,approved,2,1
+a1212,Rufus Thomas,approved,2,1
+a1213,Vanessa Williams,approved,2,1
+a1214,Allman Brothers Band,approved,2,1
+a1215,Normie Rowe & The Playboys,approved,2,1
+a1216,Mark Lindsay,approved,2,1
+a1217,Suzi Quatro,approved,2,1
+a1218,Bebe Rexha,approved,2,1
+a1219,Michael Paynter,approved,2,1
+a1220,Jennifer Lopez,approved,2,1
+a1221,Jadakiss,approved,2,1
+a1222,Styles P,approved,2,1
+a1223,Blind Melon,approved,2,1
+a1224,Chris Andrews,approved,2,1
+a1225,Rita Coolidge,approved,2,1
+a1226,Chas & Dave,approved,2,1
+a1227,Vampire Weekend,approved,2,1
+a1228,Collective Soul,approved,2,1
+a1229,Toni Braxton,approved,2,1
+a1230,Maren Morris,approved,2,1
+a1231,Sonique,approved,2,1
+a1232,Don Fardon,approved,2,1
+a1233,Jack Johnson,approved,2,1
+a1234,The Shadows,approved,2,1
+a1235,Paloma Faith,approved,2,1
+a1236,Jim Croce,approved,2,1
+a1237,Arrow,approved,2,1
+a1238,Red Hot Chili Peppers,approved,2,1
+a1239,Don McLean,approved,2,1
+a1240,Will Smith,approved,2,1
+a1241,Kool Moe Dee,approved,2,1
+a1242,Andrew Lloyd Webber,approved,2,1
+a1243,Frankie Goes To Hollywood,approved,2,1
+a1244,Camille Jones,approved,2,1
+a1245,Fedde Le Grand,approved,2,1
+a1246,Dr. Dre,approved,2,1
+a1247,Little River Band,approved,2,1
+a1248,I'm Talking,approved,2,1
+a1249,Short Stack,approved,2,1
+a1250,Three Dog Night,approved,2,1
+a1251,Cascada,approved,2,1
+a1252,Ricki-Lee,approved,2,1
+a1253,Ruby Velle & The Soulphonics,approved,2,1
+a1254,Dickie Lee,approved,2,1
+a1255,ROZES,approved,2,1
+a1256,Cher Lloyd,approved,2,1
+a1257,The Ronettes,approved,2,1
+a1258,Becky G,approved,2,1
+a1259,Peabo Bryson,approved,2,1
+a1260,"Clarence ""Frogman"" Henry",approved,2,1
+a1261,Shocking Blue,approved,2,1
+a1262,Coolio,approved,2,1
+a1263,Adrian Gurvitz,approved,2,1
+a1264,Daddy Cool,approved,2,1
+a1265,These Kids Wear Crowns,approved,2,1
+a1266,Eddie Rabbitt,approved,2,1
+a1267,Daniel Powter,approved,2,1
+a1268,Cathy Dennis,approved,2,1
+a1269,Hook N Sling,approved,2,1
+a1270,Paul Young,approved,2,1
+a1271,Leah Haywood,approved,2,1
+a1272,Jimmy Eat World,approved,2,1
+a1273,Klingande,approved,2,1
+a1274,Smokey Robinson & The Miracles,approved,2,1
+a1275,Babyface,approved,2,1
+a1276,Kenny G,approved,2,1
+a1277,Van Morrison,approved,2,1
+a1278,Gloriana,approved,2,1
+a1279,Al Martino,approved,2,1
+a1280,Chiddy Bang,approved,2,1
+a1281,NF,approved,2,1
+a1282,Sunnyboys,approved,2,1
+a1283,Blood\,approved,2,1
+a1284,Sweat & Tears,approved,2,1
+a1285,Girlfriend,approved,2,1
+a1286,Norah Jones,approved,2,1
+a1287,George,approved,2,1
+a1288,John Mellencamp,approved,2,1
+a1289,Paul Simon,approved,2,1
+a1290,Lisa Loeb & Nine Stories,approved,2,1
+a1291,Marv Johnson,approved,2,1
+a1292,The Ferrets,approved,2,1
+a1293,The Mamas & The Papas,approved,2,1
+a1294,The Cruel Sea,approved,2,1
+a1295,Leon Russell,approved,2,1
+a1296,OMC,approved,2,1
+a1297,Take That,approved,2,1
+a1298,Kita Alexander,approved,2,1
+a1299,Joe Dolan,approved,2,1
+a1300,Meat Loaf,approved,2,1
+a1301,Racey,approved,2,1
+a1302,M.P.D. Limited,approved,2,1
+a1303,The Vapors,approved,2,1
+a1304,Big Sean,approved,2,1
+a1305,Stefflon Don,approved,2,1
+a1306,Boris Gardiner,approved,2,1
+a1307,Rudy Thomas,approved,2,1
+a1308,Steven Stanley,approved,2,1
+a1309,Willie Lindo,approved,2,1
+a1310,Pilot,approved,2,1
+a1311,Booker T. & the M.G.'s,approved,2,1
+a1312,Noah Cyrus,approved,2,1
+a1313,Paul Kelly,approved,2,1
+a1314,Diana Ross & The Supremes,approved,2,1
+a1315,Kayls,approved,2,1
+a1316,Jon Secada,approved,2,1
+a1317,Johnny Young & Kompany,approved,2,1
+a1318,Dave Edmunds,approved,2,1
+a1319,The Bangles,approved,2,1
+a1320,ZZ Top,approved,2,1
+a1321,Redfoo,approved,2,1
+a1322,Olly Alexander (Years & Years),approved,2,1
+a1323,Toni Childs,approved,2,1
+a1324,3 Doors Down,approved,2,1
+a1325,Jack Joseph Puig,approved,2,1
+a1326,Metric,approved,2,1
+a1327,Sweet,approved,2,1
+a1328,CeeLo Green,approved,2,1
+a1329,Joel Adams,approved,2,1
+a1330,Starship,approved,2,1
+a1331,Metallica,approved,2,1
+a1332,Megan Thee Stallion,approved,2,1
+a1333,Hank Snow,approved,2,1
+a1334,White Lies,approved,2,1
+a1335,Mike Oldfield,approved,2,1
+a1336,Nathaniel Rateliff & The Night Sweats,approved,2,1
+a1337,The Kooks,approved,2,1
+a1338,Models,approved,2,1
+a1339,Everclear,approved,2,1
+a1340,Lee Marvin,approved,2,1
+a1341,MIKA,approved,2,1
+a1342,Fools Garden,approved,2,1
+a1343,Quavo,approved,2,1
+a1344,The Jaynetts,approved,2,1
+a1345,Bruce Springsteen,approved,2,1
+a1346,Gin Wigmore,approved,2,1
+a1347,Shane Howard,approved,2,1
+a1348,Joe Cocker,approved,2,1
+a1349,Ann Lee,approved,2,1
+a1350,Alice Deejay,approved,2,1
+a1351,Stone Temple Pilots,approved,2,1
+a1352,America,approved,2,1
+a1353,George Martin,approved,2,1
+a1354,Daniel Caesar,approved,2,1
+a1355,Giveon,approved,2,1
+a1356,Barbara Ray,approved,2,1
+a1357,Tony Barber,approved,2,1
+a1358,Wilson Phillips,approved,2,1
+a1359,Peter Frampton,approved,2,1
+a1360,gnash,approved,2,1
+a1361,Olivia O'Brien,approved,2,1
+a1362,Chris Martin,approved,2,1
+a1363,Peking Duk,approved,2,1
+a1364,The Cranberries,approved,2,1
+a1365,Sting,approved,2,1
+a1366,Two Door Cinema Club,approved,2,1
+a1367,MC Hammer,approved,2,1
+a1368,Color Me Badd,approved,2,1
+a1369,Nick Cave & The Bad Seeds,approved,2,1
+a1370,Otis Redding,approved,2,1
+a1371,Small Mercies,approved,2,1
+a1372,Mikky Ekko,approved,2,1
+a1373,Dido,approved,2,1
+a1374,Kim Weston,approved,2,1
+a1375,Jud Strunk,approved,2,1
+a1376,Los Del Mar,approved,2,1
+a1377,Wil Veloz,approved,2,1
+a1378,Sofi Tukker,approved,2,1
+a1379,070 Shake,approved,2,1
+a1380,Tokyo Ghetto Pussy,approved,2,1
+a1381,Gerry & The Pacemakers,approved,2,1
+a1382,Jasmine Thompson,approved,2,1
+a1383,Faith No More,approved,2,1
+a1384,Snow Patrol,approved,2,1
+a1385,Beats International,approved,2,1
+a1386,Jesse McCartney,approved,2,1
+a1387,Don & Juan,approved,2,1
+a1388,The Rebels,approved,2,1
+a1389,Robert Miles,approved,2,1
+a1390,New Politics,approved,2,1
+a1391,Seal,approved,2,1
+a1392,Gossling,approved,2,1
+a1393,The Bonzo Dog Band,approved,2,1
+a1394,Lauv,approved,2,1
+a1395,The Lemonheads,approved,2,1
+a1396,Daniel Merriweather,approved,2,1
+a1397,The Youngbloods,approved,2,1
+a1398,Alison Moyet,approved,2,1
+a1399,Ben Folds,approved,2,1
+a1400,My Chemical Romance,approved,2,1
+a1401,The Rah Band,approved,2,1
+a1402,ATB,approved,2,1
+a1403,Anastacia,approved,2,1
+a1404,Pseudo Echo,approved,2,1
+a1405,Sheppard,approved,2,1
+a1406,Buffalo Springfield,approved,2,1
+a1407,Tina Turner,approved,2,1
+a1408,Technohead,approved,2,1
+a1409,Aaliyah,approved,2,1
+a1410,The Communards,approved,2,1
+a1411,Sarah Jane Morris,approved,2,1
+a1412,Nick Lachey,approved,2,1
+a1413,Secondhand Serenade,approved,2,1
+a1414,Chris Rea,approved,2,1
+a1415,Sylvester,approved,2,1
+a1416,Kate DeAraugo,approved,2,1
+a1417,Baby Bash,approved,2,1
+a1418,George Thorogood & The Destroyers,approved,2,1
+a1419,Womack & Womack,approved,2,1
+a1420,Jon Bon Jovi,approved,2,1
+a1421,Marian Hill,approved,2,1
+a1422,Naughty Boy,approved,2,1
+a1423,Jason Mraz,approved,2,1
+a1424,Brendon Urie,approved,2,1
+a1425,Pet Shop Boys,approved,2,1
+a1426,Jennifer Warnes,approved,2,1
+a1427,Men Without Hats,approved,2,1
+a1428,TV Rock,approved,2,1
+a1429,Dukes of Windsor,approved,2,1
+a1430,Daniel Boone,approved,2,1
+a1431,King Harvest,approved,2,1
+a1432,Daryl Braithwaite,approved,2,1
+a1433,Kim Cesarion,approved,2,1
+a1434,Lloyd,approved,2,1
+a1435,André 3000,approved,2,1
+a1436,Blondie,approved,2,1
+a1437,U.S.U.R.A.,approved,2,1
+a1438,Gregory Abbott,approved,2,1
+a1439,Nathaniel,approved,2,1
+a1440,Claude King,approved,2,1
+a1441,Q-Tip,approved,2,1
+a1442,Joni Mitchell,approved,2,1
+a1443,Eliza Rose,approved,2,1
+a1444,Interplanetary Criminal,approved,2,1
+a1445,Jump Jump Dance Dance,approved,2,1
+a1446,Future,approved,2,1
+a1447,Rosa Linn,approved,2,1
+a1448,The Byrds,approved,2,1
+a1449,Jet,approved,2,1
+a1450,Wesley Dean,approved,2,1
+a1451,Smokey Robinson,approved,2,1
+a1452,Luke Combs,approved,2,1
+a1453,Parachute,approved,2,1
+a1454,Nevada,approved,2,1
+a1455,Mark Morrison,approved,2,1
+a1456,Tony! Toni! Toné!,approved,2,1
+a1457,Stellar,approved,2,1
+a1458,Interactive,approved,2,1
+a1459,Ben Harper And The Innocent Criminals,approved,2,1
+a1460,Klaxons,approved,2,1
+a1461,Idina Menzel,approved,2,1
+a1462,Olivia Rodrigo,approved,2,1
+a1463,Elle King,approved,2,1
+a1464,The Ritchie Family,approved,2,1
+a1465,Bliss n Eso,approved,2,1
+a1466,The Spencer Davis Group,approved,2,1
+a1467,Cat & Calmell,approved,2,1
+a1468,Murray Head,approved,2,1
+a1469,Steady Rollin,approved,2,1
+a1470,Billie Piper,approved,2,1
+a1471,Iyaz,approved,2,1
+a1472,Johnny Burnette,approved,2,1
+a1473,DBX,approved,2,1
+a1474,Jona Lewie,approved,2,1
+a1475,The Impressions,approved,2,1
+a1476,Paul Evans,approved,2,1
+a1477,blackbear,approved,2,1
+a1478,Sam Fischer,approved,2,1
+a1479,PON CHO,approved,2,1
+a1480,Paige IV,approved,2,1
+a1481,Naughty By Nature,approved,2,1
+a1482,Phiness,approved,2,1
+a1483,Jeremy Jordan,approved,2,1
+a1484,Duke Dumont,approved,2,1
+a1485,Ebenezer,approved,2,1
+a1486,The Cherokees,approved,2,1
+a1487,Jessie J,approved,2,1
+a1488,Living Colour,approved,2,1
+a1489,Linda McCartney,approved,2,1
+a1490,Phillip Phillips,approved,2,1
+a1491,Lou Reed,approved,2,1
+a1492,Dan + Shay,approved,2,1
+a1493,Bobby Day,approved,2,1
+a1494,Plumb,approved,2,1
+a1495,Norman Greenbaum,approved,2,1
+a1496,Stormzy,approved,2,1
+a1497,Burna Boy,approved,2,1
+a1498,Timmy Trumpet,approved,2,1
+a1499,Savage,approved,2,1
+a1500,Patrick Swayze Featuring Wendy Fraser,approved,2,1
+a1501,Chris Isaak,approved,2,1
+a1502,Marcia Hines,approved,2,1
+a1503,Emily Hackett,approved,2,1
+a1504,Will Anderson,approved,2,1
+a1505,Noah And The Whale,approved,2,1
+a1506,Joe Jones,approved,2,1
+a1507,Shirley Bassey,approved,2,1
+a1508,Kid Cudi,approved,2,1
+a1509,Crookers,approved,2,1
+a1510,Chris Kenner,approved,2,1
+a1511,Daniel Johns,approved,2,1
+a1512,Shaft,approved,2,1
+a1513,Julian Lennon,approved,2,1
+a1514,Naked Eyes,approved,2,1
+a1515,T. Rex,approved,2,1
+a1516,Paul Anka,approved,2,1
+a1517,Lulu,approved,2,1
+a1518,Scandal,approved,2,1
+a1519,Patty Smyth,approved,2,1
+a1520,Björk,approved,2,1
+a1521,Mousse T. Vs Hot 'n' Juicy,approved,2,1
+a1522,Enigma,approved,2,1
+a1523,A.B. Logic,approved,2,1
+a1524,Chynna Phillips,approved,2,1
+a1525,Uriah Heep,approved,2,1
+a1526,Sam Hunt,approved,2,1
+a1527,Keala Settle,approved,2,1
+a1528,The Greatest Showman Ensemble,approved,2,1
+a1529,James Taylor,approved,2,1
+a1530,White Town,approved,2,1
+a1531,Duck Sauce,approved,2,1
+a1532,Ghost Town DJs,approved,2,1
+a1533,Sandro Cavazza,approved,2,1
+a1534,The Shangri-Las,approved,2,1
+a1535,Who Is Fancy,approved,2,1
+a1536,The Screaming Jets,approved,2,1
+a1537,Et Cetera,approved,2,1
+a1538,Kincade,approved,2,1
+a1539,Kosheen,approved,2,1
+a1540,Quarterflash,approved,2,1
+a1541,The Keymakers,approved,2,1
+a1542,Soundgarden,approved,2,1
+a1543,Divine,approved,2,1
+a1544,Pat Benatar,approved,2,1
+a1545,Audioslave,approved,2,1
+a1546,Sam Martin,approved,2,1
+a1547,The Groop,approved,2,1
+a1548,Baker Boy,approved,2,1
+a1549,Run–D.M.C.,approved,2,1
+a1550,Stone Poneys,approved,2,1
+a1551,Ray Parker Jr.,approved,2,1
+a1552,Player,approved,2,1
+a1553,Troy Shondell,approved,2,1
+a1554,Semisonic,approved,2,1
+a1555,Paris Hilton,approved,2,1
+a1556,Peter Andre,approved,2,1
+a1557,Mashd N Kutcher,approved,2,1
+a1558,Sammi Constantine,approved,2,1
+a1559,Kasabian,approved,2,1
+a1560,The Lovin' Spoonful,approved,2,1
+a1561,The 5th Dimension,approved,2,1
+a1562,Wuki,approved,2,1
+a1563,Noah Kahan,approved,2,1
+a1564,Julia Michaels,approved,2,1
+a1565,Carrie Underwood,approved,2,1
+a1566,Future Humans,approved,2,1
+a1567,The Paris Sisters,approved,2,1
+a1568,Jebediah,approved,2,1
+a1569,Aston Merrygold,approved,2,1
+a1570,George McCrae,approved,2,1
+a1571,The Foundations,approved,2,1
+a1572,Brenton Wood,approved,2,1
+a1573,Smash Mouth,approved,2,1
+a1574,Mýa,approved,2,1
+a1575,Aloe Blacc,approved,2,1
+a1576,Boom Crash Opera,approved,2,1
+a1577,The Ventures,approved,2,1
+a1578,Cutfather & Joe,approved,2,1
+a1579,Bobby Darin,approved,2,1
+a1580,Mr. Big,approved,2,1
+a1581,Diana King,approved,2,1
+a1582,Julio Iglesias,approved,2,1
+a1583,Nitty,approved,2,1
+a1584,Mick Jagger,approved,2,1
+a1585,The Waifs,approved,2,1
+a1586,DJ Sammy,approved,2,1
+a1587,Tate McRae,approved,2,1
+a1588,Herb Ohta\,approved,2,1
+a1589,Sr.,approved,2,1
+a1590,The Wombats,approved,2,1
+a1591,Agnes,approved,2,1
+a1592,Rik Rok,approved,2,1
+a1593,Billy Ray Cyrus,approved,2,1
+a1594,Boyz II Men,approved,2,1
+a1595,Clarence Clemons,approved,2,1
+a1596,Jackson Jackson,approved,2,1
+a1597,Dermot Kennedy,approved,2,1
+a1598,Johnny Preston,approved,2,1
+a1599,Marty Guilfoyle,approved,2,1
+a1600,John Gibbons,approved,2,1
+a1601,Gorgon City,approved,2,1
+a1602,Jarryd James,approved,2,1
+a1603,Emerson\,approved,2,1
+a1604,Lake & Palmer,approved,2,1
+a1605,Hayley Williams,approved,2,1
+a1606,Willow Sage Hart,approved,2,1
+a1607,Alison MacCallum,approved,2,1
+a1608,Butthole Surfers,approved,2,1
+a1609,Radiohead,approved,2,1
+a1610,Tears For Fears,approved,2,1
+a1611,Icona Pop,approved,2,1
+a1612,Tonic,approved,2,1
+a1613,Janis Ian,approved,2,1
+a1614,Marques Houston,approved,2,1
+a1615,The Little Dippers,approved,2,1
+a1616,Hank Ballard & The Midnighters,approved,2,1
+a1617,The Rembrandts,approved,2,1
+a1618,Love\,approved,2,1
+a1619,Marco,approved,2,1
+a1620,Blue Öyster Cult,approved,2,1
+a1621,Gary Puckett & The Union Gap,approved,2,1
+a1622,Debelah Morgan,approved,2,1
+a1623,Lipps Inc.,approved,2,1
+a1624,Triple X,approved,2,1
+a1625,Nick Skitz,approved,2,1
+a1626,Last Dinosaurs,approved,2,1
+a1627,Harry Chapin,approved,2,1
+a1628,Maurice Williams & The Zodiacs,approved,2,1
+a1629,Def Leppard,approved,2,1
+a1630,Rednex,approved,2,1
+a1631,Ken Dodd,approved,2,1
+a1632,Metro Boomin,approved,2,1
+a1633,21 Savage,approved,2,1
+a1634,Etta James,approved,2,1
+a1635,Unique II,approved,2,1
+a1636,Darren Hayes,approved,2,1
+a1637,Kaylee Bell,approved,2,1
+a1638,Alexis Jordan,approved,2,1
+a1639,Gibson Brothers,approved,2,1
+a1640,Climie Fisher,approved,2,1
+a1641,Sister Sledge,approved,2,1
+a1642,Ray Peterson,approved,2,1
+a1643,Vitamin C,approved,2,1
+a1644,Portugal. The Man,approved,2,1
+a1645,The Tamperer,approved,2,1
+a1646,Maya,approved,2,1
+a1647,Rococo,approved,2,1
+a1648,King Curtis,approved,2,1
+a1649,Kurupt,approved,2,1
+a1650,Anita McCloud,approved,2,1
+a1651,Natina Reed,approved,2,1
+a1652,TOTO,approved,2,1
+a1653,Ashlee Simpson,approved,2,1
+a1654,Thin Lizzy,approved,2,1
+a1655,LMFAO,approved,2,1
+a1656,Lauren Bennett,approved,2,1
+a1657,GoonRock,approved,2,1
+a1658,Chris Stapleton,approved,2,1
+a1659,Roger Glover,approved,2,1
+a1660,Ronnie James Dio,approved,2,1
+a1661,Cliff Richard & The Shadows,approved,2,1
+a1662,Goanna,approved,2,1
+a1663,Rob Thomas,approved,2,1
+a1664,Kiki Dee,approved,2,1
+a1665,Strike,approved,2,1
+a1666,1910 Fruitgum Company,approved,2,1
+a1667,The Clovers,approved,2,1
+a1668,The Moody Blues,approved,2,1
+a1669,Sleepy Brown,approved,2,1
+a1670,Gabrielle Aplin,approved,2,1
+a1671,Sailor,approved,2,1
+a1672,N.E.R.D,approved,2,1
+a1673,Majid Jordan,approved,2,1
+a1674,Alex Clare,approved,2,1
+a1675,Alle Farben,approved,2,1
+a1676,Graham Candy,approved,2,1
+a1677,Ayah Marar,approved,2,1
+a1678,Delerium,approved,2,1
+a1679,Sarah McLachlan,approved,2,1
+a1680,Phoenix,approved,2,1
+a1681,The Browns,approved,2,1
+a1682,Gunna,approved,2,1
+a1683,DVBBS,approved,2,1
+a1684,Borgeous,approved,2,1
+a1685,Tinie Tempah,approved,2,1
+a1686,The DeFranco Family,approved,2,1
+a1687,Tony DeFranco,approved,2,1
+a1688,Hoodoo Gurus,approved,2,1
+a1689,Dave & Ansell Collins,approved,2,1
+a1690,Tone-Loc,approved,2,1
+a1691,Brook Benton,approved,2,1
+a1692,Ray Charles,approved,2,1
+a1693,Yusuf / Cat Stevens,approved,2,1
+a1694,Gyan,approved,2,1
+a1695,Nick Lowe,approved,2,1
+a1696,Limp Bizkit,approved,2,1
+a1697,Aretha Franklin,approved,2,1
+a1698,Hayden James,approved,2,1
+a1699,Marilyn Martin,approved,2,1
+a1700,Luca Schreiner,approved,2,1
+a1701,Panjabi MC,approved,2,1
+a1702,Alison Wonderland,approved,2,1
+a1703,Marvin Priest,approved,2,1
+a1704,Ross Ryan,approved,2,1
+a1705,Zank,approved,2,1
+a1706,STORME,approved,2,1
+a1707,ponders,approved,2,1
+a1708,Mason Parks,approved,2,1
+a1709,Claudine Clark,approved,2,1
+a1710,Mylo,approved,2,1
+a1711,Yeasayer,approved,2,1
+a1712,Silk City,approved,2,1
+a1713,Joel Turner,approved,2,1
+a1714,Blessid Union Of Souls,approved,2,1
+a1715,David Kershenbaum,approved,2,1
+a1716,NEIKED,approved,2,1
+a1717,Mae Muller,approved,2,1
+a1718,Polo G,approved,2,1
+a1719,Clarence Carter,approved,2,1
+a1720,Marcy Playground,approved,2,1
+a1721,Ian Carey Project,approved,2,1
+a1722,R3HAB,approved,2,1
+a1723,The xx,approved,2,1
+a1724,M People,approved,2,1
+a1725,Dionne Warwick,approved,2,1
+a1726,O.C. Smith,approved,2,1
+a1727,Terry Jacks,approved,2,1
+a1728,Derek,approved,2,1
+a1729,Cassie,approved,2,1
+a1730,Bill Haley & His Comets,approved,2,1
+a1731,Lou Bega,approved,2,1
+a1732,Bobby Sherman,approved,2,1
+a1733,Owl City,approved,2,1
+a1734,Travis Scott,approved,2,1
+a1735,Raspberries,approved,2,1
+a1736,Selwyn,approved,2,1
+a1737,SUPER-Hi,approved,2,1
+a1738,NEEKA,approved,2,1
+a1739,Slade,approved,2,1
+a1740,Regurgitator,approved,2,1
+a1741,Tim & Jean,approved,2,1
+a1742,Michelle Branch,approved,2,1
+a1743,Bob Evans,approved,2,1
+a1744,Missy Elliott,approved,2,1
+a1745,Lindsay Lohan,approved,2,1
+a1746,Gia Farrell,approved,2,1
+a1747,Deep Purple,approved,2,1
+a1748,Gina G,approved,2,1
+a1749,Ral Donner,approved,2,1
+a1750,Scott Bradlee's Postmodern Jukebox,approved,2,1
+a1751,Cristina Gatti,approved,2,1
+a1752,Dan Caplen,approved,2,1
+a1753,Faouzia,approved,2,1
+a1754,Peaches & Herb,approved,2,1
+a1755,Bob Sinclar,approved,2,1
+a1756,The S.O.S Band,approved,2,1
+a1757,The Black Sorrows,approved,2,1
+a1758,Jon & Vangelis,approved,2,1
+a1759,Cody Wise,approved,2,1
+a1760,The Loved Ones,approved,2,1
+a1761,House Of Pain,approved,2,1
+a1762,Jimmy Dean,approved,2,1
+a1763,Lennon Stella,approved,2,1
+a1764,Apollo 100,approved,2,1
+a1765,Ellie Drennan,approved,2,1
+a1766,Charlie Rich,approved,2,1
+a1767,Rupert Holmes,approved,2,1
+a1768,Tom Clay,approved,2,1
+a1769,Judy Collins,approved,2,1
+a1770,Pete Murray,approved,2,1
+a1771,Billy Preston,approved,2,1
+a1772,The Twilights,approved,2,1
+a1773,Tom Robinson Band,approved,2,1
+a1774,R & J Stone,approved,2,1
+a1775,The Movement,approved,2,1
+a1776,mgk,approved,2,1
+a1777,DNCE,approved,2,1
+a1778,Yolanda Be Cool,approved,2,1
+a1779,DCup,approved,2,1
+a1780,Sinéad O'Connor,approved,2,1
+a1781,Damien Rice,approved,2,1
+a1782,Crosby\,approved,2,1
+a1783,Stills\,approved,2,1
+a1784,Nash & Young,approved,2,1
+a1785,Art vs Science,approved,2,1
+a1786,James Darren,approved,2,1
+a1787,Stealers Wheel,approved,2,1
+a1788,The Strokes,approved,2,1
+a1789,The Dudley Moore Trio,approved,2,1
+a1790,Susan Raye,approved,2,1
+a1791,Dannii Minogue,approved,2,1
+a1792,The Tymes,approved,2,1
+a1793,Hardwell,approved,2,1
+a1794,Flux Pavilion,approved,2,1
+a1795,Chaka Demus & Pliers,approved,2,1
+a1796,Jack Radics,approved,2,1
+a1797,The Taxi Gang,approved,2,1
+a1798,Candi Staton,approved,2,1
+a1799,What So Not,approved,2,1
+a1800,LPX,approved,2,1
+a1801,The Collective,approved,2,1
+a1802,Jimmy Osmond,approved,2,1
+a1803,Zoot,approved,2,1
+a1804,Winger,approved,2,1
+a1805,2 Chainz,approved,2,1
+a1806,Kids Of 88,approved,2,1
+a1807,The Asteroids Galaxy Tour,approved,2,1
+a1808,Jamie Scott,approved,2,1
+a1809,Romy Dya,approved,2,1
+a1810,Deborah Cox,approved,2,1
+a1811,Heather Small,approved,2,1
+a1812,The Safaris,approved,2,1
+a1813,Fats Domino,approved,2,1
+a1814,S1mba,approved,2,1
+a1815,DTG,approved,2,1
+a1816,Gloria Estefan,approved,2,1
+a1817,The Crests,approved,2,1
+a1818,Traveling Wilburys,approved,2,1
+a1819,Violent Soho,approved,2,1
+a1820,Eurika,approved,2,1
+a1821,La Bouche,approved,2,1
+a1822,Nelle Hooper,approved,2,1
+a1823,HUGEL,approved,2,1
+a1824,Julia Church,approved,2,1
+a1825,The Highwaymen,approved,2,1
+a1826,Albert Hammond,approved,2,1
+a1827,Bertie Higgins,approved,2,1
+a1828,Londonbeat,approved,2,1
+a1829,Lil Yachty,approved,2,1
+a1830,Dzeko & Torres,approved,2,1
+a1831,Sarah McLeod,approved,2,1
+a1832,David Bowie,approved,2,1
+a1833,Topic,approved,2,1
+a1834,Wes Nelson,approved,2,1
+a1835,Sister Janet Mead,approved,2,1
+a1836,Kayla Rae Haywood,approved,2,1
+a1837,Twisted Sister,approved,2,1
+a1838,Weddings Parties Anything,approved,2,1
+a1839,Dennis Waterman,approved,2,1
+a1840,Childish Gambino,approved,2,1
+a1841,Wallows,approved,2,1
+a1842,Clairo,approved,2,1
+a1843,Lene Lovich,approved,2,1
+a1844,Tom Thum,approved,2,1
+a1845,Wanz,approved,2,1
+a1846,WSTRN,approved,2,1
+a1847,Tony Joe White,approved,2,1
+a1848,Kisschasy,approved,2,1
+a1849,Wiley,approved,2,1
+a1850,SHY FX,approved,2,1
+a1851,Third Eye Blind,approved,2,1
+a1852,Sub Sub,approved,2,1
+a1853,Melanie Williams,approved,2,1
+a1854,Eddie Money,approved,2,1
+a1855,Fragma,approved,2,1
+a1856,Robin Gibb,approved,2,1
+a1857,Phyllis Nelson,approved,2,1
+a1858,All-4-One,approved,2,1
+a1859,Lana Del Rey,approved,2,1
+a1860,Stacie Orrico,approved,2,1
+a1861,Merril Bainbridge,approved,2,1
+a1862,The Lonely Island,approved,2,1
+a1863,Los Bravos,approved,2,1
+a1864,Eric Benét,approved,2,1
+a1865,"Kevin ""K.D."" Davis",approved,2,1
+a1866,Joe Tex,approved,2,1
+a1867,William Orbit,approved,2,1
+a1868,BlocBoy JB,approved,2,1
+a1869,Bene,approved,2,1
+a1870,Andrew Stanley,approved,2,1
+a1871,Matt Handles,approved,2,1
+a1872,Twenty 4 Seven,approved,2,1
+a1873,Steve Mac,approved,2,1
+a1874,DJ Frank E,approved,2,1
+a1875,Sounds Incorporated,approved,2,1
+a1876,Rico Nasty,approved,2,1
+a1877,Dexys Midnight Runners,approved,2,1
+a1878,LP,approved,2,1
+a1879,Samantha Mumba,approved,2,1
+a1880,Bananarama,approved,2,1
+a1881,Scatman John,approved,2,1
+a1882,Louisa Johnson,approved,2,1
+a1883,Nat King Cole,approved,2,1
+a1884,Janieck Devy,approved,2,1
+a1885,The Three Degrees,approved,2,1
+a1886,The Honeydrippers,approved,2,1
+a1887,Meg Mac,approved,2,1
+a1888,John Fred and His Playboy Band,approved,2,1
+a1889,The Rip Chords,approved,2,1
+a1890,Marlisa,approved,2,1
+a1891,Mississippi,approved,2,1
+a1892,Alex Lloyd,approved,2,1
+a1893,deadmau5,approved,2,1
+a1894,Wolfgang Gartner,approved,2,1
+a1895,Zombie Nation,approved,2,1
+a1896,2 Unlimited,approved,2,1
+a1897,Blue Mink,approved,2,1
+a1898,Kenny Loggins,approved,2,1
+a1899,Lauren Spencer Smith,approved,2,1
+a1900,Fatman Scoop,approved,2,1
+a1901,Mike Mago,approved,2,1
+a1902,Hedgehoppers Anonymous,approved,2,1
+a1903,Tina Charles,approved,2,1
+a1904,Shouse,approved,2,1
+a1905,Filter,approved,2,1
+a1906,Bad Bunny,approved,2,1
+a1907,Shakin' Stevens,approved,2,1
+a1908,Em Beihold,approved,2,1
+a1909,The Casuals,approved,2,1
+a1910,Vicki Lawrence,approved,2,1
+a1911,SHAED,approved,2,1
+a1912,Alvin Stardust,approved,2,1
+a1913,Louis Tomlinson,approved,2,1
+a1914,Newton,approved,2,1
+a1915,John Parr,approved,2,1
+a1916,A Great Big World,approved,2,1
+a1917,Scott Fitzgerald,approved,2,1
+a1918,Yvonne Keeley,approved,2,1
+a1919,Conan Gray,approved,2,1
+a1920,The Fifth Estate,approved,2,1
+a1921,Felly,approved,2,1
+a1922,Vandalism,approved,2,1
+a1923,The Ikettes,approved,2,1
+a1924,Kevin Johnson,approved,2,1
+a1925,Mason Williams,approved,2,1
+a1926,The Immigrant,approved,2,1
+a1927,Danny Ross,approved,2,1
+a1928,Dave Mills,approved,2,1
+a1929,Gary Numan,approved,2,1
+a1930,Tony Orlando & Dawn,approved,2,1
+a1931,Seals and Crofts,approved,2,1
+a1932,Major Lance,approved,2,1
+a1933,Jess & Matt,approved,2,1
+a1934,Daniel Bedingfield,approved,2,1
+a1935,Pendulum,approved,2,1
+a1936,Blackstreet,approved,2,1
+a1937,Queen Pen,approved,2,1
+a1938,Sam Sparro,approved,2,1
+a1939,Ohio Express,approved,2,1
+a1940,Sash!,approved,2,1
+a1941,Chet Faker,approved,2,1
+a1942,Simon Climie,approved,2,1
+a1943,Wyclef Jean,approved,2,1
+a1944,Claudette Ortiz,approved,2,1
+a1945,Kim Wilde,approved,2,1
+a1946,The Stranglers,approved,2,1
+a1947,Lynn Anderson,approved,2,1
+a1948,Michael Sembello,approved,2,1
+a1949,Fitz and The Tantrums,approved,2,1
+a1950,Gloria Gaynor,approved,2,1
+a1951,Neon Hitch,approved,2,1
+a1952,EMF,approved,2,1
+a1953,Harry Nilsson,approved,2,1
+a1954,Lil Jon,approved,2,1
+a1955,KSI,approved,2,1
+a1956,Digital Farm Animals,approved,2,1
+a1957,Lucas & Steve,approved,2,1
+a1958,Jack Harlow,approved,2,1
+a1959,Perry Como,approved,2,1
+a1960,Sonny & Cher,approved,2,1
+a1961,Paula Abdul,approved,2,1
+a1962,Wang Chung,approved,2,1
+a1963,Naeleck,approved,2,1
+a1964,New Edition,approved,2,1
+a1965,Australian Crawl,approved,2,1
+a1966,Chris Sebastian,approved,2,1
+a1967,Heintje,approved,2,1
+a1968,Josef Salvat,approved,2,1
+a1969,Bros,approved,2,1
+a1970,Ric Wake,approved,2,1
+a1971,Bob Cadway,approved,2,1
+a1972,Faithless,approved,2,1
+a1973,Rollo Armstrong,approved,2,1
+a1974,Sister Bliss,approved,2,1
+a1975,The Naked And Famous,approved,2,1
+a1976,Brandy,approved,2,1
+a1977,J.J. Cale,approved,2,1
+a1978,A7S,approved,2,1
+a1979,Powfu,approved,2,1
+a1980,beabadoobee,approved,2,1
+a1981,Bad Company,approved,2,1
+a1982,Bush,approved,2,1
+a1983,Jamelia,approved,2,1
+a1984,Amii Stewart,approved,2,1
+a1985,Grand Funk Railroad,approved,2,1
+a1986,Hanson,approved,2,1
+a1987,Santana,approved,2,1
+a1988,Steven Tyler,approved,2,1
+a1989,Pharoahe Monch,approved,2,1
+a1990,Carly Rae Jepsen,approved,2,1
+a1991,Barry White,approved,2,1
+a1992,Maty Noyes,approved,2,1
+a1993,The Black Keys,approved,2,1
+a1994,The Bells,approved,2,1
+a1995,Travie McCoy,approved,2,1
+a1996,Johnny Ruffo,approved,2,1
+a1997,Johnny Tillotson,approved,2,1
+a1998,Ashton\,approved,2,1
+a1999,Gardner & Dyke,approved,2,1
+a2000,AJ Mitchell,approved,2,1
+a2001,BROODS,approved,2,1
+a2002,Richard Vission & Static Revenger Starring Luciana,approved,2,1
+a2003,Eric Prydz,approved,2,1
+a2004,Rojdar,approved,2,1
+a2005,Terry Stafford,approved,2,1
+a2006,Natalie Bassingthwaighte,approved,2,1
+a2007,The Plastic Ono Band,approved,2,1
+a2008,Yoko Ono,approved,2,1
+a2009,William Shakespeare,approved,2,1
+a2010,BBE,approved,2,1
+a2011,Casey Abrams,approved,2,1
+a2012,Nik Kershaw,approved,2,1
+a2013,CHIC,approved,2,1
+a2014,The Outhere Brothers,approved,2,1
+a2015,DeBarge,approved,2,1
+a2016,Capital Cities,approved,2,1
+a2017,Marcella Detroit,approved,2,1
+a2018,Gilbert O'Sullivan,approved,2,1
+a2019,Warrant,approved,2,1
+a2020,Mura Masa,approved,2,1
+a2021,Richard O'Brien,approved,2,1
+a2022,Patricia Quinn,approved,2,1
+a2023,Nell Campbell,approved,2,1
+a2024,Leif Garrett,approved,2,1
+a2025,3 The Hard Way,approved,2,1
+a2026,Broken Bells,approved,2,1
+a2027,Harry Secombe,approved,2,1
+a2028,10cc,approved,2,1
+a2029,Natalie Gauci,approved,2,1
+a2030,Busta Rhymes,approved,2,1
+a2031,Rosie & The Originals,approved,2,1
+a2032,The Strangers,approved,2,1
+a2033,Matt Corby,approved,2,1
+a2034,Prince Mydas,approved,2,1
+a2035,The Emotions,approved,2,1
+a2036,Trevor Daniel,approved,2,1
+a2037,Ginuwine,approved,2,1
+a2038,Katrina & The Waves,approved,2,1
+a2039,DJ Khaled,approved,2,1
+a2040,Chance the Rapper,approved,2,1
+a2041,Normani,approved,2,1
+a2042,Bobby Vee,approved,2,1
+a2043,Peach PRC,approved,2,1
+a2044,Tame Impala,approved,2,1
+a2045,The Greg Kihn Band,approved,2,1
+a2046,Manfred Mann,approved,2,1
+a2047,Canned Heat,approved,2,1
+a2048,Jon English,approved,2,1
+a2049,Mario Millo,approved,2,1
+a2050,Juice WRLD,approved,2,1
+a2051,M.I.A.,approved,2,1
+a2052,Bryan Ferry,approved,2,1
+a2053,Nuka,approved,2,1
+a2054,Gale Garnett,approved,2,1
+a2055,SWOOP,approved,2,1
+a2056,Freddy Fender,approved,2,1
+a2057,The Brothers Johnson,approved,2,1
+a2058,Sara Bareilles,approved,2,1
+a2059,Ella Mai,approved,2,1
+a2060,Cutting Crew,approved,2,1
+a2061,The 1975,approved,2,1
+a2062,Hungry Kids of Hungary,approved,2,1
+a2063,Stevie Nicks,approved,2,1
+a2064,Ofenbach,approved,2,1
+a2065,Glades,approved,2,1
+a2066,Latto,approved,2,1
+a2067,Modjo,approved,2,1
+a2068,Cookin' On 3 Burners,approved,2,1
+a2069,Boney M.,approved,2,1
+a2070,ABC,approved,2,1
+a2071,2 In A Room,approved,2,1
+a2072,Sugarland,approved,2,1
+a2073,Teddy Swims,approved,2,1
+a2074,lovelytheband,approved,2,1
+a2075,Sunny & The Sunglows,approved,2,1
+a2076,Big Mountain,approved,2,1
+a2077,Liberty X,approved,2,1
+a2078,Sister2sister,approved,2,1
+a2079,Lonnie Mack,approved,2,1
+a2080,Tracy Bonham,approved,2,1
+a2081,Kenny Nolan,approved,2,1
+a2082,Hugh Jackman,approved,2,1
+a2083,Zac Efron,approved,2,1
+a2084,Jessica Simpson,approved,2,1
+a2085,Passenger,approved,2,1
+a2086,Falco,approved,2,1
+a2087,Shalamar,approved,2,1
+a2088,Del The Funky Homosapien,approved,2,1
+a2089,The Art Of Noise,approved,2,1
+a2090,Duane Eddy,approved,2,1
+a2091,The 12th Man,approved,2,1
+a2092,Smokie,approved,2,1
+a2093,Count Five,approved,2,1
+a2094,Nate Ruess,approved,2,1
+a2095,Kenny Rogers,approved,2,1
+a2096,Robert John,approved,2,1
+a2097,David Dundas,approved,2,1
+a2098,DJ Snake,approved,2,1
+a2099,Donny Osmond,approved,2,1
+a2100,Marie Osmond,approved,2,1
+a2101,Scott English,approved,2,1
+a2102,Tove Lo,approved,2,1
+a2103,Natalie Cole,approved,2,1
+a2104,Tom Walker,approved,2,1
+a2105,New Kids On The Block,approved,2,1
+a2106,Milli Vanilli,approved,2,1
+a2107,kai,approved,2,1
+a2108,Spin Doctors,approved,2,1
+a2109,Lo-tel,approved,2,1
+a2110,Area-7,approved,2,1
+a2111,Melodie MC,approved,2,1
+a2112,Yves Klein Blue,approved,2,1
+a2113,Rob Mills,approved,2,1
+a2114,Damage,approved,2,1
+a2115,SAINt JHN,approved,2,1
+a2116,Alice Cooper,approved,2,1
+a2117,Murry Kellum,approved,2,1
+a2118,TV Rock feat. Seany B,approved,2,1
+a2119,Kid Rock,approved,2,1
+a2120,Jay R,approved,2,1
+a2121,Sam Feldt,approved,2,1
+a2122,Lighter Shade Of Brown,approved,2,1
+a2123,Bowling For Soup,approved,2,1
+a2124,Frank Ifield,approved,2,1
+a2125,Jennifer Love Hewitt,approved,2,1
+a2126,G-Eazy,approved,2,1
+a2127,The Game,approved,2,1
+a2128,Hole,approved,2,1
+a2129,Supernaut,approved,2,1
+a2130,Nico Santos,approved,2,1
+a2131,The Isley Brothers,approved,2,1
+a2132,Zoë Badwi,approved,2,1
+a2133,Dino Jag,approved,2,1
+a2134,Damien Reilly,approved,2,1
+a2135,Ray Columbus and the Invaders,approved,2,1
+a2136,Jim Reeves,approved,2,1
+a2137,Dada Pop,approved,2,1
+a2138,Dean Lewis,approved,2,1
+a2139,Roy Orbison & Teen Kings,approved,2,1
+a2140,Paul Dempsey,approved,2,1
+a2141,The Tennessee Two,approved,2,1
+a2142,Sisqo,approved,2,1
+a2143,The Irish Rovers,approved,2,1
+a2144,Gerry Rafferty,approved,2,1
+a2145,Patrick Hernandez,approved,2,1
+a2146,Brando,approved,2,1
+a2147,XTC,approved,2,1
+a2148,Cut Copy,approved,2,1
+a2149,Boyzone,approved,2,1
+a2150,The Verve Pipe,approved,2,1
+a2151,Neil Young,approved,2,1
+a2152,Stevie J,approved,2,1
+a2153,The Business Intl,approved,2,1
+a2154,Tigerlily,approved,2,1
+a2155,Nat Dunn,approved,2,1
+a2156,ICEHOUSE,approved,2,1
+a2157,LCD Soundsystem,approved,2,1
+a2158,Madness,approved,2,1
+a2159,Shannon,approved,2,1
+a2160,Blancmange,approved,2,1
+a2161,The Band,approved,2,1
+a2162,John Martin,approved,2,1
+a2163,Rage Against The Machine,approved,2,1
+a2164,Eurogliders,approved,2,1
+a2165,The Ray Conniff Singers,approved,2,1
+a2166,Gladys Knight,approved,2,1
+a2167,Johnny O'Keefe,approved,2,1
+a2168,Hayley Warner,approved,2,1
+a2169,Jeanne Black,approved,2,1
+a2170,Justin Wellington,approved,2,1
+a2171,Small Jam,approved,2,1
+a2172,Route 94,approved,2,1
+a2173,Jon Bellion,approved,2,1
+a2174,Siedah Garrett,approved,2,1
+a2175,Mike Perry,approved,2,1
+a2176,shy martin,approved,2,1
+a2177,Patti LaBelle,approved,2,1
+a2178,Lighthouse Family,approved,2,1
+a2179,KALEO,approved,2,1
+a2180,Monica,approved,2,1
+a2181,Billy Joe Royal,approved,2,1
+a2182,4 Non Blondes,approved,2,1
+a2183,Keane,approved,2,1
+a2184,Stereophonics,approved,2,1
+a2185,Wreckx-N-Effect,approved,2,1
+a2186,3LW,approved,2,1
+a2187,Ian Moss,approved,2,1
+a2188,Get Wet,approved,2,1
+a2189,Baha Men,approved,2,1
+a2190,The Troggs,approved,2,1
+a2191,DaChri,approved,2,1
+a2192,Atlas Genius,approved,2,1
+a2193,Sheena Easton,approved,2,1
+a2194,Noiseworks,approved,2,1
+a2195,Patsy Cline,approved,2,1
+a2196,Gram'ma Funk,approved,2,1
+a2197,Groove Terminator,approved,2,1
+a2198,The Wallflowers,approved,2,1
+a2199,Dreamworld,approved,2,1
+a2200,Moving Pictures,approved,2,1
+a2201,Mr. Mister,approved,2,1
+a2202,Ernest Gold,approved,2,1
+a2203,Charles Eugene Patrick Boone,approved,2,1
+a2204,Ferrante & Teicher,approved,2,1
+a2205,HVME,approved,2,1
+a2206,The Sundance Kids,approved,2,1
+a2207,Finger Eleven,approved,2,1
+a2208,Wolfmother,approved,2,1
+a2209,Carly Simon,approved,2,1
+a2210,Christopher Cross,approved,2,1
+a2211,Sugababes,approved,2,1
+a2212,Plan B,approved,2,1
+a2213,Styx,approved,2,1
+a2214,G Flip,approved,2,1
+a2215,Wet Wet Wet,approved,2,1
+a2216,Herbie Hancock,approved,2,1
+a2217,Mac Davis,approved,2,1
+a2218,The Last Goodnight,approved,2,1
+a2219,Frijid Pink,approved,2,1
+a2220,Dean Ray,approved,2,1
+a2221,Fox,approved,2,1
+a2222,Club Nouveau,approved,2,1
+a2223,MARINA,approved,2,1
+a2224,Bob The Builder,approved,2,1
+a2225,John Lloyd Young,approved,2,1
+a2226,Teflon Hustle Don,approved,2,1
+a2227,H2O,approved,2,1
+a2228,DNA,approved,2,1
+a2229,Suzanne Vega,approved,2,1
+a2230,Nate Dogg,approved,2,1
+a2231,Bill Withers,approved,2,1
+a2232,Bodyrockers,approved,2,1
+a2233,T-Shirt,approved,2,1
+a2234,Linda George,approved,2,1
+a2235,Scissor Sisters,approved,2,1
+a2236,Lady Saw,approved,2,1
+a2237,Charlie Wilson,approved,2,1
+a2238,R. City,approved,2,1
+a2239,Dyo,approved,2,1
+a2240,Frankie Miller,approved,2,1
+a2241,Blu Cantrell,approved,2,1
+a2242,The Bachelors,approved,2,1
+a2243,Kids In The Kitchen,approved,2,1
+a2244,Bomfunk MC's,approved,2,1
+a2245,Ray J,approved,2,1
+a2246,Kasey Chambers,approved,2,1
+a2247,Loon,approved,2,1
+a2248,Emily Warren,approved,2,1
+a2249,Gordon Lightfoot,approved,2,1
+a2250,Darling Brando,approved,2,1
+a2251,Desiigner,approved,2,1
+a2252,Steve Aoki,approved,2,1
+a2253,N-Trance,approved,2,1
+a2254,Ricardo Da Force,approved,2,1
+a2255,Len Barry,approved,2,1
+a2256,Carolina Liar,approved,2,1
+a2257,Diddy - Dirty Money,approved,2,1
+a2258,Jordie Ireland,approved,2,1
+a2259,Ava Hayz,approved,2,1
+a2260,Everything But The Girl,approved,2,1
+a2261,Pure Prairie League,approved,2,1
+a2262,The Young Rascals,approved,2,1
+a2263,Saweetie,approved,2,1
+a2264,Belle Epoque,approved,2,1
+a2265,Alec Benjamin,approved,2,1
+a2266,ILLENIUM,approved,2,1
+a2267,Throttle,approved,2,1
+a2268,Walter Meego,approved,2,1
+a2269,Qwote feat. Pitbull & Lucenzo,approved,2,1
+a2270,Rachel Platten,approved,2,1
+a2271,Starley,approved,2,1
+a2272,BZ,approved,2,1
+a2273,Joanne,approved,2,1
+a2274,3T,approved,2,1
+a2275,The Red Jumpsuit Apparatus,approved,2,1
+a2276,Hight,approved,2,1
+a2277,Alex Aiono,approved,2,1
+a2278,Nathan Evans,approved,2,1
+a2279,220 KID,approved,2,1
+a2280,Feargal Sharkey,approved,2,1
+a2281,Lloyd Price,approved,2,1
+a2282,Deee-Lite,approved,2,1
+a2283,Sleepy Tom,approved,2,1
+a2284,Artists United Against Apartheid,approved,2,1
+a2285,Alicia Bridges,approved,2,1
+a2286,Slinkee Minx,approved,2,1
+a2287,The Jordanaires,approved,2,1
+a2288,AJR,approved,2,1
+a2289,Junior Senior,approved,2,1
+a2290,Peaches,approved,2,1
+a2291,AlunaGeorge,approved,2,1
+a2292,Popcaan,approved,2,1
+a2293,B.J. Thomas,approved,2,1
+a2294,Will Sparks,approved,2,1
+a2295,Barry Mann,approved,2,1
+a2296,Exile,approved,2,1
+a2297,Glenn Frey,approved,2,1
+a2298,The Charlie Daniels Band,approved,2,1
+a2299,Aleem,approved,2,1
+a2300,REO Speedwagon,approved,2,1
+a2301,Ricky Martin,approved,2,1
+a2302,fun.,approved,2,1
+a2303,Janelle Monáe,approved,2,1
+a2304,New Vaudeville Band,approved,2,1
+a2305,Wild Cherry,approved,2,1
+a2306,Karen Knowles,approved,2,1
+a2307,Master KG,approved,2,1
+a2308,Nomcebo Zikode,approved,2,1
+a2309,Get Far,approved,2,1
+a2310,Alex Farolfi,approved,2,1
+a2311,Haircut 100,approved,2,1
+a2312,BOYS LIKE GIRLS,approved,2,1
+a2313,Alexia,approved,2,1
+a2314,Kathryn,approved,2,1
+a2315,Maggie Lindemann,approved,2,1
+a2316,CADE,approved,2,1
+a2317,The Supermen Lovers,approved,2,1
+a2318,Mani Hoffman,approved,2,1
+a2319,Promises,approved,2,1
+a2320,Major Lazer,approved,2,1
+a2321,Kaskade,approved,2,1
+a2322,Ace Cannon,approved,2,1
+a2323,The Bobby Fuller Four,approved,2,1
+a2324,Meck,approved,2,1
+a2325,Bradley Cooper,approved,2,1
+a2326,benny blanco,approved,2,1
+a2327,Kulcha,approved,2,1
+a2328,Chrissie Hynde,approved,2,1
+a2329,Jim Diamond,approved,2,1
+a2330,Tommy James & The Shondells,approved,2,1
+a2331,Poison,approved,2,1
+a2332,Seany B,approved,2,1
+a2333,Crash Test Dummies,approved,2,1
+a2334,Newton Faulkner,approved,2,1
+a2335,Brotherhood of Man,approved,2,1
+a2336,Rick James,approved,2,1
+a2337,Foster & Allen,approved,2,1
+a2338,Avalanche City,approved,2,1
+a2339,Crystal Waters,approved,2,1
+a2340,The Outfield,approved,2,1
+a2341,Something For Kate,approved,2,1
+a2342,Philip Bailey,approved,2,1
+a2343,Gizzle,approved,2,1
+a2344,David Lee Roth,approved,2,1
+a2345,Thunderclap Newman,approved,2,1
+a2346,A*M*E,approved,2,1
+a2347,Dennis Lloyd,approved,2,1
+a2348,Fabolous,approved,2,1
+a2349,Mike Shorey,approved,2,1
+a2350,Lil' Mo,approved,2,1
+a2351,S.O.A.P.,approved,2,1
+a2352,The Pips,approved,2,1
+a2353,JID,approved,2,1
+a2354,Arcane,approved,2,1
+a2355,League of Legends,approved,2,1
+a2356,Deorro,approved,2,1
+a2357,Limahl,approved,2,1
+a2358,Bryson Tiller,approved,2,1
+a2359,Lynsey De Paul,approved,2,1
+a2360,Elliphant,approved,2,1
+a2361,Stardust,approved,2,1
+a2362,Benjamin Diamond,approved,2,1
+a2363,Alan Braxe,approved,2,1
+a2364,Thomas Bangalter,approved,2,1
+a2365,A Boogie Wit da Hoodie,approved,2,1
+a2366,Berlin,approved,2,1
+a2367,Colleen Hewett,approved,2,1
+a2368,Vikki Carr,approved,2,1
+a2369,Archie Roach,approved,2,1
+a2370,The Equals,approved,2,1
+a2371,Wynter Gordon,approved,2,1
+a2372,Lil' Kim,approved,2,1
+a2373,Sir Mix-A-Lot,approved,2,1
+a2374,Rebecca Ferguson,approved,2,1
+a2375,DMA'S,approved,2,1
+a2376,Peter Shelley,approved,2,1
+a2377,Glen Hansard,approved,2,1
+a2378,Markéta Irglová,approved,2,1
+a2379,Skrillex,approved,2,1
+a2380,Melissa Tkautz,approved,2,1
+a2381,Maisie Peters,approved,2,1
+a2382,Everlast,approved,2,1
+a2383,Yanou,approved,2,1
+a2384,Do,approved,2,1
+a2385,Don Henley,approved,2,1
+a2386,Murphy Lee,approved,2,1
+a2387,Ali,approved,2,1
+a2388,Yvonne Elliman,approved,2,1
+a2389,Ned Miller,approved,2,1
+a2390,Marvin Hamlisch,approved,2,1
+a2391,Garnet Mimms,approved,2,1
+a2392,The Enchanters,approved,2,1
+a2393,KIAN,approved,2,1
+a2394,Bobby McFerrin,approved,2,1
+a2395,Kane Brown,approved,2,1
+a2396,Nicki French,approved,2,1
+a2397,Passion Pit,approved,2,1
+a2398,McFly,approved,2,1
+a2399,Ritt Momney,approved,2,1
+a2400,The White Stripes,approved,2,1
+a2401,The Romantics,approved,2,1
+a2402,The Dandy Warhols,approved,2,1
+a2403,Paul Davis,approved,2,1
+a2404,The Radiators,approved,2,1
+a2405,L.A. Style,approved,2,1
+a2406,The Click Five,approved,2,1
+a2407,Ricky Nelson,approved,2,1
+a2408,The Stone Canyon Band,approved,2,1
+a2409,Karnivool,approved,2,1
+a2410,Eva Simons,approved,2,1
+a2411,Shep And The Limelites,approved,2,1
+a2412,Eddie Miller,approved,2,1
+a2413,Robert Yount,approved,2,1
+a2414,Dub Williams,approved,2,1
+a2415,Peter Cetera,approved,2,1
+a2416,Johnny Wakelin,approved,2,1
+a2417,Jimmy Jones,approved,2,1
+a2418,Jamie N Commons,approved,2,1
+a2419,Loudon Wainwright III,approved,2,1
+a2420,Skepta,approved,2,1
+a2421,Traffic,approved,2,1
+a2422,Supertramp,approved,2,1
+a2423,The Capris,approved,2,1
+a2424,Gordon Taggart,approved,2,1
+a2425,Liam Lynch,approved,2,1
+a2426,San Cisco,approved,2,1
+a2427,D:Ream,approved,2,1
+a2428,Cheryl,approved,2,1
+a2429,Joey Dee,approved,2,1
+a2430,The Starliters,approved,2,1
+a2431,Joan Baez,approved,2,1
+a2432,Angry Anderson,approved,2,1
+a2433,Wa Wa Nee,approved,2,1
+a2434,The Cataracs,approved,2,1
+a2435,DEV,approved,2,1
+a2436,Jan & Dean,approved,2,1
+a2437,Cream,approved,2,1
+a2438,We The Kings,approved,2,1
+a2439,Union J,approved,2,1
+a2440,Vanessa Carlton,approved,2,1
+a2441,Ciara,approved,2,1
+a2442,Tamia,approved,2,1
+a2443,Bad English,approved,2,1
+a2444,The Four Preps,approved,2,1
+a2445,Andy Kim,approved,2,1
+a2446,NEWBEATS,approved,2,1
+a2447,Ruel,approved,2,1
+a2448,M-Phazes,approved,2,1
+a2449,Gigamesh,approved,2,1
+a2450,Climax Blues Band,approved,2,1
+a2451,Mario Winans,approved,2,1
+a2452,Enya,approved,2,1
+a2453,Stephanie Mills,approved,2,1
+a2454,Travis Barker,approved,2,1
+a2455,Bob Luman,approved,2,1
+a2456,Billy Bland,approved,2,1
+a2457,Hinder,approved,2,1
+a2458,David Rose & His Orchestra,approved,2,1
+a2459,Arizona Zervas,approved,2,1
+a2460,Wizzard,approved,2,1
+a2461,L D R U,approved,2,1
+a2462,Eric Burdon,approved,2,1
+a2463,War,approved,2,1
+a2464,Ella Fitzgerald,approved,2,1
+a2465,Louis Armstrong,approved,2,1
+a2466,Cher,approved,2,1
+a2467,AURORA,approved,2,1
+a2468,Bonnie Raitt,approved,2,1
+a2469,Gavin James,approved,2,1
+a2470,Tracy Chapman,approved,2,1
+a2471,Zhané,approved,2,1
+a2472,AWOLNATION,approved,2,1
+a2473,The Newbeats,approved,2,1
+a2474,Walter Murphy,approved,2,1
+a2475,Clout,approved,2,1
+a2476,Frank Ocean,approved,2,1
+a2477,Migos,approved,2,1
+a2478,Miguel,approved,2,1
+a2479,Faker,approved,2,1
+a2480,Ida Corr,approved,2,1
+a2481,Dynoro,approved,2,1
+a2482,Gigi D'Agostino,approved,2,1
+a2483,Cody Simpson,approved,2,1
+a2484,Golden Earring,approved,2,1
+a2485,Warren Zevon,approved,2,1
+a2486,Frente!,approved,2,1
+a2487,Soft Cell,approved,2,1
+a2488,Oliver Tree,approved,2,1
+a2489,Concrete Blonde,approved,2,1
+a2490,The Hoosiers,approved,2,1
+a2491,The Tremeloes,approved,2,1
+a2492,City High,approved,2,1
+a2493,Fleur East,approved,2,1
+a2494,Merrilee Rush,approved,2,1
+a2495,John Ryan,approved,2,1
+a2496,Adam Wade,approved,2,1
+a2497,Paul & Paula,approved,2,1
+a2498,Chicane,approved,2,1
+a2499,Freddy Cannon,approved,2,1
+a2500,D.O.D,approved,2,1
+a2501,Derek & The Dominos,approved,2,1
+a2502,GANGgajang,approved,2,1
+a2503,Violent Femmes,approved,2,1
+a2504,Christina Milian,approved,2,1
+a2505,Brownsville Station,approved,2,1
+a2506,Christina Amphlett,approved,2,1
+a2507,Jennifer Paige,approved,2,1
+a2508,Dane Rumble,approved,2,1
+a2509,The Bloody Beetroots,approved,2,1
+a2510,Stills & Nash,approved,2,1
+a2511,Aleesha Rome,approved,2,1
+a2512,Nicolette Larson,approved,2,1
+a2513,Junkie XL,approved,2,1
+a2514,Musical Youth,approved,2,1
+a2515,Free,approved,2,1
+a2516,Snakehips,approved,2,1
+a2517,The Dovells,approved,2,1
+a2518,Yazz,approved,2,1
+a2519,Carla Thomas,approved,2,1
+a2520,Groove Theory,approved,2,1
+a2521,Wayne Fontana,approved,2,1
+a2522,Jimmy Clanton,approved,2,1
+a2523,Edwin McCain,approved,2,1
+a2524,Black Lace,approved,2,1
+a2525,P.O.D.,approved,2,1
+a2526,Jay & The Americans,approved,2,1
+a2527,Curtis Lee,approved,2,1
+a2528,Natalie La Rose,approved,2,1
+a2529,Jeremih,approved,2,1
+a2530,Loona,approved,2,1
+a2531,Mel,approved,2,1
+a2532,Alisha's Attic,approved,2,1
+a2533,Cory Rooney,approved,2,1
+a2534,Poke and Tone,approved,2,1
+a2535,Fischer-Z,approved,2,1
+a2536,Roxy Music,approved,2,1
+a2537,Ernie Maresca,approved,2,1
+a2538,The Duprees,approved,2,1
+a2539,Brad Paisley,approved,2,1
+a2540,The Motels,approved,2,1
+a2541,HAIM,approved,2,1
+a2542,Ike & Tina Turner,approved,2,1
+a2543,Zac Brown Band,approved,2,1
+a2544,Kleerup,approved,2,1
+a2545,Genesis,approved,2,1
+a2546,Midnight Star,approved,2,1
+a2547,Starskee,approved,2,1
+a2548,Steve Forbert,approved,2,1
+a2549,Gummibär,approved,2,1
+a2550,Rauw Alejandro,approved,2,1
+a2551,Marc Cohn,approved,2,1
+a2552,Mr Hudson,approved,2,1
+a2553,The Platters,approved,2,1
+a2554,Ilsey,approved,2,1
+a2555,Macy Gray,approved,2,1
+a2556,Khia,approved,2,1
+a2557,Kaz James,approved,2,1
+a2558,Riton,approved,2,1
+a2559,Nightcrawlers,approved,2,1
+a2560,Mufasa & Hypeman,approved,2,1
+a2561,Mufasa,approved,2,1
+a2562,Dopamine,approved,2,1
+a2563,The Madden Brothers,approved,2,1
+a2564,Max Merritt,approved,2,1
+a2565,The Meteors,approved,2,1
+a2566,Big Pig,approved,2,1
+a2567,Sam Winston,approved,2,1
+a2568,Desmond Dekker,approved,2,1
+a2569,John Stewart,approved,2,1
+a2570,ELAZ,approved,2,1
+a2571,Peter Sarstedt,approved,2,1
+a2572,MC Miker & DJ Sven,approved,2,1
+a2573,Rock Hits,approved,2,1
+a2574,NEWEM,approved,2,1
+a2575,Baby Alpaca,approved,2,1
+a2576,Jason Nevins,approved,2,1
+a2577,Chris Norman,approved,2,1
+a2578,Silver Convention,approved,2,1
+a2579,The Kite String Tangle,approved,2,1
+a2580,Bridgette Amofah,approved,2,1
+a2581,Martin Jensen,approved,2,1
+a2582,The Trashmen,approved,2,1
+a2583,Dzeko,approved,2,1
+a2584,Preme,approved,2,1
+a2585,Bobby Vinton,approved,2,1
+a2586,Livin' Joy,approved,2,1
+a2587,Paul Morrell,approved,2,1
+a2588,Birtles & Goble,approved,2,1
+a2589,Robin S,approved,2,1
+a2590,CDB,approved,2,1
+a2591,Tommy Boyce,approved,2,1
+a2592,Bobby Hart,approved,2,1
+a2593,Israel Kamakawiwo'ole,approved,2,1
+a2594,Bobby Lewis,approved,2,1
+a2595,World Party,approved,2,1
+a2596,Anthony Thistlethwaite,approved,2,1
+a2597,Wheatus,approved,2,1
+a2598,The Rasmus,approved,2,1
+a2599,Curtis Mayfield,approved,2,1
+a2600,Allure,approved,2,1
+a2601,Taylor Henderson,approved,2,1
+a2602,Kimberly Anne,approved,2,1
+a2603,Harold Melvin & The Blue Notes,approved,2,1
+a2604,Teddy Pendergrass,approved,2,1
+a2605,Fat Joe,approved,2,1
+a2606,A.B. Original,approved,2,1
+a2607,Ou Est Le Swimming Pool,approved,2,1
+a2608,Rui Da Silva feat. Cassandra,approved,2,1
+a2609,Billy Thorpe,approved,2,1
+a2610,Johnny Chester,approved,2,1
+a2611,Bob Kuban & The In-Men,approved,2,1
+a2612,A1,approved,2,1
+a2613,The Royal Guardsmen,approved,2,1
+a2614,The Kingston Trio,approved,2,1
+a2615,Tuka,approved,2,1
+a2616,Loverboy,approved,2,1
+a2617,Heavy D & The Boyz,approved,2,1
+a2618,Aaron Hall,approved,2,1
+a2619,Dynamic Hepnotics,approved,2,1
+a2620,Redgum,approved,2,1
+a2621,Janis Joplin,approved,2,1
+a2622,The Rascals,approved,2,1
+a2623,Bond,approved,2,1
+a2624,The Soup Dragons,approved,2,1
+a2625,Junior Reid,approved,2,1
+a2626,Asta,approved,2,1
+a2627,Allday,approved,2,1
+a2628,Mickey Baker,approved,2,1
+a2629,Marcus Marr,approved,2,1
+a2630,Nick Murphy,approved,2,1
+a2631,Scooter,approved,2,1
+a2632,Ol' 55,approved,2,1
+a2633,Billy Paul,approved,2,1
+a2634,Stevie Wright,approved,2,1
+a2635,Rooftop Heroes,approved,2,1
+a2636,Pras,approved,2,1
+a2637,Del Amitri,approved,2,1
+a2638,Rise Against,approved,2,1
+a2639,Charlie Sloth,approved,2,1
+a2640,Juai,approved,2,1
+a2641,Eddie Cochran,approved,2,1
+a2642,Acker Bilk,approved,2,1
+a2643,The Ataris,approved,2,1
+a2644,Juliander,approved,2,1
+a2645,Partners In Kryme,approved,2,1
+a2646,XYLØ,approved,2,1
+a2647,Lennon & Maisy,approved,2,1
+a2648,Paul Anka et son orchestre,approved,2,1
+a2649,KYLE,approved,2,1
+a2650,Kehlani,approved,2,1
+a2651,The Swingers,approved,2,1
+a2652,Napoleon XIV,approved,2,1
+a2653,Kate Nash,approved,2,1
+a2654,Keri Hilson,approved,2,1
+a2655,Sugar Ray,approved,2,1
+a2656,Mary Hopkin,approved,2,1
+a2657,Young MC,approved,2,1
+a2658,Sian Evans,approved,2,1
+a2659,Josh Pyke,approved,2,1
+a2660,The Ormsby Brothers,approved,2,1
+a2661,Deadstar,approved,2,1
+a2662,Abigail,approved,2,1
+a2663,Howie Day,approved,2,1
+a2664,Stray Cats,approved,2,1
+a2665,John Phillips,approved,2,1
+a2666,Francesco Yates,approved,2,1
+a2667,Martha Reeves & The Vandellas,approved,2,1
+a2668,Bill Pursell,approved,2,1
+a2669,Betty Who,approved,2,1
+a2670,Big Yavo,approved,2,1
+a2671,The Panics,approved,2,1
+a2672,Astrid S,approved,2,1
+a2673,Bell Biv DeVoe,approved,2,1
+a2674,U.S.A. For Africa,approved,2,1
+a2675,The Knickerbockers,approved,2,1
+a2676,HERBIE,approved,2,1
+a2677,Beverlee,approved,2,1
+a2678,Brainbug,approved,2,1
+a2679,Chingy,approved,2,1
+a2680,Gloria Estefan And Miami Sound Machine,approved,2,1
+a2681,OK Go,approved,2,1
+a2682,Fairground Attraction,approved,2,1
+a2683,DJ Cassidy,approved,2,1
+a2684,LANY,approved,2,1
+a2685,Samantha Fox,approved,2,1
+a2686,Albie Donnelly's Supercharge,approved,2,1
+a2687,Benson Boone,approved,2,1
+a2688,Trisha Yearwood,approved,2,1
+a2689,Armin van Buuren,approved,2,1
+a2690,Trevor Guthrie,approved,2,1
+a2691,LMC,approved,2,1
+a2692,Blue Boy,approved,2,1
+a2693,Sure Is Pure,approved,2,1
+a2694,Daddy Dewdrop,approved,2,1
+a2695,Tyla,approved,2,1
+a2696,KIDDO,approved,2,1
+a2697,Sidney Samson,approved,2,1
+a2698,Cilla Black,approved,2,1
+a2699,ZHU,approved,2,1
+a2700,Starland Vocal Band,approved,2,1
+a2701,Hugo Montenegro & His Orchestra,approved,2,1
+a2702,Hugo Montenegro,approved,2,1
+a2703,Elliott Yamin,approved,2,1
+a2704,Public Domain,approved,2,1
+a2705,August Alsina,approved,2,1
+a2706,Rick Ross,approved,2,1
+a2707,A.R. Rahman,approved,2,1
+a2708,Echosmith,approved,2,1
+a2709,Wayne Newton,approved,2,1
+a2710,Nicole Millar,approved,2,1
+a2711,Jawsh 685,approved,2,1
+a2712,Nena,approved,2,1
+a2713,Paces,approved,2,1
+a2714,Jess Kent,approved,2,1
+a2715,Phil Oakey,approved,2,1
+a2716,Giorgio Moroder,approved,2,1
+a2717,The Knack,approved,2,1
+a2718,Charles & Eddie,approved,2,1
+a2719,Zay Hilfigerrr,approved,2,1
+a2720,Zayion McCall,approved,2,1
+a2721,T-Pain,approved,2,1
+a2722,Joe Publick,approved,2,1
+a2723,Sheryl Crow,approved,2,1
+a2724,Benny Benassi,approved,2,1
+a2725,The Biz,approved,2,1
+a2726,The Notorious B.I.G.,approved,2,1
+a2727,Tim McGraw,approved,2,1
+a2728,Brownstone,approved,2,1
+a2729,Samantha Sang,approved,2,1
+a2730,Brooks Jefferson,approved,2,1
+a2731,Florida Georgia Line,approved,2,1
+a2732,WATT,approved,2,1
+a2733,Larry Finnegan,approved,2,1
+a2734,Jimi Hendrix,approved,2,1
+a2735,Mr. President,approved,2,1
+a2736,Joe Nichols,approved,2,1
+a2737,Maureen McGovern,approved,2,1
+a2738,Sammy Davis Jr.,approved,2,1
+a2739,Kelsea Ballerini,approved,2,1
+a2740,Isaac Hayes,approved,2,1
+a2741,Bobbi Martin,approved,2,1
+a2742,Operator Please,approved,2,1
+a2743,SAYGRACE,approved,2,1
+a2744,Julie Covington,approved,2,1
+a2745,Tim Rice,approved,2,1
+a2746,Peter McCann,approved,2,1
+a2747,Jackie Trent,approved,2,1
+a2748,Tony Hatch,approved,2,1
+a2749,You Am I,approved,2,1
+a2750,Georgia Fair,approved,2,1
+a2751,M,approved,2,1
+a2752,Robin Scott,approved,2,1
+a2753,Nick Launay,approved,2,1
+a2754,Al Green,approved,2,1
+a2755,Anita Bryant,approved,2,1
+a2756,Machinations,approved,2,1
+a2757,Ph.D.,approved,2,1
+a2758,Anne Murray,approved,2,1
+a2759,Jim Steinman,approved,2,1
+a2760,The Griswolds,approved,2,1
+a2761,Shanks & Bigfoot,approved,2,1
+a2762,1927,approved,2,1
+a2763,Kenny,approved,2,1
+a2764,Kenya Grace,approved,2,1
+a2765,Mary J. Blige,approved,2,1
+a2766,Jam & Spoon,approved,2,1
+a2767,Plavka,approved,2,1
+a2768,MFSB,approved,2,1
+a2769,Shakespears Sister,approved,2,1
+a2770,Boy & Bear,approved,2,1
+a2771,Uncle Kracker,approved,2,1
+a2772,Joe South,approved,2,1
+a2773,BIA,approved,2,1
+a2774,Diarra Sylla,approved,2,1
+a2775,FIFA Sound,approved,2,1
+a2776,The Saints,approved,2,1
+a2777,Skeeter Davis,approved,2,1
+a2778,Joe Dolce,approved,2,1
+a2779,RANI,approved,2,1
+a2780,Drummond,approved,2,1
+a2781,Blxst,approved,2,1
+a2782,Bino Rideaux,approved,2,1
+a2783,Johnny Mathis,approved,2,1
+a2784,Denzal Park,approved,2,1
+a2785,Marty Rhone,approved,2,1
+a2786,The Toys,approved,2,1
+a2787,Deniece Williams,approved,2,1
+a2788,Elaine Paige,approved,2,1
+a2789,Barbara Dickson,approved,2,1
+a2790,The Weather Girls,approved,2,1
+a2791,Otto Knows,approved,2,1
+a2792,Portrait,approved,2,1
+a2793,Keith Sweat,approved,2,1
+a2794,salem ilese,approved,2,1
+a2795,Rusted Root,approved,2,1
+a2796,Qwote,approved,2,1
+a2797,Pandora,approved,2,1
+a2798,Caramel Blue,approved,2,1
+a2799,Sarah Connor,approved,2,1
+a2800,Jenny Morris,approved,2,1
+a2801,Paul Hardcastle,approved,2,1
+a2802,Clyde McPhatter,approved,2,1
+a2803,Bill Medley,approved,2,1
+a2804,The ID,approved,2,1
+a2805,The Searchers,approved,2,1
+a2806,Augie March,approved,2,1
+a2807,iNi Kamoze,approved,2,1
+a2808,Los Indios Tabajaras,approved,2,1
+a2809,Treble Charger,approved,2,1
+a2810,Bus Stop,approved,2,1
+a2811,Carl Douglas,approved,2,1
+a2812,Herbs,approved,2,1
+a2813,Stevie Hoang,approved,2,1
+a2814,Doris Troy,approved,2,1
+a2815,Honeyz,approved,2,1
+a2816,Chris Franklin,approved,2,1
+a2817,BANNERS,approved,2,1
+a2818,Benjamin Joseph,approved,2,1
+a2819,Internet Money,approved,2,1
+a2820,Don Toliver,approved,2,1
+a2821,NAV,approved,2,1
+a2822,Garrett Kato,approved,2,1
+a2823,Lovey James,approved,2,1
+a2824,Daniel Seavey,approved,2,1
+a2825,LA Vision,approved,2,1
+a2826,Shinedown,approved,2,1
+a2827,Afroman,approved,2,1
+a2828,Black Rob,approved,2,1
+a2829,Mark Curry,approved,2,1
+a2830,The Commitments,approved,2,1
+a2831,Lisa Mitchell,approved,2,1
+a2832,Moloko,approved,2,1
+a2833,Professor Green,approved,2,1
+a2834,Static Revenger,approved,2,1
+a2835,B.B. King,approved,2,1
+a2836,Donna Lewis,approved,2,1
+a2837,Marlon Roudette,approved,2,1
+a2838,Classified,approved,2,1
+a2839,Kandi,approved,2,1
+a2840,The Lettermen,approved,2,1
+a2841,Toploader,approved,2,1
+a2842,Jeannie C. Riley,approved,2,1
+a2843,Missing Persons,approved,2,1
+a2844,Beck,approved,2,1
+a2845,The Grid,approved,2,1
+a2846,Kilter,approved,2,1
+a2847,A.L.T. And The Lost Civilization,approved,2,1
+a2848,Mark Dinning,approved,2,1
+a2849,Stars On 45,approved,2,1
+a2850,Da Hool,approved,2,1
+a2851,Simple Minds,approved,2,1
+a2852,Paul Woolford,approved,2,1
+a2853,Amber Mark,approved,2,1
+a2854,Rush,approved,2,1
+a2855,Whigfield,approved,2,1
+a2856,Sgt. Barry Sadler,approved,2,1
+a2857,twocolors,approved,2,1
+a2858,Ryan Riback,approved,2,1
+a2859,Doctor & The Medics,approved,2,1
+a2860,Jewel Akens,approved,2,1
+a2861,Marky Mark And The Funky Bunch,approved,2,1
+a2862,Loleatta Holloway,approved,2,1
+a2863,Baauer,approved,2,1
+a2864,Ol' Dirty Bastard,approved,2,1
+a2865,PSY,approved,2,1
+a2866,Mungo Jerry,approved,2,1
+a2867,Madasun,approved,2,1
+a2868,Ketty Lester,approved,2,1
+a2869,Stafford Brothers,approved,2,1
+a2870,C.W. McCall,approved,2,1
+a2871,CAKE,approved,2,1
+a2872,Peters & Lee,approved,2,1
+a2873,After 7,approved,2,1
+a2874,Jessica Andersson,approved,2,1
+a2875,John Gallen,approved,2,1
+a2876,Shakaya,approved,2,1
+a2877,Majestic,approved,2,1
+a2878,Colby O'Donis,approved,2,1
+a2879,Kardinal Offishall,approved,2,1
+a2880,Austin Mahone,approved,2,1
+a2881,Lorne Greene,approved,2,1
+a2882,Poo Bear,approved,2,1
+a2883,Oliver Heldens,approved,2,1
+a2884,Vula,approved,2,1
+a2885,Alien Ant Farm,approved,2,1
+a2886,Nu Shooz,approved,2,1
+a2887,The Midnight Beast,approved,2,1
+a2888,Chloe Angelides,approved,2,1
+a2889,Matt Monro,approved,2,1
+a2890,Teddy Cream,approved,2,1
+a2891,Szabo,approved,2,1
+a2892,The Go-Go's,approved,2,1
+a2893,Tight Fit,approved,2,1
+a2894,Looking Glass,approved,2,1
+a2895,Juicy J,approved,2,1
+a2896,Underworld,approved,2,1
+a2897,IDRIS,approved,2,1
+a2898,Vanilla Fudge,approved,2,1
+a2899,Fred again..,approved,2,1
+a2900,Overmono,approved,2,1
+a2901,D. Pritzker,approved,2,1
+a2902,Sonia Dada,approved,2,1
+a2903,MSTRKRFT,approved,2,1
+a2904,N.O.R.E.,approved,2,1
+a2905,Al Stewart,approved,2,1
+a2906,James,approved,2,1
+a2907,The Blessed Madonna,approved,2,1
+a2908,Boogie Pimps,approved,2,1
+a2909,Sigrid,approved,2,1
+a2910,Hot Action Cop,approved,2,1
+a2911,Yothu Yindi,approved,2,1
+a2912,Shai,approved,2,1
+a2913,Bill Appleberry,approved,2,1
+a2914,Amiel,approved,2,1
+a2915,Peta Morris,approved,2,1
+a2916,Ernie K-Doe,approved,2,1
+a2917,Redman,approved,2,1
+a2918,Lonnie Donegan,approved,2,1
+a2919,Richard Clapton,approved,2,1
+a2920,Freshlyground,approved,2,1
+a2921,Chris Willis,approved,2,1
+a2922,Lil Durk,approved,2,1
+a2923,Clinton Kane,approved,2,1
+a2924,Bob Welch,approved,2,1
+a2925,Lauren Daigle,approved,2,1
+a2926,Barry Ryan,approved,2,1
+a2927,Madison Beer,approved,2,1
+a2928,Rudy,approved,2,1
+a2929,Axwell,approved,2,1
+a2930,Slim Dusty,approved,2,1
+a2931,Yes,approved,2,1
+a2932,Hot Chip,approved,2,1
+a2933,Clever,approved,2,1
+a2934,POOLCLVB,approved,2,1
+a2935,DOOLIE,approved,2,1
+a2936,Luciana,approved,2,1
+a2937,Henry Mancini,approved,2,1
+a2938,Lawrence Welk,approved,2,1
+a2939,Labrinth feat. Tinie Tempah,approved,2,1
+a2940,Birdman,approved,2,1
+a2941,The Nashville Teens,approved,2,1
+a2942,Pat Wilson,approved,2,1
+a2943,Roger,approved,2,1
+a2944,Shawn Colvin,approved,2,1
+a2945,The Funky Groove Connection,approved,2,1
+a2946,Ween,approved,2,1
+a2947,Glenn Shorrock,approved,2,1
+a2948,Burl Ives,approved,2,1
+a2949,Roger Whittaker,approved,2,1
+a2950,Bill Conti,approved,2,1
+a2951,Aaron Neville,approved,2,1
+a2952,Mimi Webb,approved,2,1
+a2953,Pat Boone,approved,2,1
+a2954,The Black Crowes,approved,2,1
+a2955,CeCe Peniston,approved,2,1
+a2956,Sgt Slick,approved,2,1
+a2957,Solitaire,approved,2,1
+a2958,Deep Forest,approved,2,1
+a2959,Blackfeather,approved,2,1
+a2960,MN8,approved,2,1
+a2961,Gene McDaniels,approved,2,1
+a2962,David Franj,approved,2,1
+a2963,Peter And Gordon,approved,2,1
+a2964,Jaden,approved,2,1
+a2965,Frankie Avalon,approved,2,1
+a2966,Reef,approved,2,1
+a2967,Neal Slateford,approved,2,1
+a2968,Nick Batt,approved,2,1
+a2969,David Soul,approved,2,1
+a2970,Peter\,approved,2,1
+a2971,Paul and Mary,approved,2,1
+a2972,Papa Roach,approved,2,1
+a2973,F.C.B,approved,2,1
+a2974,Grafton Primary,approved,2,1
+a2975,Billy J. Kramer,approved,2,1
+a2976,The Dakotas,approved,2,1
+a2977,Yusuf,approved,2,1
+a2978,Mr G,approved,2,1
+a2979,Tesher,approved,2,1
+a2980,Eliza Doolittle,approved,2,1
+a2981,Jackie DeShannon,approved,2,1
+a2982,Ohio Players,approved,2,1
+a2983,Disclosure,approved,2,1
+a2984,Marc Anthony,approved,2,1
+a2985,Martha Davis,approved,2,1
+a2986,The Connells,approved,2,1
+a2987,Nils Landgren Funk Unit,approved,2,1
+a2988,Barbara Lynn,approved,2,1
+a2989,Reg Lindsay,approved,2,1
+a2990,WILLOW,approved,2,1
+a2991,Europa,approved,2,1
+a2992,Jack Garratt,approved,2,1
+a2993,Phoebe Ryan,approved,2,1
+a2994,Amanda Perez,approved,2,1
+a2995,Dimples D.,approved,2,1
+a2996,Ben Liebrand,approved,2,1
+a2997,Matchbox,approved,2,1
+a2998,Raydio,approved,2,1
+a2999,The Sandpipers,approved,2,1
+a3000,Crush,approved,2,1
+a3001,Liam Bailey,approved,2,1
+a3002,Gnarls Barkley,approved,2,1
+a3003,Chad Kroeger,approved,2,1
+a3004,Chris Farlowe,approved,2,1
+a3005,Leapy Lee,approved,2,1
+a3006,Emma Bunton,approved,2,1
+a3007,Dakota,approved,2,1
+a3008,Robert Palmer,approved,2,1
+a3009,Collett,approved,2,1
+a3010,Shelley Fabares,approved,2,1
+a3011,Stars On 54,approved,2,1
+a3012,City Boy,approved,2,1
+a3013,Harry Belafonte,approved,2,1
+a3014,Luke Christopher,approved,2,1
+a3015,The Babys,approved,2,1
+a3016,Glass Animals,approved,2,1
+a3017,Leto,approved,2,1
+a3018,Mary Mary,approved,2,1
+a3019,Yello,approved,2,1
+a3020,Tori Amos,approved,2,1
+a3021,The Beautiful Girls,approved,2,1
+a3022,Zephyr Alabama,approved,2,1
+a3023,Abishi Taylor,approved,2,1
+a3024,Jessie James Decker,approved,2,1
+a3025,Marcus Santoro,approved,2,1
+a3026,Johnny Nash,approved,2,1
+a3027,Houston,approved,2,1
+a3028,I-20,approved,2,1
+a3029,Thierry Von Der Warth,approved,2,1
+a3030,Jay Mason,approved,2,1
+a3031,Manon Dave,approved,2,1
+a3032,The Mar-Keys,approved,2,1
+a3033,The Go-Betweens,approved,2,1
+a3034,Rebecca Levy,approved,2,1
+a3035,MAX,approved,2,1
+a3036,Enrique Iglesias feat. Pitbull,approved,2,1
+a3037,Rose Royce,approved,2,1
+a3038,The Cowsills,approved,2,1
+a3039,Yazoo,approved,2,1
+a3040,Tim Finn,approved,2,1
+a3041,The Quick,approved,2,1
+a3042,LEN,approved,2,1
+a3043,The Manhattan Transfer,approved,2,1
+a3044,Loreen,approved,2,1
+a3045,Debby Boone,approved,2,1
+a3046,Kelly Marie,approved,2,1
+a3047,Sean Kingston,approved,2,1
+a3048,JP Saxe,approved,2,1
+a3049,Tubeway Army,approved,2,1
+a3050,Count Basie,approved,2,1
+a3051,Sammi Smith,approved,2,1
+a3052,Neon Trees,approved,2,1
+a3053,Heinz,approved,2,1
+a3054,J. Holiday,approved,2,1
+a3055,Switchfoot,approved,2,1
+a3056,Guru Josh,approved,2,1
+a3057,The Kingsmen,approved,2,1
+a3058,Royal Philharmonic Orchestra conducted by Louis Clark,approved,2,1
+a3059,The Tourists,approved,2,1
+a3060,Paul Lekakis,approved,2,1
+a3061,La Trec,approved,2,1
+a3062,Daughtry,approved,2,1
+a3063,Alan Jackson,approved,2,1
+a3064,Jimmy Buffett,approved,2,1
+a3065,Jeezy,approved,2,1
+a3066,Esther and Abi Ofarim,approved,2,1
+a3067,Lasgo,approved,2,1
+a3068,Darryl Cotton,approved,2,1
+a3069,Right Said Fred,approved,2,1
+a3070,Charlene,approved,2,1
+a3071,Benedict,approved,2,1
+a3072,Tiga,approved,2,1
+a3073,Mark Holden,approved,2,1
+a3074,Martha and the Muffins,approved,2,1
+a3075,6LACK,approved,2,1
+a3076,Edward Bear,approved,2,1
+a3077,Hunter Hayes,approved,2,1
+a3078,Florence Welch,approved,2,1
+a3079,Sparks,approved,2,1
+a3080,Chain,approved,2,1
+a3081,Jazmine Sullivan,approved,2,1
+a3082,The Honeycombs,approved,2,1
+a3083,Highway to Hell,approved,2,1
+a3084,Cobra Starship,approved,2,1
+a3085,Sabi,approved,2,1
+a3086,Gramophonedzie,approved,2,1
+a3087,Dirty Vegas,approved,2,1
+a3088,Choirboys,approved,2,1
+a3089,Myke Towers,approved,2,1
+a3090,Tainy,approved,2,1
+a3091,Loretta Lynn,approved,2,1
+a3092,Carlos Cid,approved,2,1
+a3093,Tim Deluxe,approved,2,1
+a3094,Sam Obernik,approved,2,1
+a3095,Natasha Bedingfield,approved,2,1
+a3096,Kim Petras,approved,2,1
+a3097,Alex Edmonds,approved,2,1
+a3098,Urge Overkill,approved,2,1
+a3099,Avant,approved,2,1
+a3100,Elley Duhé,approved,2,1
+a3101,James Carter,approved,2,1
+a3102,FAST BOY,approved,2,1
+a3103,James Freud,approved,2,1
+a3104,The Dawn,approved,2,1
+a3105,28 Days,approved,2,1
+a3106,Sage The Gemini,approved,2,1
+a3107,Lookas,approved,2,1
+a3108,Jann Arden,approved,2,1
+a3109,Cornershop,approved,2,1
+a3110,Mike Curb Congregation,approved,2,1
+a3111,Midnight Juggernauts,approved,2,1
+a3112,Zager & Evans,approved,2,1
+a3113,Barenaked Ladies,approved,2,1
+a3114,Tom Lord-Alge,approved,2,1
+a3115,Roger Miller,approved,2,1
+a3116,Vangelis,approved,2,1
+a3117,Allan Sherman,approved,2,1
+a3118,Jigsaw,approved,2,1
+a3119,A Touch Of Class,approved,2,1
+a3120,Pete Konemann,approved,2,1
+a3121,The Marshall Tucker Band,approved,2,1
+a3122,Joey Scarbury,approved,2,1
+a3123,Fastball,approved,2,1
+a3124,Eric 'ET' Thorngren,approved,2,1
+a3125,"Lisa ""Left Eye"" Lopes",approved,2,1
+a3126,Hi Tek 3,approved,2,1
+a3127,Ya Kid K,approved,2,1
+a3128,DR.,approved,2,1
+a3129,Kaelo Mula,approved,2,1
+a3130,Big Steppa,approved,2,1
+a3131,Adrian Eagle,approved,2,1
+a3132,Natalia Kills,approved,2,1
+a3133,Black,approved,2,1
+a3134,The Androids,approved,2,1
+a3135,Vic Dana,approved,2,1
+a3136,Planet Funk,approved,2,1
+a3137,Cinderella,approved,2,1
+a3138,Billy Vaughn,approved,2,1
+a3139,A. Manetta,approved,2,1
+a3140,S'Express,approved,2,1
+a3141,The Superjesus,approved,2,1
+a3142,ELVIRA,approved,2,1
+a3143,Lieutenant Pigeon,approved,2,1
+a3144,Joe Jonas,approved,2,1
+a3145,Plastic Bertrand,approved,2,1
+a3146,Johnny & The Hurricanes,approved,2,1
+a3147,Johnny Paris,approved,2,1
+a3148,The Stone Roses,approved,2,1
+a3149,Gary Shearston,approved,2,1
+a3150,Vanilla Ice,approved,2,1
+a3151,Casey Donovan,approved,2,1
+a3152,New Boyz,approved,2,1
+a3153,Joe Dowell,approved,2,1
+a3154,Little Richard,approved,2,1
+a3155,Nicky Youre,approved,2,1
+a3156,dazy,approved,2,1
+a3157,Caesars,approved,2,1
+a3158,Margaret Urlich,approved,2,1
+a3159,Stacey Q,approved,2,1
+a3160,Nayer,approved,2,1
+a3161,Kiesza,approved,2,1
+a3162,Dee C. Lee,approved,2,1
+a3163,Ross D. Wylie,approved,2,1
+a3164,Mase,approved,2,1
+a3165,Massive Attack,approved,2,1
+a3166,Elizabeth Fraser,approved,2,1
+a3167,Axwell /\ Ingrosso,approved,2,1
+a3168,Sebastian Ingrosso,approved,2,1
+a3169,Freedom Under XRay,approved,2,1
+a3170,Donnie Brooks,approved,2,1
+a3171,Four Tops,approved,2,1
+a3172,Bebe Winans,approved,2,1
+a3173,DJ BoBo,approved,2,1
+a3174,Candy Dulfer,approved,2,1
+a3175,Dion & The Belmonts,approved,2,1
+a3176,Stevie B,approved,2,1
+a3177,Little Eva,approved,2,1
+a3178,bbno$,approved,2,1
+a3179,Rich Brian,approved,2,1
+a3180,TAPZ GALLANTINO,approved,2,1
+a3181,Andrew Strong,approved,2,1
+a3182,King,approved,2,1
+a3183,Loud Luxury,approved,2,1
+a3184,Breathe Carolina,approved,2,1
+a3185,Kiiara,approved,2,1
+a3186,Lenka,approved,2,1
+a3187,Mia Rodriguez,approved,2,1
+a3188,The Little Heroes,approved,2,1
+a3189,Huey Lewis & The News,approved,2,1
+a3190,Collette,approved,2,1
+a3191,New World,approved,2,1
+a3192,Shaun Cassidy,approved,2,1
+a3193,Waze & Odyssey,approved,2,1
+a3194,Tommy Theo,approved,2,1
+a3195,The Bureau,approved,2,1
+a3196,WickedStranger,approved,2,1
+a3197,The Civil Wars,approved,2,1
+a3198,Skid Row,approved,2,1
+a3199,The Echoes,approved,2,1
+a3200,Dean Geyer,approved,2,1
+a3201,Flash and the Pan,approved,2,1
+a3202,Bun B,approved,2,1
+a3203,Slim Thug,approved,2,1
+a3204,Nathan Sykes,approved,2,1
+a3205,StaySolidRocky,approved,2,1
+a3206,Shona Laing,approved,2,1
+a3207,Queens of the Stone Age,approved,2,1
+a3208,Sam Bailey,approved,2,1
+a3209,Thompson Twins,approved,2,1
+a3210,Cut 'N' Move,approved,2,1
+a3211,Robert DeLong,approved,2,1
+a3212,Amy Pearson,approved,2,1
+a3213,Visage,approved,2,1
+a3214,Del Shannon,approved,2,1
+a3215,4 P.M.,approved,2,1
+a3216,Puddle Of Mudd,approved,2,1
+a3217,White Plains,approved,2,1
+a3218,Claes Janson,approved,2,1
+a3219,Survivor,approved,2,1
+a3220,Dan Black,approved,2,1
+a3221,Eric Weissberg,approved,2,1
+a3222,Steve Mandell,approved,2,1
+a3223,Van McCoy & The Soul City Symphony,approved,2,1
+a3224,George Jones,approved,2,1
+a3225,Brian May & The ABC Showband,approved,2,1
+a3226,Katy Tiz,approved,2,1
+a3227,SAM WHITE,approved,2,1
+a3228,LL COOL J,approved,2,1
+a3229,Thelma Houston,approved,2,1
+a3230,Barbara George,approved,2,1
+a3231,Jimmy Nail,approved,2,1
+a3232,Barrett Strong,approved,2,1
+a3233,Yvonne Fair,approved,2,1
+a3234,Ratcat,approved,2,1
+a3235,Benny Mardones,approved,2,1
+a3236,The Jacksons,approved,2,1
+a3237,Georgie Fame,approved,2,1
+a3238,Meco,approved,2,1
+a3239,Brian McKnight,approved,2,1
+a3240,Julie Rogers,approved,2,1
+a3241,The Psychedelic Furs,approved,2,1
+a3242,Timi Yuro,approved,2,1
+a3243,The Stylistics,approved,2,1
+a3244,Russell Thompkins\,approved,2,1
+a3245,Jr.,approved,2,1
+a3246,SWV,approved,2,1
+a3247,"""Weird Al"" Yankovic",approved,2,1
+a3248,Glenn Medeiros,approved,2,1
+a3249,Basement Jaxx,approved,2,1
+a3250,Delaney & Bonnie,approved,2,1
+a3251,Matthew Santos,approved,2,1
+a3252,James Brown,approved,2,1
+a3253,Paulini,approved,2,1
+a3254,Jessie Reyez,approved,2,1
+a3255,The Messengers,approved,2,1
+a3256,Jody Miller,approved,2,1
+a3257,The Whitlams,approved,2,1
+a3258,Jean Knight,approved,2,1
+a3259,Anton,approved,2,1
+a3260,DJ Ötzi,approved,2,1
+a3261,The Atlantics,approved,2,1
+a3262,Breakfast Club,approved,2,1
+a3263,Grandmaster Melle Mel,approved,2,1
+a3264,Grandmaster Caz,approved,2,1
+a3265,Eric Nally,approved,2,1
+a3266,Arthur Conley,approved,2,1
+a3267,Stush,approved,2,1
+a3268,Red Rat,approved,2,1
+a3269,Jack Scott,approved,2,1
+a3270,Utah Saints,approved,2,1
+a3271,Kenny Rogers with Dolly Parton,approved,2,1
+a3272,Andy Black,approved,2,1
+a3273,Juliet Simms,approved,2,1
+a3274,Emilio Pericoli,approved,2,1
+a3275,ALMA,approved,2,1
+a3276,Ian Dury,approved,2,1
+a3277,The Blockheads,approved,2,1
+a3278,Bruce Ruffin,approved,2,1
+a3279,Gloria Loring,approved,2,1
+a3280,Carl Anderson,approved,2,1
+a3281,Atomic Kitten,approved,2,1
+a3282,The Lemon Pipers,approved,2,1
+a3283,Morris Albert,approved,2,1
+a3284,The Triffids,approved,2,1
+a3285,The Preatures,approved,2,1
+a3286,The HamilTones,approved,2,1
+a3287,Wale,approved,2,1
+a3288,Shift K3Y,approved,2,1
+a3289,Jake Reese,approved,2,1
+a3290,In-Grid,approved,2,1
+a3291,Toni Basil,approved,2,1
+a3292,Rick Price,approved,2,1
+a3293,Jefferson Airplane,approved,2,1
+a3294,Sergio Mendes & Brasil '66,approved,2,1
+a3295,Mark Williams,approved,2,1
+a3296,Duane Harden,approved,2,1
+a3297,Juelz Santana,approved,2,1
+a3298,The Trinidad Singers,approved,2,1
+a3299,Jimmy Charles,approved,2,1
+a3300,Sam And The Womp,approved,2,1
+a3301,John Hiatt,approved,2,1
+a3302,Fakebitcheshero,approved,2,1
+a3303,The Jive Five,approved,2,1
+a3304,Steve Harley,approved,2,1
+a3305,Steve Harley & Cockney Rebel,approved,2,1
+a3306,Sophie Monk,approved,2,1
+a3307,Kate Ceberano,approved,2,1
+a3308,Jaheim,approved,2,1
+a3309,Kim Hart,approved,2,1
+a3310,Koo De Tah,approved,2,1
+a3311,Buzz Clifford,approved,2,1
+a3312,Boy George,approved,2,1
+a3313,Rascal Flatts,approved,2,1
+a3314,Josey Scott,approved,2,1
+a3315,George Benson,approved,2,1
+a3316,YALL,approved,2,1
+a3317,Gabriela Richardson,approved,2,1
+a3318,The Edgar Winter Group,approved,2,1
+a3319,The Simpsons,approved,2,1
+a3320,Optacure,approved,2,1
+a3321,Hampton The Hampster,approved,2,1
+a3322,Johnny Horton,approved,2,1
+a3323,Betty Boo,approved,2,1
+a3324,Lewis Thompson,approved,2,1
+a3325,Transvision Vamp,approved,2,1
+a3326,Swing Out Sister,approved,2,1
+a3327,Tee-Set,approved,2,1
+a3328,Architecture In Helsinki,approved,2,1
+a3329,David Cole,approved,2,1
+a3330,The Dave Brubeck Quartet,approved,2,1
+a3331,Geri Halliwell,approved,2,1
+a3332,Shanice,approved,2,1
+a3333,Crazy Town,approved,2,1
+a3334,The Henchmen,approved,2,1
+a3335,Rocky Burnette,approved,2,1
+a3336,Sammi Elston,approved,2,1
+a3337,cassö,approved,2,1
+a3338,D-Block Europe,approved,2,1
+a3339,Traknox,approved,2,1
+a3340,The Members,approved,2,1
+a3341,Burton Cummings,approved,2,1
+a3342,Long John Baldry,approved,2,1
+a3343,The Animals,approved,2,1
+a3344,Superstar,approved,2,1
+a3345,Montell Jordan,approved,2,1
+a3346,Bingoboys,approved,2,1
+a3347,Renee Geyer,approved,2,1
+a3348,Bobbie Gentry,approved,2,1
+a3349,C. J. Johnson,approved,2,1
+a3350,Regina Belle,approved,2,1
+a3351,Disney,approved,2,1
+a3352,Dominic Fike,approved,2,1
+a3353,Supergrass,approved,2,1
+a3354,The Zombies,approved,2,1
+a3355,Rozalla,approved,2,1
+a3356,Anita Ward,approved,2,1
+a3357,Skip Marley,approved,2,1
+a3358,Anne & Johnny Hawker,approved,2,1
+a3359,Tkay Maidza,approved,2,1
+a3360,Paul Norton,approved,2,1
+a3361,Johnny Farnham,approved,2,1
+a3362,Mickey Gilley,approved,2,1
+a3363,Kajagoogoo,approved,2,1
+a3364,Mixed By: Mykaell Riley & Jeremy Allom,approved,2,1
+a3365,Elen Levon,approved,2,1
+a3366,Matt Scullion,approved,2,1
+a3367,Billy Vera & The Beaters,approved,2,1
+a3368,Rema,approved,2,1
+a3369,Bipolar Sunshine,approved,2,1
+a3370,"Jonathan ""JR"" Rotem",approved,2,1
+a3371,Surf Mesa,approved,2,1
+a3372,Emilee,approved,2,1
+a3373,Dan Hill,approved,2,1
+a3374,Girl Thing,approved,2,1
+a3375,Malcolm McLaren,approved,2,1
+a3376,Things Of Stone and Wood,approved,2,1
+a3377,Lee Kernaghan,approved,2,1
+a3378,Alan O'Day,approved,2,1
+a3379,Stephen Sanchez,approved,2,1
+a3380,Bobby Goldsboro,approved,2,1
+a3381,ACRAZE,approved,2,1
+a3382,Cherish,approved,2,1
+a3383,Fat Larry's Band,approved,2,1
+a3384,Drapht,approved,2,1
+a3385,Eamon,approved,2,1
+a3386,Anitta,approved,2,1
+a3387,Sam The Sham & The Pharaohs,approved,2,1
+a3388,Joel Fletcher,approved,2,1
+a3389,Amity Dry,approved,2,1
+a3390,Alex Orbison,approved,2,1
+a3391,Chuck Turner,approved,2,1
+a3392,Meg Washington,approved,2,1
+a3393,Mötley Crüe,approved,2,1
+a3394,Nyla,approved,2,1
+a3395,Fuse ODG,approved,2,1
+a3396,Springwater,approved,2,1
+a3397,Mickie James,approved,2,1
+a3398,Chapel Hart,approved,2,1
+a3399,Zaheer,approved,2,1
+a3400,Myglö,approved,2,1
+a3401,Gerry Monroe,approved,2,1
+a3402,Sum 41,approved,2,1
+a3403,Bic Runga,approved,2,1
+a3404,Wilson Pickett,approved,2,1
+a3405,Will Heard,approved,2,1
+a3406,The Allniters,approved,2,1
+a3407,Måneskin,approved,2,1
+a3408,The Damned,approved,2,1
+a3409,Boris Dlugosch,approved,2,1
+a3410,Michael Lange,approved,2,1
+a3411,Flight Facilities,approved,2,1
+a3412,Wild Belle,approved,2,1
+a3413,DHT,approved,2,1
+a3414,Edmee,approved,2,1
+a3415,Furious F.,approved,2,1
+a3416,Kokomo,approved,2,1
+a3417,Blue,approved,2,1
+a3418,Bodeans,approved,2,1
+a3419,Rick Springfield,approved,2,1
+a3420,Strawbs,approved,2,1
+a3421,Julia Stone,approved,2,1
+a3422,Young the Giant,approved,2,1
+a3423,Tegan and Sara,approved,2,1
+a3424,Hocus Pocus,approved,2,1
+a3425,Bronski Beat,approved,2,1
+a3426,Loggins & Messina,approved,2,1
+a3427,Brendan Bowyer & The Royal Showband,approved,2,1
+a3428,Harold Faltermeyer,approved,2,1
+a3429,Ashe,approved,2,1
+a3430,F.R. David,approved,2,1
+a3431,Tag Team,approved,2,1
+a3432,Ultravox,approved,2,1
+a3433,The Cookies,approved,2,1
+a3434,Melanie Dyer,approved,2,1
+a3435,Verdine White,approved,2,1
+a3436,Matoma,approved,2,1
+a3437,PnB Rock,approved,2,1
+a3438,Squeeze,approved,2,1
+a3439,The Five Stairsteps,approved,2,1
+a3440,The Cuff Links,approved,2,1
+a3441,Herb Alpert & The Tijuana Brass,approved,2,1
+a3442,The Prodigy,approved,2,1
+a3443,Isaiah Firebrace,approved,2,1
+a3444,The Boomtown Rats,approved,2,1
+a3445,B2K,approved,2,1
+a3446,Peggy Gou,approved,2,1
+a3447,Daneka Nation,approved,2,1
+a3448,40 Thevz,approved,2,1
+a3449,Yung Joc,approved,2,1
+a3450,Darude,approved,2,1
+a3451,The Hollywood Argyles,approved,2,1
+a3452,Bow Wow,approved,2,1
+a3453,Pixie Lott,approved,2,1
+a3454,Focus,approved,2,1
+a3455,The Mavericks,approved,2,1
+a3456,The Calling,approved,2,1
+a3457,Jerry Harrison,approved,2,1
+a3458,Stephanie McIntosh,approved,2,1
+a3459,Judie Tzuke,approved,2,1
+a3460,Toto Coelo,approved,2,1
+a3461,Ivan Gough,approved,2,1
+a3462,Feenixpawl,approved,2,1
+a3463,Georgi Kay,approved,2,1
+a3464,"Mark ""Exit"" Goodchild",approved,2,1
+a3465,"Aliaune ""Akon"" Thiam",approved,2,1
+a3466,Yo La Tengo,approved,2,1
+a3467,C.C.S.,approved,2,1
+a3468,Flipmode Squad,approved,2,1
+a3469,Natalie Taylor,approved,2,1
+a3470,K.W.S.,approved,2,1
+a3471,Ian Dury & The Blockheads,approved,2,1
+a3472,Matt Terry,approved,2,1
+a3473,Grayson Hugh,approved,2,1
+a3474,Sandi Thom,approved,2,1
+a3475,Abz Winter,approved,2,1
+a3476,Bobby Bare,approved,2,1
+a3477,Rivers Cuomo,approved,2,1
+a3478,The Nolans,approved,2,1
+a3479,Phil Seymour,approved,2,1
+a3480,Teddy Geiger,approved,2,1
+a3481,Dixie Belles,approved,2,1
+a3482,Cornbread & Jerry,approved,2,1
+a3483,Beastie Boys,approved,2,1
+a3484,The Sensations,approved,2,1
+a3485,The Corsairs,approved,2,1
+a3486,Disturbed,approved,2,1
+a3487,Johnny Maestro,approved,2,1
+a3488,Frank Mills,approved,2,1
+a3489,Ronnie And The Hi-Lites,approved,2,1
+a3490,Near Mrs,approved,2,1
+a3491,Kid Ink,approved,2,1
+a3492,Kaleb Jones,approved,2,1
+a3493,iio,approved,2,1
+a3494,Nadia Ali,approved,2,1
+a3495,Charlee,approved,2,1
+a3496,Angèle,approved,2,1
+a3497,Peter Blakeley,approved,2,1
+a3498,José Feliciano,approved,2,1
+a3499,Alcazar,approved,2,1
+a3500,David Jones,approved,2,1
+a3501,Peabo Bryson with Roberta Flack,approved,2,1
+a3502,The Cockroaches,approved,2,1
+a3503,The Manhattans,approved,2,1
+a3504,Jerry Lee Lewis,approved,2,1
+a3505,Brandi Carlile,approved,2,1
+a3506,Boys Don't Cry,approved,2,1
+a3507,Two Man Band\,approved,2,1
+a3508,The,approved,2,1
+a3509,Leighton Meester,approved,2,1
+a3510,MK,approved,2,1
+a3511,The Coral,approved,2,1
+a3512,The Belle Stars,approved,2,1
+a3513,Bloc Party,approved,2,1
+a3514,Nikki Webster,approved,2,1
+a3515,Tove Styrke,approved,2,1
+a3516,RØMANS,approved,2,1
+a3517,QED,approved,2,1
+a3518,K's Choice,approved,2,1
+a3519,Lee Harding,approved,2,1
+a3520,Luude,approved,2,1
+a3521,Colin Hay,approved,2,1
+a3522,Jennifer Rush,approved,2,1
+a3523,Hot Butter,approved,2,1
+a3524,Imany,approved,2,1
+a3525,Filatov,approved,2,1
+a3526,Karas,approved,2,1
+a3527,Wrabel,approved,2,1
+a3528,Marshall Hain,approved,2,1
+a3529,Rob E.G.,approved,2,1
+a3530,Miami Sound Machine,approved,2,1
+a3531,Ylvis,approved,2,1
+a3532,Avery Storm,approved,2,1
+a3533,Reel 2 Real,approved,2,1
+a3534,The Mad Stuntman,approved,2,1
+a3535,Alex Natale DJ,approved,2,1
+a3536,Visnadi,approved,2,1
+a3537,Barbara Lewis,approved,2,1
+a3538,Barry Crocker,approved,2,1
+a3539,Das singende Krokodil vom Nil,approved,2,1
+a3540,Joan Osborne,approved,2,1
+a3541,Nazareth,approved,2,1
+a3542,Ray Dalton,approved,2,1
+a3543,Scribe,approved,2,1
+a3544,Con-Psy,approved,2,1
+a3545,Joshua Kadison,approved,2,1
+a3546,Horst Jankowski,approved,2,1
+a3547,L.V.,approved,2,1
+a3548,Corey Hart,approved,2,1
+a3549,Kelly Rose,approved,2,1
+a3550,4 Strings,approved,2,1
+a3551,P-Money,approved,2,1
+a3552,Kris Kross,approved,2,1
+a3553,The Fendermen,approved,2,1
+a3554,Alphaville,approved,2,1
+a3555,Ocean,approved,2,1
+a3556,Elderbrook,approved,2,1
+a3557,The Spinners,approved,2,1
+a3558,Chris Montez,approved,2,1
+a3559,Endor,approved,2,1
+a3560,Little Red,approved,2,1
+a3561,Graham Nash,approved,2,1
+a3562,Uncle Charlie Wilson,approved,2,1
+a3563,Pryma,approved,2,1
+a3564,Todd Rundgren,approved,2,1
+a3565,Haddaway,approved,2,1
+a3566,Doop,approved,2,1
+a3567,Marc E. Bassy,approved,2,1
+a3568,Michael Gray,approved,2,1
+a3569,Time Bandits,approved,2,1
+a3570,Ted Mulry,approved,2,1
+a3571,Crispian St. Peters,approved,2,1
+a3572,James Hype,approved,2,1
+a3573,Miggy Dela Rosa,approved,2,1
+a3574,Marty Wilde,approved,2,1
+a3575,Craig McLachlan;Check 1-2,approved,2,1
+a3576,Huey Lewis,approved,2,1
+a3577,Gwyneth Paltrow,approved,2,1
+a3578,Ocean Alley,approved,2,1
+a3579,Nine Days,approved,2,1
+a3580,Custard,approved,2,1
+a3581,Rudolph Toombs,approved,2,1
+a3582,The Sylvers,approved,2,1
+a3583,Julee Cruise,approved,2,1
+a3584,Airrion Love,approved,2,1
+a3585,Gino Vannelli,approved,2,1
+a3586,Creeds,approved,2,1
+a3587,Bob Fisher,approved,2,1
+a3588,Sparkadia,approved,2,1
+a3589,Snow,approved,2,1
+a3590,Iron Maiden,approved,2,1
+a3591,The Love Unlimited Orchestra,approved,2,1
+a3592,Steve Earle,approved,2,1
+a3593,Joey Dee & The Starliters,approved,2,1
+a3594,Nicholas McDonald,approved,2,1
+a3595,Navos,approved,2,1
+a3596,Bill Anderson,approved,2,1
+a3597,StarLab,approved,2,1
+a3598,Green Jelly,approved,2,1
+a3599,The Power Station,approved,2,1
+a3600,Alesha Dixon,approved,2,1
+a3601,Kareen Lomax,approved,2,1
+a3602,Pussycat,approved,2,1
+a3603,Santa Esmeralda,approved,2,1
+a3604,Leroy Gomez,approved,2,1
+a3605,FRENSHIP,approved,2,1
+a3606,Matthew Koma,approved,2,1
+a3607,Sirah,approved,2,1
+a3608,Big Shaq,approved,2,1
+a3609,Maxine Nightingale,approved,2,1
+a3610,Asaf Avidan & the Mojos,approved,2,1
+a3611,Zeek Power,approved,2,1
+a3612,The Badloves,approved,2,1
+a3613,Freya Ridings,approved,2,1
+a3614,The Mavis's,approved,2,1
+a3615,Carole Bayer Sager,approved,2,1
+a3616,JHAYCO,approved,2,1
+a3617,Larry Hall,approved,2,1
+a3618,Dinah Washington,approved,2,1
+a3619,Peggy March,approved,2,1
+a3620,Ozzy Osbourne,approved,2,1
+a3621,Scott McKenzie,approved,2,1
+a3622,The Product G&B,approved,2,1
+a3623,Rob Swire,approved,2,1
+a3624,Dale & Grace,approved,2,1
+a3625,Johnny Rivers,approved,2,1
+a3626,John Kongos,approved,2,1
+a3627,Jesus Jones,approved,2,1
+a3628,The Dream Academy,approved,2,1
+a3629,Abs Breen,approved,2,1
+a3630,Don Williams,approved,2,1
+a3631,ROSÉ,approved,2,1
+a3632,Voyager,approved,2,1
+a3633,The Dingoes,approved,2,1
+a3634,The Surfaris,approved,2,1
+a3635,Silience,approved,2,1
+a3636,Riff,approved,2,1
+a3637,Lil Pump,approved,2,1
+a3638,K-Ci & JoJo,approved,2,1
+a3639,Motor Ace,approved,2,1
+a3640,Nick Waterhouse,approved,2,1
+a3641,M83,approved,2,1
+a3642,Nana Mouskouri,approved,2,1
+a3643,Alias,approved,2,1
+a3644,Feed Me,approved,2,1
+a3645,Crystal Fighters,approved,2,1
+a3646,Russell Dickerson,approved,2,1
+a3647,Tal Bachman,approved,2,1
+a3648,Ultra,approved,2,1
+a3649,Steve Robson And Andy Bradfield,approved,2,1
+a3650,Besomorph,approved,2,1
+a3651,Lucifer,approved,2,1
+a3652,Candice Alley,approved,2,1
+a3653,September,approved,2,1
+a3654,The Waterboys,approved,2,1
+a3655,Wafia,approved,2,1
+a3656,Hippie Sabotage,approved,2,1
+a3657,Default,approved,2,1
+a3658,Laurent Wery,approved,2,1
+a3659,Swift K.I.D.,approved,2,1
+a3660,Dev,approved,2,1
+a3661,Phantom Planet,approved,2,1
+a3662,Harpo,approved,2,1
+a3663,BROCKHAMPTON,approved,2,1
+a3664,Tarrus Riley,approved,2,1
+a3665,Walter Brennan,approved,2,1
+a3666,The Johnny Mann Singers,approved,2,1
+a3667,Mousse T.,approved,2,1
+a3668,Hot 'N' Juicy,approved,2,1
+a3669,Billy Squier,approved,2,1
+a3670,The Cascades,approved,2,1
+a3671,TQ,approved,2,1
+a3672,Los Del Rio,approved,2,1
+a3673,Israel Cruz,approved,2,1
+a3674,The Streets,approved,2,1
+a3675,Frida,approved,2,1
+a3676,The Fureys,approved,2,1
+a3677,Davey Arthur,approved,2,1
+a3678,Pete Townshend,approved,2,1
+a3679,Max Bygraves,approved,2,1
+a3680,BLACKPINK,approved,2,1
+a3681,Kevin Lyttle,approved,2,1
+a3682,Duffy,approved,2,1
+a3683,Shawn Mullins,approved,2,1
+a3684,Marianne Faithfull,approved,2,1
+a3685,Melissa Manchester,approved,2,1
+a3686,Shane Codd,approved,2,1
+a3687,Warumpi Band,approved,2,1
+a3688,Brooklyn Dreams,approved,2,1
+a3689,Lindsey Buckingham,approved,2,1
+a3690,Miike Snow,approved,2,1
+a3691,Simian Mobile Disco,approved,2,1
+a3692,Sly Fox,approved,2,1
+a3693,Gabby Barrett,approved,2,1
+a3694,Gary Lewis & The Playboys,approved,2,1
+a3695,Kelly Price,approved,2,1
+a3696,Austen Tayshus,approved,2,1
+a3697,Novaspace,approved,2,1
+a3698,The Hombres,approved,2,1
+a3699,GAYLE,approved,2,1
+a3700,99 Souls,approved,2,1
+a3701,The World,approved,2,1
+a3702,The Party Boys,approved,2,1
+a3703,Jack Ü,approved,2,1
+a3704,Hamilton\,approved,2,1
+a3705,Joe Frank & Reynolds,approved,2,1
+a3706,Connie Stevens,approved,2,1
+a3707,Josh Abrahams,approved,2,1
+a3708,The Village Stompers,approved,2,1
+a3709,Average White Band,approved,2,1
+a3710,Lights,approved,2,1
+a3711,Larry Verne,approved,2,1
+a3712,Mike Waters,approved,2,1
+a3713,Jubël,approved,2,1
+a3714,NEIMY,approved,2,1
+a3715,Audio Bullys,approved,2,1
+a3716,Dee Gees,approved,2,1
+a3717,The First Class,approved,2,1
+a3718,James Brown & The Famous Flames,approved,2,1
+a3719,Odia Coates,approved,2,1
+a3720,Peppermint Heaven,approved,2,1
+a3721,Mi-Sex,approved,2,1
+a3722,Andy C,approved,2,1
+a3723,Fiora,approved,2,1
+a3724,Hurricane Smith,approved,2,1
+a3725,Moodbay,approved,2,1
+a3726,Jørgen Ingmann,approved,2,1
+a3727,Ryan Tedder,approved,2,1
+a3728,Ruff Loaderz,approved,2,1
+a3729,Glass Tiger,approved,2,1
+a3730,FIFTY FIFTY,approved,2,1
+a3731,Jaki Graham,approved,2,1
+a3732,D.O.E.,approved,2,1
+a3733,Dirty South,approved,2,1
+a3734,Meredith Brooks,approved,2,1
+a3735,The Heartland Collective,approved,2,1
+a3736,Ali Gatie,approved,2,1
+a3737,Klangkarussell,approved,2,1
+a3738,Extreme,approved,2,1
+a3739,Randy VanWarmer,approved,2,1
+a3740,The Crooklyn Clan,approved,2,1
+a3741,Jung Kook,approved,2,1
+a3742,Scandal'us,approved,2,1
+a3743,The Galvatrons,approved,2,1
+a3744,Inez Foxx,approved,2,1
+a3745,Nea,approved,2,1
+a3746,Tom Cochrane,approved,2,1
+a3747,Boy Meets Girl,approved,2,1
+a3748,XXXTENTACION,approved,2,1
+a3749,Rae Sremmurd,approved,2,1
+a3750,Steve Winwood,approved,2,1
+a3751,SAFIA,approved,2,1
+a3752,Tommy Sparks,approved,2,1
+a3753,Sam Perry,approved,2,1
+a3754,Kenny Hayes,approved,2,1
+a3755,Little Sea,approved,2,1
+a3756,John David,approved,2,1
+a3757,Indigo Girls,approved,2,1
+a3758,Trey Lorenz,approved,2,1
+a3759,Freeez,approved,2,1
+a3760,Lazyboy,approved,2,1
+a3761,The Glitter Band,approved,2,1
+a3762,Stu Stone,approved,2,1
+a3763,Ray Charles Orchestra,approved,2,1
+a3764,Boy Matthews,approved,2,1
+a3765,Sandrine,approved,2,1
+a3766,Berri,approved,2,1
+a3767,Vic Reeves,approved,2,1
+a3768,The Wonder Stuff,approved,2,1
+a3769,Ben Folds Five,approved,2,1
+a3770,Tex Morton,approved,2,1
+a3771,Next,approved,2,1
+a3772,Art Garfunkel,approved,2,1
+a3773,Kym Mazelle,approved,2,1
+a3774,Percy Faith,approved,2,1
+a3775,Night,approved,2,1
+a3776,Bootsy Collins,approved,2,1
+a3777,Maria Muldaur,approved,2,1
+a3778,Redbone,approved,2,1
+a3779,A-Type Player,approved,2,1
+a3780,Angel Azmeer,approved,2,1
+a3781,StoneBridge,approved,2,1
+a3782,Therese,approved,2,1
+a3783,Laura Pausini,approved,2,1
+a3784,NERO,approved,2,1
+a3785,The String-A-Longs,approved,2,1
+a3786,Orianthi,approved,2,1
+a3787,Ritchie Valens,approved,2,1
+a3788,Fiddler's Dram,approved,2,1
+a3789,Bruce Channel,approved,2,1
+a3790,Christie Allen,approved,2,1
+a3791,Lil Dicky,approved,2,1
+a3792,Alex Gaudino,approved,2,1
+a3793,NAATIONS,approved,2,1
+a3794,Don Gibson,approved,2,1
+a3795,Supercharge,approved,2,1
+a3796,Pauline Henry,approved,2,1
+a3797,Kyu Sakamoto,approved,2,1
+a3798,Big Brother & The Holding Company,approved,2,1
+a3799,Kelly Osbourne,approved,2,1
+a3800,Millie Small,approved,2,1
+a3801,Paul Carrack,approved,2,1
+a3802,Gareth Gates,approved,2,1
+a3803,Randy & The Rainbows,approved,2,1
+a3804,CamelPhat,approved,2,1
+a3805,Bob Carlisle,approved,2,1
+a3806,Jason Weaver,approved,2,1
+a3807,Slash,approved,2,1
+a3808,Leonardo's Bride,approved,2,1
+a3809,Quindon Tarver,approved,2,1
+a3810,Jay Hardway,approved,2,1
+a3811,George Maple,approved,2,1
+a3812,Clodagh Rodgers,approved,2,1
+a3813,Bent Fabricius-Bjerre,approved,2,1
+a3814,Mary MacGregor,approved,2,1
+a3815,Taco,approved,2,1
+a3816,Jack River,approved,2,1
+a3817,Jimmy & the Boys,approved,2,1
