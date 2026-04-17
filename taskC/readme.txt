@@ -2,8 +2,8 @@ Task C - MusicBox Database Setup
 
 Files included:
 - create.sql: creates the MusicBox database and all tables
-- load.sql: loads the sample data into the tables
-- users.csv
+- load.sql: loads the final dataset into the tables
+- users.csv: system seed data for application users
 - artists.csv
 - albums.csv
 - tracks.csv
@@ -12,14 +12,16 @@ Files included:
 - album_tracks.csv
 - artist_genres.csv
 - audio_features.csv
+- etl/etl.py: transforms the original spotify_top_10000.csv dataset into normalized CSV files
+- etl/output/: intermediate/generated ETL outputs
 
 Database name:
 - musicbox
 
 How to run:
 
-1. Open MySQL:
-mysql -u root -p
+1. Open MySQL with local infile enabled:
+mysql --local-infile=1 -u root -p
 
 2. Run create.sql:
 source /Users/wmhjoy/Desktop/UR/Databases/project/milestone_3/spotify-database-platform/taskC/create.sql;
@@ -53,7 +55,7 @@ Tables populated:
 - AUDIO_FEATURES
 
 Notes:
-- This task uses a small curated seed dataset to test the schema, foreign key relationships, and application logic.
-- The dataset is intended for development, validation, and demonstration of the current MusicBox prototype.
-- The USERS table only includes roles used by the current HTML design: admin and analyst.
+- Music-related tables are populated from a full ETL transformation of the original spotify_top_10000.csv dataset.
+- The USERS table remains system seed data for the prototype and only includes the roles used by the current HTML design: admin and analyst.
+- Workflow fields such as status, submitted_by, and reviewed_by are assigned to support the prototype’s content management and review logic.
 - The column `key` in AUDIO_FEATURES is handled carefully in SQL because it is a reserved word.
