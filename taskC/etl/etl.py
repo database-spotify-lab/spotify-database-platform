@@ -1,6 +1,7 @@
 import pandas as pd
 from pathlib import Path
 import hashlib
+import re
 
 BASE = Path("/Users/wmhjoy/Desktop/UR/Databases/project/milestone_3/spotify-database-platform")
 INPUT_CSV = BASE / "spotify_top_10000.csv"
@@ -74,40 +75,93 @@ def align_artists(uri_text: str, name_text: str):
             })
     return out
 
-def map_genre(raw_genre: str):
-    g = str(raw_genre).strip().lower()
+def normalize_genre(g):
+    if g is None:
+        return ""
+    g = str(g).lower().strip()
+    g = g.replace("&", " and ")
+    g = g.replace("-", " ")
+    g = g.replace("/", " ")
+    g = re.sub(r"[^a-z0-9\s]", " ", g)
+    g = re.sub(r"\s+", " ", g).strip()
+    return g
+
+def map_genre(raw_genre):
+    g = normalize_genre(raw_genre)
     if not g:
         return None
 
-    if any(k in g for k in ["hip hop", "hip-hop", "rap", "trap", "drill"]):
+    # Hip-Hop
+    if any(k in g for k in [
+        "hip hop", "hiphop", "rap", "trap", "drill", "boom bap",
+        "gangsta rap", "southern hip hop", "conscious hip hop",
+        "underground rap", "melodic rap", "emo rap", "latin trap",
+        "phonk", "reggaeton"
+    ]):
         return "Hip-Hop"
-    if any(k in g for k in ["r&b", "rhythm and blues", "soul", "neo soul", "motown"]):
+
+    # R&B
+    if any(k in g for k in [
+        "r and b", "rhythm and blues", "soul", "neo soul", "motown",
+        "contemporary r and b", "alternative r and b", "quiet storm",
+        "funk"
+    ]):
         return "R&B"
-    if any(k in g for k in ["rock", "metal", "punk", "grunge", "indie rock", "hard rock", "alt rock", "alternative"]):
-        return "Rock"
-    if any(k in g for k in ["pop", "dance pop", "synthpop", "electropop", "k-pop", "j-pop", "shimmer pop", "bubblegum pop"]):
-        return "Pop"
-    if any(k in g for k in ["electronic", "edm", "house", "techno", "trance", "dubstep", "indietronica"]):
+
+    # Electronic
+    if any(k in g for k in [
+        "electronic", "edm", "house", "techno", "trance", "dubstep",
+        "indietronica", "electro", "ambient", "drum and bass", "dnb",
+        "garage", "uk garage", "lo fi", "synthwave", "electro house",
+        "downtempo"
+    ]):
         return "Electronic"
-    if any(k in g for k in ["jazz", "blues", "swing", "bebop"]):
+
+    # Rock
+    if any(k in g for k in [
+        "rock", "metal", "punk", "grunge", "hard rock", "alt rock",
+        "alternative rock", "indie rock", "classic rock", "emo",
+        "shoegaze", "new wave", "garage rock", "post punk", "anime rock"
+    ]):
+        return "Rock"
+
+    # Pop
+    if any(k in g for k in [
+        "pop", "dance pop", "synthpop", "electropop", "k pop", "j pop",
+        "indie pop", "dream pop", "art pop", "bubblegum pop",
+        "bedroom pop", "folk pop", "baroque pop", "latin pop",
+        "poptimism", "teen pop"
+    ]):
+        return "Pop"
+
+    # Jazz
+    if any(k in g for k in [
+        "jazz", "blues", "swing", "bebop", "fusion jazz", "smooth jazz"
+    ]):
         return "Jazz"
-    if any(k in g for k in ["classical", "orchestra", "opera", "baroque", "romantic era", "chamber music"]):
+
+    # Classical
+    if any(k in g for k in [
+        "classical", "orchestra", "orchestral", "opera", "baroque",
+        "romantic era", "chamber music", "symphony", "instrumental",
+        "score", "ost"
+    ]):
         return "Classical"
-    if any(k in g for k in ["country", "bluegrass", "americana"]):
+
+    # Country
+    if any(k in g for k in [
+        "country", "bluegrass", "americana", "folk", "country pop",
+        "alt country", "indie folk", "singer songwriter"
+    ]):
         return "Country"
 
     return None
 
-# normalized ids
 df["norm_track_id"] = df.apply(normalize_track_id, axis=1)
 df["norm_album_id"] = df.apply(normalize_album_id, axis=1)
 
-# --------------------------------------------------
 # ARTISTS
-# collect from both track artists and album artists
-# --------------------------------------------------
 artist_rows = []
-
 for _, row in df.iterrows():
     track_pairs = align_artists(row["Artist URI(s)"], row["Artist Name(s)"])
     album_pairs = align_artists(row["Album Artist URI(s)"], row["Album Artist Name(s)"])
@@ -122,9 +176,7 @@ artists["status"] = DEFAULT_STATUS
 artists["submitted_by"] = DEFAULT_SUBMITTED_BY
 artists["reviewed_by"] = DEFAULT_REVIEWED_BY
 
-# --------------------------------------------------
 # ALBUMS
-# --------------------------------------------------
 albums = df[["norm_album_id", "Album Name", "Album Release Date", "Album Image URL"]].copy()
 albums = albums.rename(columns={
     "norm_album_id": "album_id",
@@ -137,9 +189,7 @@ albums["status"] = DEFAULT_STATUS
 albums["submitted_by"] = DEFAULT_SUBMITTED_BY
 albums["reviewed_by"] = DEFAULT_REVIEWED_BY
 
-# --------------------------------------------------
 # TRACKS
-# --------------------------------------------------
 tracks = df[[
     "norm_track_id", "Track Name", "Popularity", "Track Duration (ms)",
     "Explicit", "Track Preview URL"
@@ -162,11 +212,8 @@ tracks["status"] = DEFAULT_STATUS
 tracks["submitted_by"] = DEFAULT_SUBMITTED_BY
 tracks["reviewed_by"] = DEFAULT_REVIEWED_BY
 
-# --------------------------------------------------
 # TRACK_ARTISTS
-# --------------------------------------------------
 track_artists_rows = []
-
 for _, row in df.iterrows():
     track_id = row["norm_track_id"]
     pairs = align_artists(row["Artist URI(s)"], row["Artist Name(s)"])
@@ -179,11 +226,8 @@ for _, row in df.iterrows():
 
 track_artists = pd.DataFrame(track_artists_rows).drop_duplicates().reset_index(drop=True)
 
-# --------------------------------------------------
 # ALBUM_ARTISTS
-# --------------------------------------------------
 album_artists_rows = []
-
 for _, row in df.iterrows():
     album_id = row["norm_album_id"]
     album_pairs = align_artists(row["Album Artist URI(s)"], row["Album Artist Name(s)"])
@@ -199,9 +243,7 @@ for _, row in df.iterrows():
 
 album_artists = pd.DataFrame(album_artists_rows).drop_duplicates().reset_index(drop=True)
 
-# --------------------------------------------------
 # ALBUM_TRACKS
-# --------------------------------------------------
 album_tracks = df[["norm_album_id", "norm_track_id", "Disc Number", "Track Number"]].copy()
 album_tracks = album_tracks.rename(columns={
     "norm_album_id": "album_id",
@@ -213,12 +255,8 @@ album_tracks["disc_number"] = pd.to_numeric(album_tracks["disc_number"], errors=
 album_tracks["track_number"] = pd.to_numeric(album_tracks["track_number"], errors="coerce").fillna(1).astype(int)
 album_tracks = album_tracks[["album_id", "track_id", "disc_number", "track_number"]].drop_duplicates().reset_index(drop=True)
 
-# --------------------------------------------------
 # ARTIST_GENRES
-# mapped directly to frontend categories
-# --------------------------------------------------
 artist_genres_rows = []
-
 for _, row in df.iterrows():
     pairs = align_artists(row["Artist URI(s)"], row["Artist Name(s)"])
     genres = split_and_strip(row["Artist Genres"])
@@ -240,11 +278,8 @@ for _, row in df.iterrows():
 
 artist_genres = pd.DataFrame(artist_genres_rows).drop_duplicates().reset_index(drop=True)
 
-# --------------------------------------------------
 # AUDIO_FEATURES
-# --------------------------------------------------
 audio = df.drop_duplicates(subset=["norm_track_id"]).copy()
-
 audio_features = pd.DataFrame({
     "track_id": audio["norm_track_id"],
     "danceability": pd.to_numeric(audio["Danceability"], errors="coerce"),
