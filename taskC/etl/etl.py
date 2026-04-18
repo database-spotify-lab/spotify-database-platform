@@ -9,7 +9,6 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 df = pd.read_csv(INPUT_CSV).fillna("")
 
-# Keep rows with minimum required fields
 df = df[
     (df["Track Name"].astype(str).str.strip() != "") &
     (df["Artist Name(s)"].astype(str).str.strip() != "") &
@@ -20,22 +19,18 @@ DEFAULT_STATUS = "approved"
 DEFAULT_SUBMITTED_BY = 2
 DEFAULT_REVIEWED_BY = 1
 
-
 def strip_prefix(value: str, prefix: str) -> str:
     value = str(value).strip()
     if value.startswith(prefix):
         return value[len(prefix):]
     return value
 
-
 def split_and_strip(text: str):
     return [x.strip() for x in str(text).split(",") if x.strip()]
-
 
 def stable_hash(*parts, length=12):
     raw = "||".join(str(p).strip() for p in parts)
     return hashlib.md5(raw.encode("utf-8")).hexdigest()[:length]
-
 
 def normalize_track_id(row) -> str:
     uri = str(row["Track URI"]).strip()
@@ -43,13 +38,11 @@ def normalize_track_id(row) -> str:
         return strip_prefix(uri, "spotify:track:")
     return f"track_missing_{stable_hash(row['Track Name'], row['Artist Name(s)'], row['Album Name'])}"
 
-
 def normalize_album_id(row) -> str:
     uri = str(row["Album URI"]).strip()
     if uri:
         return strip_prefix(uri, "spotify:album:")
     return f"album_missing_{stable_hash(row['Album Name'], row['Album Release Date'], row['Album Artist Name(s)'])}"
-
 
 def normalize_artist_id(uri: str, name: str) -> str:
     uri = str(uri).strip()
@@ -57,7 +50,6 @@ def normalize_artist_id(uri: str, name: str) -> str:
     if uri:
         return strip_prefix(uri, "spotify:artist:")
     return f"artist_missing_{stable_hash(name)}"
-
 
 def align_artists(uri_text: str, name_text: str):
     uris = split_and_strip(uri_text)
@@ -82,37 +74,33 @@ def align_artists(uri_text: str, name_text: str):
             })
     return out
 
-
-def map_genre(raw_genre: str) -> str:
+def map_genre(raw_genre: str):
     g = str(raw_genre).strip().lower()
     if not g:
-        return "Other"
+        return None
 
     if any(k in g for k in ["hip hop", "hip-hop", "rap", "trap", "drill"]):
         return "Hip-Hop"
-    if any(k in g for k in ["r&b", "soul", "neo soul", "motown"]):
+    if any(k in g for k in ["r&b", "rhythm and blues", "soul", "neo soul", "motown"]):
         return "R&B"
-    if any(k in g for k in ["rock", "metal", "punk", "grunge", "indie rock", "hard rock"]):
+    if any(k in g for k in ["rock", "metal", "punk", "grunge", "indie rock", "hard rock", "alt rock", "alternative"]):
         return "Rock"
-    if any(k in g for k in ["pop", "dance pop", "synthpop", "electropop", "k-pop", "j-pop"]):
+    if any(k in g for k in ["pop", "dance pop", "synthpop", "electropop", "k-pop", "j-pop", "shimmer pop", "bubblegum pop"]):
         return "Pop"
     if any(k in g for k in ["electronic", "edm", "house", "techno", "trance", "dubstep", "indietronica"]):
         return "Electronic"
     if any(k in g for k in ["jazz", "blues", "swing", "bebop"]):
         return "Jazz"
-    if any(k in g for k in ["classical", "orchestra", "opera", "baroque", "romantic era"]):
+    if any(k in g for k in ["classical", "orchestra", "opera", "baroque", "romantic era", "chamber music"]):
         return "Classical"
     if any(k in g for k in ["country", "bluegrass", "americana"]):
         return "Country"
-    return "Other"
 
+    return None
 
-# --------------------------------------------------
-# Precompute normalized ids on source df
-# --------------------------------------------------
+# normalized ids
 df["norm_track_id"] = df.apply(normalize_track_id, axis=1)
 df["norm_album_id"] = df.apply(normalize_album_id, axis=1)
-
 
 # --------------------------------------------------
 # ARTISTS
@@ -126,7 +114,6 @@ for _, row in df.iterrows():
 
     for p in track_pairs:
         artist_rows.append(p)
-
     for p in album_pairs:
         artist_rows.append(p)
 
@@ -134,7 +121,6 @@ artists = pd.DataFrame(artist_rows).drop_duplicates(subset=["artist_id"]).reset_
 artists["status"] = DEFAULT_STATUS
 artists["submitted_by"] = DEFAULT_SUBMITTED_BY
 artists["reviewed_by"] = DEFAULT_REVIEWED_BY
-
 
 # --------------------------------------------------
 # ALBUMS
@@ -150,7 +136,6 @@ albums = albums.drop_duplicates(subset=["album_id"]).reset_index(drop=True)
 albums["status"] = DEFAULT_STATUS
 albums["submitted_by"] = DEFAULT_SUBMITTED_BY
 albums["reviewed_by"] = DEFAULT_REVIEWED_BY
-
 
 # --------------------------------------------------
 # TRACKS
@@ -177,7 +162,6 @@ tracks["status"] = DEFAULT_STATUS
 tracks["submitted_by"] = DEFAULT_SUBMITTED_BY
 tracks["reviewed_by"] = DEFAULT_REVIEWED_BY
 
-
 # --------------------------------------------------
 # TRACK_ARTISTS
 # --------------------------------------------------
@@ -195,17 +179,15 @@ for _, row in df.iterrows():
 
 track_artists = pd.DataFrame(track_artists_rows).drop_duplicates().reset_index(drop=True)
 
-
 # --------------------------------------------------
 # ALBUM_ARTISTS
-# Prefer Album Artist columns; fallback to Artist columns
 # --------------------------------------------------
 album_artists_rows = []
 
 for _, row in df.iterrows():
     album_id = row["norm_album_id"]
-
     album_pairs = align_artists(row["Album Artist URI(s)"], row["Album Artist Name(s)"])
+
     if not album_pairs:
         album_pairs = align_artists(row["Artist URI(s)"], row["Artist Name(s)"])
 
@@ -216,7 +198,6 @@ for _, row in df.iterrows():
         })
 
 album_artists = pd.DataFrame(album_artists_rows).drop_duplicates().reset_index(drop=True)
-
 
 # --------------------------------------------------
 # ALBUM_TRACKS
@@ -232,9 +213,9 @@ album_tracks["disc_number"] = pd.to_numeric(album_tracks["disc_number"], errors=
 album_tracks["track_number"] = pd.to_numeric(album_tracks["track_number"], errors="coerce").fillna(1).astype(int)
 album_tracks = album_tracks[["album_id", "track_id", "disc_number", "track_number"]].drop_duplicates().reset_index(drop=True)
 
-
 # --------------------------------------------------
-# ARTIST_GENRES (raw)
+# ARTIST_GENRES
+# mapped directly to frontend categories
 # --------------------------------------------------
 artist_genres_rows = []
 
@@ -242,23 +223,22 @@ for _, row in df.iterrows():
     pairs = align_artists(row["Artist URI(s)"], row["Artist Name(s)"])
     genres = split_and_strip(row["Artist Genres"])
 
+    mapped_genres = []
+    for genre in genres:
+        mapped = map_genre(genre)
+        if mapped:
+            mapped_genres.append(mapped)
+
+    mapped_genres = sorted(set(mapped_genres))
+
     for p in pairs:
-        for genre in genres:
+        for genre in mapped_genres:
             artist_genres_rows.append({
                 "artist_id": p["artist_id"],
                 "genre": genre
             })
 
 artist_genres = pd.DataFrame(artist_genres_rows).drop_duplicates().reset_index(drop=True)
-
-
-# --------------------------------------------------
-# ARTIST_GENRE_CATEGORIES (helper only)
-# --------------------------------------------------
-artist_genre_categories = artist_genres.copy()
-artist_genre_categories["genre_category"] = artist_genre_categories["genre"].apply(map_genre)
-artist_genre_categories = artist_genre_categories[["artist_id", "genre_category"]].drop_duplicates().reset_index(drop=True)
-
 
 # --------------------------------------------------
 # AUDIO_FEATURES
@@ -281,10 +261,7 @@ audio_features = pd.DataFrame({
     "time_signature": pd.to_numeric(audio["Time Signature"], errors="coerce"),
 }).drop_duplicates(subset=["track_id"]).reset_index(drop=True)
 
-
-# --------------------------------------------------
-# Save outputs
-# --------------------------------------------------
+# save
 artists.to_csv(OUTPUT_DIR / "artists.csv", index=False)
 albums.to_csv(OUTPUT_DIR / "albums.csv", index=False)
 tracks.to_csv(OUTPUT_DIR / "tracks.csv", index=False)
@@ -292,7 +269,6 @@ track_artists.to_csv(OUTPUT_DIR / "track_artists.csv", index=False)
 album_artists.to_csv(OUTPUT_DIR / "album_artists.csv", index=False)
 album_tracks.to_csv(OUTPUT_DIR / "album_tracks.csv", index=False)
 artist_genres.to_csv(OUTPUT_DIR / "artist_genres.csv", index=False)
-artist_genre_categories.to_csv(OUTPUT_DIR / "artist_genre_categories.csv", index=False)
 audio_features.to_csv(OUTPUT_DIR / "audio_features.csv", index=False)
 
 print("ETL completed.")
@@ -304,5 +280,4 @@ print("track_artists:", len(track_artists))
 print("album_artists:", len(album_artists))
 print("album_tracks:", len(album_tracks))
 print("artist_genres:", len(artist_genres))
-print("artist_genre_categories:", len(artist_genre_categories))
 print("audio_features:", len(audio_features))
