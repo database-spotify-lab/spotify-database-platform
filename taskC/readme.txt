@@ -14,6 +14,7 @@ Files included:
 - audio_features.csv
 - etl/etl.py: transforms the original spotify_top_10000.csv dataset into normalized CSV files
 - etl/output/: intermediate/generated ETL outputs
+- etl/output/artist_genre_categories.csv: helper output for mapping raw artist genres to broader frontend-friendly categories
 
 Database name:
 - musicbox
@@ -56,6 +57,9 @@ Tables populated:
 
 Notes:
 - Music-related tables are populated from a full ETL transformation of the original spotify_top_10000.csv dataset.
+- Track, album, and artist identifiers are based on Spotify URI-derived real IDs when available; stable fallback IDs are generated only when source URIs are missing.
 - The USERS table remains system seed data for the prototype and only includes the roles used by the current HTML design: admin and analyst.
 - Workflow fields such as status, submitted_by, and reviewed_by are assigned to support the prototype’s content management and review logic.
+- Many-to-many artist relationships are preserved through TRACK_ARTISTS and ALBUM_ARTISTS.
+- The file artist_genre_categories.csv is generated as a helper output for simplified genre mapping, but it is not loaded into the main 9-table schema.
 - The column `key` in AUDIO_FEATURES is handled carefully in SQL because it is a reserved word.
