@@ -1,5 +1,4 @@
 # Local paths / machine-specific load script — do not push
-taskC/load.sql
 
 # Python bytecode cache
 __pycache__/
