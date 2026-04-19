@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-/** TOP CHARTS — Song tab (same logic as api/music_charts.php?action=top_songs). */
+/** TOP CHARTS - Song tab (same logic as api/music_charts.php?action=top_songs). */
 
 require dirname(__DIR__) . '/includes/bootstrap.php';
 require dirname(__DIR__) . '/lib/MusicChartsRepository.php';

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-/** EXPLORE BY GENRES — sidebar genre list + grid payload. */
+/** EXPLORE BY GENRES - sidebar genre list + grid payload. */
 
 require dirname(__DIR__) . '/includes/bootstrap.php';
 require dirname(__DIR__) . '/lib/MusicChartsRepository.php';

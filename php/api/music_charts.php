@@ -59,7 +59,7 @@ try {
         case 'artist_search_result':
             $artistIdRaw = trim((string) ($_GET['artist_id'] ?? ''));
             $artistName = trim((string) ($_GET['artist_name'] ?? ''));
-            $artistId = ctype_digit($artistIdRaw) ? (int) $artistIdRaw : null;
+            $artistId = $artistIdRaw !== '' ? $artistIdRaw : null;
             $payload = $repo->artistSearchResult($artistId, $artistName !== '' ? $artistName : null);
             if ($payload === null) {
                 json_response(['ok' => false, 'error' => 'artist_not_found'], 404);

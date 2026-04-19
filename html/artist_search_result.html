@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -239,6 +239,13 @@
       cursor:pointer;
       font-weight:1000;
       color:var(--accent);
+      font-size:16px;
+      line-height:1;
+      padding:0;
+    }
+    /* TOP TRACKS PREVIEW: align triangle weight with solid accent play controls (e.g. explore cards). */
+    .table .play{
+      font-size:12px;
     }
 
     /* Albums grid */
@@ -254,7 +261,7 @@
       border-radius:18px;
       overflow:hidden;
       box-shadow: 0 10px 22px rgba(0,0,0,.22);
-      cursor:pointer;
+      cursor:default;
       transition: transform .12s ease, border-color .12s ease;
       min-height: 240px;
     }
@@ -275,6 +282,12 @@
       .artist-name{font-size:34px}
       .popcell{min-width:150px}
     }
+
+    .play.is-playing{
+      background:rgba(0,245,160,.22);
+      border-color:rgba(0,245,160,.65);
+    }
+    #previewAudio{ position:absolute; width:0; height:0; opacity:0; pointer-events:none; }
   </style>
 </head>
 <body>
@@ -342,42 +355,91 @@
     </div>
   </div>
 
+  <audio id="previewAudio" playsinline preload="none" aria-hidden="true"></audio>
+
 <script>
-/**
- * Mock Artist Search Result Page
- * - 封面图使用 MusicBrainz / Cover Art Archive (Internet Archive) 缩略图 URL 做“真实封面示意”。
- * - 你后续接数据库时：把 data 替换成 PHP/SQL 查询即可。
- */
+/** Artist detail from PHP + MySQL (`music_charts.php?action=artist_search_result`). */
+const API_BASE = "../php/api/music_charts.php";
+const PLACEHOLDER_COVER = "data:image/svg+xml," + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="%23181818" width="200" height="200"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23555" font-family="system-ui,sans-serif" font-size="14">No cover</text></svg>'
+);
 
-const ADELE_21_COVER =
-  "https://archive.org/download/mbid-57440dfc-191c-32bd-ada0-14ac366c2a12/mbid-57440dfc-191c-32bd-ada0-14ac366c2a12-835722588_thumb500.jpg";
+const $ = (s) => document.querySelector(s);
 
-// Demo data (Adele)
-const artist = {
-  name: "Adele",
-  rank: 2,
-  heroCover: ADELE_21_COVER,
-  topTracks: [
-    {rank:1, cover:ADELE_21_COVER, track:"Rolling in the Deep", album:"21", popularity:98, preview:true},
-    {rank:2, cover:ADELE_21_COVER, track:"Someone Like You", album:"21", popularity:94, preview:true},
-    {rank:3, cover:ADELE_21_COVER, track:"Set Fire to the Rain", album:"21", popularity:90, preview:true},
-    {rank:4, cover:ADELE_21_COVER, track:"Rumour Has It", album:"21", popularity:84, preview:true},
-    {rank:5, cover:ADELE_21_COVER, track:"Turning Tables", album:"21", popularity:78, preview:true},
-  ],
-  albums: [
-    // NOTE: 这里用同一张真实封面做示意，你后续接库时换成每张专辑自己的 album_image_url 即可
-    {title:"19", year:"2008", cover:ADELE_21_COVER},
-    {title:"21", year:"2011", cover:ADELE_21_COVER},
-    {title:"25", year:"2015", cover:ADELE_21_COVER},
-    {title:"30", year:"2021", cover:ADELE_21_COVER},
-    {title:"Live at the Royal Albert Hall", year:"2011", cover:ADELE_21_COVER},
-  ]
-};
+function esc(s) {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+function escAttr(s) {
+  return esc(s).replace(/'/g, "&#39;");
+}
+function coverSrc(url) {
+  const u = String(url ?? "").trim();
+  return u ? u.replace(/&/g, "&amp;").replace(/"/g, "&quot;") : PLACEHOLDER_COVER;
+}
 
-const $ = (s)=>document.querySelector(s);
-const SEARCH_API_URL = "../php/charts/search_artists.php";
+function resetPreviewButtons() {
+  document.querySelectorAll("button.js-preview.is-playing").forEach((b) => {
+    b.classList.remove("is-playing");
+    b.textContent = "▶";
+  });
+}
 
-function getQueryParams(){
+function playPreviewToggle(url, btn) {
+  const audio = document.getElementById("previewAudio");
+  if (!audio || !url || !btn) return;
+  const u = url.trim();
+  const same = audio.dataset.loaded === u;
+  if (same && !audio.paused) {
+    audio.pause();
+    resetPreviewButtons();
+    return;
+  }
+  if (same && audio.paused) {
+    resetPreviewButtons();
+    btn.classList.add("is-playing");
+    btn.textContent = "⏸";
+    audio.play().catch(function () {});
+    return;
+  }
+  resetPreviewButtons();
+  audio.pause();
+  audio.src = u;
+  audio.dataset.loaded = u;
+  audio.load();
+  btn.classList.add("is-playing");
+  btn.textContent = "⏸";
+  audio.play().catch(function () {});
+}
+
+(function wirePreviewAudioEnded() {
+  const a = document.getElementById("previewAudio");
+  if (!a) return;
+  a.addEventListener("ended", resetPreviewButtons);
+})();
+
+function apiUrl(params) {
+  const u = new URL(API_BASE, window.location.href);
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && String(v) !== "") u.searchParams.set(k, String(v));
+  });
+  return u.toString();
+}
+
+async function apiGet(params) {
+  const res = await fetch(apiUrl(params));
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok || !j.ok) {
+    const msg = j.message || j.error || res.statusText || "Request failed";
+    throw new Error(msg);
+  }
+  return j.data;
+}
+
+function getQueryParams() {
   const params = new URLSearchParams(window.location.search);
   return {
     artistId: (params.get("artist_id") || "").trim(),
@@ -385,112 +447,158 @@ function getQueryParams(){
   };
 }
 
-function hydrateArtistFromQuery(){
-  const { artistId, artistName } = getQueryParams();
-  if (artistName) {
-    artist.name = artistName;
-    $("#searchInput").value = artistName;
-  }
-  if (artistId && !artistName) {
-    artist.name = `Artist #${artistId}`;
-  }
-}
+let pageArtist = null;
 
-async function searchArtistAndOpen(query){
+async function searchArtistAndOpen(query) {
   const q = (query || "").trim();
   if (!q) return;
   try {
-    const res = await fetch(`${SEARCH_API_URL}?q=${encodeURIComponent(q)}`);
-    const payload = await res.json();
-    if (!payload.ok || !Array.isArray(payload.data) || payload.data.length === 0) {
+    const rows = await apiGet({ action: "search_artists", q });
+    if (!Array.isArray(rows) || rows.length === 0) {
       alert("No artist found.");
       return;
     }
-    const first = payload.data[0];
-    const artistId = first.artist_id;
-    const artistName = first.artist_name;
-    window.location.href = `artist_search_result.html?artist_id=${encodeURIComponent(String(artistId))}&artist_name=${encodeURIComponent(artistName)}`;
+    const first = rows[0];
+    window.location.href =
+      "artist_search_result.html?artist_id=" +
+      encodeURIComponent(String(first.artist_id)) +
+      "&artist_name=" +
+      encodeURIComponent(String(first.artist_name));
   } catch (err) {
-    alert("Search failed. Please try again.");
+    alert("Search failed: " + err.message);
   }
 }
 
-function setHero(){
-  $("#artistName").textContent = artist.name;
-  $("#heroBg").style.backgroundImage = `url('${artist.heroCover}')`;
+function setHero(artist) {
+  const name = artist.artist_name || "Artist";
+  $("#artistName").textContent = name;
+  const hero = String(artist.hero_cover || "").trim();
+  $("#heroBg").style.backgroundImage = hero ? `url(${JSON.stringify(hero)})` : "none";
 }
 
-function renderTopTracks(){
+function renderTopTracks(topTracks, artistName) {
   const body = $("#tracksBody");
-  body.innerHTML = artist.topTracks.map(t => `
+  const list = Array.isArray(topTracks) ? topTracks : [];
+  body.innerHTML = list
+    .map((t) => {
+      const pop = Math.min(100, Math.max(0, Number(t.popularity) || 0));
+      const prev = String(t.preview_url || "").trim();
+      const play = prev
+        ? `<button type="button" class="play js-preview" data-preview="${escAttr(prev)}">▶</button>`
+        : `<button type="button" class="play" disabled title="No preview">▶</button>`;
+      const artistsLine = String(t.artist_names || "").trim() || artistName;
+      return `
     <tr class="row">
-      <td class="rank">#${t.rank}</td>
+      <td class="rank">#${esc(t.rank)}</td>
       <td>
-        <div class="cover"><img src="${t.cover}" alt="${t.track}" loading="lazy"></div>
+        <div class="cover"><img src="${coverSrc(t.album_image_url)}" alt="" loading="lazy"></div>
       </td>
       <td>
-        <div class="main">${t.track}</div>
-        <div class="sub">${artist.name}</div>
+        <div class="main">${esc(t.track_name)}</div>
+        <div class="sub">${esc(artistsLine)}</div>
       </td>
       <td>
-        <div class="sub" style="font-size:14px;color:var(--text);font-weight:850">${t.album}</div>
+        <div class="sub" style="font-size:14px;color:var(--text);font-weight:850">${esc(
+          t.album_name
+        )}</div>
       </td>
       <td class="popcell">
         <div class="popwrap">
-          <div class="popbar"><div style="width:${t.popularity}%"></div></div>
-          <div class="popnum">${t.popularity}</div>
+          <div class="popbar"><div style="width:${pop}%"></div></div>
+          <div class="popnum">${esc(String(t.popularity ?? ""))}</div>
         </div>
       </td>
-      <td>
-        <button class="play" onclick="previewMock('${t.track} - ${artist.name}')">▶</button>
-      </td>
-    </tr>
-  `).join("");
+      <td>${play}</td>
+    </tr>`;
+    })
+    .join("");
 }
 
-function renderAlbums(){
+function albumYear(releaseDate) {
+  const s = String(releaseDate || "");
+  const y = s.slice(0, 4);
+  return y && /^\d{4}$/.test(y) ? y : "—";
+}
+
+function renderAlbums(albums) {
   const grid = $("#albumsGrid");
-  grid.innerHTML = artist.albums.map(a => `
-    <div class="card" onclick="alert('Open album (mock): ${a.title}')">
-      <div class="img"><img src="${a.cover}" alt="${a.title}" loading="lazy"></div>
+  const list = Array.isArray(albums) ? albums : [];
+  grid.innerHTML = list
+    .map(
+      (a) => `
+    <div class="card">
+      <div class="img"><img src="${coverSrc(a.album_image_url)}" alt="" loading="lazy"></div>
       <div class="meta">
-        <div class="t">${a.title}</div>
-        <div class="a">${a.year}</div>
+        <div class="t">${esc(a.album_name)}</div>
+        <div class="a">${esc(albumYear(a.release_date))}</div>
       </div>
-    </div>
-  `).join("");
+    </div>`
+    )
+    .join("");
 }
 
-function computeArtistMetrics(){
-  const popularitySum = artist.topTracks.reduce((s,x)=>s+x.popularity,0);
-  $("#artistPopText").textContent = `${popularitySum}`;
-  $("#artistRankText").textContent = artist.rank ? `#${artist.rank}` : "-";
+function computeArtistMetrics(artist) {
+  const sum = Number(artist.popularity_sum ?? 0) || 0;
+  $("#artistPopText").textContent = String(sum);
+  const r = artist.artist_rank;
+  $("#artistRankText").textContent = r ? `#${String(r)}` : "—";
 }
 
-function previewMock(label){
-  alert("Preview (mock): " + label + "\n(后续接 Tracks.preview_url / audio 播放逻辑)");
-}
+document.addEventListener("click", (e) => {
+  const prevBtn = e.target.closest(".js-preview");
+  if (!prevBtn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  const u = prevBtn.getAttribute("data-preview");
+  if (u) playPreviewToggle(u, prevBtn);
+});
 
-$("#backBtn").addEventListener("click", ()=>{
+$("#backBtn").addEventListener("click", () => {
   window.location.href = "music_charts.html";
 });
 
-$("#searchInput").addEventListener("keydown", (e)=>{
+$("#searchInput").addEventListener("keydown", (e) => {
   if (e.key !== "Enter") return;
   e.preventDefault();
   searchArtistAndOpen(e.currentTarget.value);
 });
 
-$("#logoLoginEntry").addEventListener("click", ()=>{
+$("#logoLoginEntry").addEventListener("click", () => {
   window.location.href = "login_page.html";
 });
 
-// init
-hydrateArtistFromQuery();
-setHero();
-renderTopTracks();
-renderAlbums();
-computeArtistMetrics();
+(async function init() {
+  const { artistId, artistName } = getQueryParams();
+  const si = $("#searchInput");
+  if (si) si.value = "";
+  const pa0 = document.getElementById("previewAudio");
+  if (pa0) {
+    pa0.pause();
+    delete pa0.dataset.loaded;
+  }
+  resetPreviewButtons();
+  try {
+    const data = await apiGet({
+      action: "artist_search_result",
+      artist_id: artistId,
+      artist_name: artistName,
+    });
+    pageArtist = data.artist;
+    setHero(pageArtist);
+    renderTopTracks(data.top_tracks, pageArtist.artist_name || artistName || "");
+    renderAlbums(data.albums);
+    computeArtistMetrics(pageArtist);
+  } catch (err) {
+    console.error(err);
+    alert(
+      "Could not load artist.\n\n" +
+        "From project root: php -S 127.0.0.1:8080\n" +
+        "If MySQL says \"using password: NO\": export MUSICBOX_DB_PASSWORD='...' then php -S ...\n\n" +
+        err.message
+    );
+  }
+})();
+
 </script>
 </body>
 </html>

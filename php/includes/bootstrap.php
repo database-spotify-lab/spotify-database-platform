@@ -6,6 +6,18 @@ function db(): PDO
     static $pdo = null;
     if ($pdo === null) {
         $c = require dirname(__DIR__) . '/config.php';
+        $envPass = getenv('MUSICBOX_DB_PASSWORD');
+        if ($envPass !== false && $envPass !== '') {
+            $c['pass'] = $envPass;
+        }
+        $envUser = getenv('MUSICBOX_DB_USER');
+        if ($envUser !== false && $envUser !== '') {
+            $c['user'] = $envUser;
+        }
+        $envDsn = getenv('MUSICBOX_DB_DSN');
+        if ($envDsn !== false && $envDsn !== '') {
+            $c['dsn'] = $envDsn;
+        }
         $pdo = new PDO($c['dsn'], $c['user'], $c['pass'], $c['options']);
     }
     return $pdo;

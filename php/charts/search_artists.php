@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-/** Top bar — search artists (for autocomplete / redirect). */
+/** Top bar - search artists (for autocomplete / redirect). */
 
 require dirname(__DIR__) . '/includes/bootstrap.php';
 require dirname(__DIR__) . '/lib/MusicChartsRepository.php';

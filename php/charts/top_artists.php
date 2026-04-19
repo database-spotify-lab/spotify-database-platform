@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-/** TOP CHARTS — Artist tab. */
+/** TOP CHARTS - Artist tab. */
 
 require dirname(__DIR__) . '/includes/bootstrap.php';
 require dirname(__DIR__) . '/lib/MusicChartsRepository.php';

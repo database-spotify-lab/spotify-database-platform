@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Analytics – Mock Charts</title>
+  <title>Analytics – MusicBox</title>
   <style>
     :root{
       --bg:#0b0b0b;
@@ -220,6 +220,15 @@
       margin-top:auto;
     }
     svg{width:100%;height:100%;display:block}
+    #styleRadarPoly{
+      transform-box:fill-box;
+      transform-origin:center;
+      transition:stroke-width .22s ease, filter .22s ease;
+    }
+    #styleRadarPoly.style-radar-pulse{
+      stroke-width:6;
+      filter:drop-shadow(0 0 18px rgba(0,245,160,.5));
+    }
 
     .summary{
       margin-top:12px;
@@ -268,6 +277,47 @@
       border-radius:999px;
       display:inline-block;
       border:1px solid rgba(255,255,255,.25);
+    }
+    .genre-mix-layer{
+      cursor:pointer;
+      transition:opacity .2s ease,stroke-opacity .2s ease;
+    }
+    #genreMixLegend .genre-tag[data-genre]{
+      cursor:pointer;
+      user-select:none;
+      transition:opacity .2s ease,color .2s ease;
+    }
+    #genreMixLegend .genre-tag[data-genre]:focus-visible{
+      outline:1px solid rgba(0,245,160,.45);
+      outline-offset:3px;
+      border-radius:6px;
+    }
+    .genre-mix-heading{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+    .genre-mix-heading .card-title{margin-top:0}
+    .genre-mix-reset{
+      flex-shrink:0;
+      padding:5px 10px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+      cursor:pointer;
+      font-family:var(--mono);
+      font-size:12px;
+      font-weight:600;
+      line-height:1.25;
+    }
+    .genre-mix-reset:hover{
+      color:var(--text);
+      border-color:rgba(0,245,160,.35);
+      background:rgba(0,245,160,.08);
     }
     .content-tabs{
       display:flex;
@@ -362,6 +412,8 @@
       cursor:pointer;
     }
 
+    .style-api-hint{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono)}
+
     @media (max-width: 980px){
       .grid-2{grid-template-columns:1fr;}
       .logo{min-width:unset}
@@ -381,9 +433,9 @@
           <div class="slogan">Discover your sound.</div>
         </div>
       </div>
-      <div class="search">
+      <div class="search" title="Type an artist name and press Enter to open their page">
         <span style="color:var(--muted);font-family:var(--mono)">⌕</span>
-        <input placeholder="Search artists..." />
+        <input id="searchInput" type="search" placeholder="Search artists..." autocomplete="off" enterkeyhint="search" />
       </div>
     </div>
 
@@ -398,23 +450,22 @@
         <div class="section-head">
           <div class="title">STYLE MAP</div>
           <div class="right-head">
-            <!-- One selector + Apply (matches the main UI pattern) -->
-            <div class="select-wrap" title="Genre selector (mock)">
-              <label>Genre</label>
-              <select>
-                <option selected>All</option>
-                <option>Pop</option>
-                <option>Rock</option>
-                <option>Hip-Hop</option>
-                <option>R&amp;B</option>
-                <option>Jazz</option>
-                <option>Classical</option>
-                <option>Electronic</option>
-                <option>Country</option>
+            <!-- Genre drives live reload from PHP/MySQL -->
+            <div class="select-wrap" title="Filter style map by catalogue genre">
+              <label for="styleGenreSelect">Genre</label>
+              <select id="styleGenreSelect">
+                <option value="all" selected>All</option>
+                <option value="Pop">Pop</option>
+                <option value="Rock">Rock</option>
+                <option value="Hip-Hop">Hip-Hop</option>
+                <option value="R&B">R&amp;B</option>
+                <option value="Jazz">Jazz</option>
+                <option value="Classical">Classical</option>
+                <option value="Electronic">Electronic</option>
+                <option value="Country">Country</option>
               </select>
               <span class="caret">▾</span>
             </div>
-            <button class="btn" type="button">Apply</button>
           </div>
         </div>
         <div class="content">
@@ -423,7 +474,7 @@
               <div class="kicker">Visualization</div>
               <div class="card-title">Radar Chart</div>
               <div class="chart">
-                <svg viewBox="0 0 600 420" role="img" aria-label="Radar chart mock">
+                <svg viewBox="0 0 600 420" role="img" aria-label="Feature averages radar">
                   <g stroke="rgba(255,255,255,.10)" fill="none" stroke-width="2">
                     <polygon points="300,68 445,153 445,301 300,385 155,301 155,153"/>
                     <polygon points="300,108 408,171 408,281 300,343 192,281 192,171" opacity=".7"/>
@@ -437,7 +488,7 @@
                     <line x1="300" y1="227" x2="155" y2="301"/>
                     <line x1="300" y1="227" x2="155" y2="153"/>
                   </g>
-                  <polygon points="300,121 415,177 407,287 300,348 196,284 212,175"
+                  <polygon id="styleRadarPoly" points="300,227 300,227 300,227 300,227 300,227 300,227"
                            fill="rgba(0,245,160,.22)" stroke="rgba(0,245,160,.85)" stroke-width="4"/>
                   <g fill="rgba(234,234,234,.85)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="16">
                     <text x="300" y="58" text-anchor="middle">danceability</text>
@@ -454,14 +505,8 @@
             <div class="card">
               <div class="kicker">Summary</div>
               <div class="card-title">Feature Averages</div>
-              <div class="summary">
-                <div><b>danceability</b>: 0.72</div>
-                <div><b>energy</b>: 0.68</div>
-                <div><b>valence</b>: 0.51</div>
-                <div><b>acousticness</b>: 0.18</div>
-                <div><b>tempo</b>: 121.4</div>
-                <div><b>loudness</b>: -6.9</div>
-                <div><b>avg duration</b>: 3:28</div>
+              <div class="summary" id="styleSummary">
+                <div style="color:var(--muted)">Pick a genre above; data loads automatically.</div>
               </div>
             </div>
           </div>
@@ -478,65 +523,31 @@
           <div class="grid-2">
             <div class="card">
               <div class="kicker">Genre</div>
-              <div class="card-title">Genre Mix Over Time</div>
-              <div class="genre-legend" aria-label="genre legend">
-                <span class="genre-tag"><span class="genre-dot" style="background:#45f6be"></span>Pop</span>
-                <span class="genre-tag"><span class="genre-dot" style="background:#28dfa7"></span>Rock</span>
-                <span class="genre-tag"><span class="genre-dot" style="background:#16c390"></span>Hip-Hop</span>
-                <span class="genre-tag"><span class="genre-dot" style="background:#12ab7d"></span>R&amp;B</span>
-                <span class="genre-tag"><span class="genre-dot" style="background:#1f8c74"></span>Jazz</span>
-                <span class="genre-tag"><span class="genre-dot" style="background:#2e6f67"></span>Classical</span>
-                <span class="genre-tag"><span class="genre-dot" style="background:#3f5d61"></span>Electronic</span>
-                <span class="genre-tag"><span class="genre-dot" style="background:#504f5b"></span>Country</span>
+              <div class="genre-mix-heading">
+                <div class="card-title">Genre Mix Over Time</div>
+                <button
+                  type="button"
+                  class="genre-mix-reset"
+                  id="genreMixResetBtn"
+                  hidden
+                  aria-hidden="true"
+                  title="Clear genre selection"
+                  aria-label="Clear all genre highlights on chart"
+                >
+                  Reset
+                </button>
               </div>
-              <div class="chart lower-strong">
-                <svg viewBox="0 0 600 420" role="img" aria-label="Stacked area chart mock with decade x-axis">
-                  <g stroke="rgba(255,255,255,.14)" stroke-width="2">
-                    <line x1="70" y1="360" x2="560" y2="360"/>
-                    <line x1="70" y1="60" x2="70" y2="360"/>
-                  </g>
-                  <g stroke="rgba(255,255,255,.08)" stroke-width="1">
-                    <line x1="70" y1="300" x2="560" y2="300"/>
-                    <line x1="70" y1="240" x2="560" y2="240"/>
-                    <line x1="70" y1="180" x2="560" y2="180"/>
-                    <line x1="70" y1="120" x2="560" y2="120"/>
-                  </g>
-
-                  <path d="M70,340 L150,332 L230,325 L310,315 L390,305 L470,295 L560,288
-                           L560,360 L470,360 L390,360 L310,360 L230,360 L150,360 L70,360 Z"
-                        fill="#45f6be" fill-opacity=".28" stroke="#45f6be" stroke-opacity=".55" stroke-width="1.5"/>
-                  <path d="M70,312 L150,303 L230,294 L310,283 L390,270 L470,260 L560,250
-                           L560,288 L470,295 L390,305 L310,315 L230,325 L150,332 L70,340 Z"
-                        fill="#28dfa7" fill-opacity=".30" stroke="#28dfa7" stroke-opacity=".55" stroke-width="1.5"/>
-                  <path d="M70,276 L150,268 L230,258 L310,246 L390,236 L470,225 L560,214
-                           L560,250 L470,260 L390,270 L310,283 L230,294 L150,303 L70,312 Z"
-                        fill="#16c390" fill-opacity=".32" stroke="#16c390" stroke-opacity=".55" stroke-width="1.5"/>
-                  <path d="M70,242 L150,233 L230,224 L310,212 L390,203 L470,192 L560,182
-                           L560,214 L470,225 L390,236 L310,246 L230,258 L150,268 L70,276 Z"
-                        fill="#12ab7d" fill-opacity=".34" stroke="#12ab7d" stroke-opacity=".55" stroke-width="1.5"/>
-                  <path d="M70,206 L150,198 L230,188 L310,179 L390,170 L470,160 L560,150
-                           L560,182 L470,192 L390,203 L310,212 L230,224 L150,233 L70,242 Z"
-                        fill="#1f8c74" fill-opacity=".36" stroke="#1f8c74" stroke-opacity=".55" stroke-width="1.5"/>
-                  <path d="M70,170 L150,162 L230,154 L310,145 L390,136 L470,127 L560,118
-                           L560,150 L470,160 L390,170 L310,179 L230,188 L150,198 L70,206 Z"
-                        fill="#2e6f67" fill-opacity=".40" stroke="#2e6f67" stroke-opacity=".6" stroke-width="1.5"/>
-                  <path d="M70,136 L150,128 L230,121 L310,112 L390,104 L470,96 L560,88
-                           L560,118 L470,127 L390,136 L310,145 L230,154 L150,162 L70,170 Z"
-                        fill="#3f5d61" fill-opacity=".45" stroke="#3f5d61" stroke-opacity=".65" stroke-width="1.5"/>
-                  <path d="M70,102 L150,95 L230,88 L310,82 L390,75 L470,69 L560,64
-                           L560,88 L470,96 L390,104 L310,112 L230,121 L150,128 L70,136 Z"
-                        fill="#504f5b" fill-opacity=".52" stroke="#6d626f" stroke-opacity=".8" stroke-width="1.5"/>
-
-                  <g fill="rgba(234,234,234,.70)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">
-                    <text x="70" y="390" text-anchor="middle">1980</text>
-                    <text x="170" y="390" text-anchor="middle">1990</text>
-                    <text x="270" y="390" text-anchor="middle">2000</text>
-                    <text x="370" y="390" text-anchor="middle">2010</text>
-                    <text x="470" y="390" text-anchor="middle">2020</text>
-                    <text x="560" y="390" text-anchor="middle">2024</text>
-                  </g>
-                </svg>
+              <div class="genre-legend" id="genreMixLegend" aria-label="genre legend">
+                <span class="genre-tag" role="button" tabindex="0" data-genre="Pop"><span class="genre-dot" style="background:#45f6be"></span>Pop</span>
+                <span class="genre-tag" role="button" tabindex="0" data-genre="Rock"><span class="genre-dot" style="background:#28dfa7"></span>Rock</span>
+                <span class="genre-tag" role="button" tabindex="0" data-genre="Hip-Hop"><span class="genre-dot" style="background:#16c390"></span>Hip-Hop</span>
+                <span class="genre-tag" role="button" tabindex="0" data-genre='R&B'><span class="genre-dot" style="background:#12ab7d"></span>R&amp;B</span>
+                <span class="genre-tag" role="button" tabindex="0" data-genre="Jazz"><span class="genre-dot" style="background:#1f8c74"></span>Jazz</span>
+                <span class="genre-tag" role="button" tabindex="0" data-genre="Classical"><span class="genre-dot" style="background:#2e6f67"></span>Classical</span>
+                <span class="genre-tag" role="button" tabindex="0" data-genre="Electronic"><span class="genre-dot" style="background:#3f5d61"></span>Electronic</span>
+                <span class="genre-tag" role="button" tabindex="0" data-genre="Country"><span class="genre-dot" style="background:#504f5b"></span>Country</span>
               </div>
+              <div class="chart lower-strong" id="genreMixChartWrap"></div>
             </div>
 
             <div class="card">
@@ -552,7 +563,6 @@
                   <button class="mini" type="button" data-feature="acousticness">acousticness</button>
                   <button class="mini" type="button" data-feature="tempo">tempo</button>
                   <button class="mini" type="button" data-feature="loudness">loudness</button>
-                  <button class="mini" type="button" data-feature="duration">duration</button>
                 </div>
               </div>
 
@@ -562,15 +572,16 @@
                     <line x1="70" y1="360" x2="560" y2="360"/>
                     <line x1="70" y1="60" x2="70" y2="360"/>
                   </g>
+                  <g id="featureTrendYTicks" aria-hidden="true"></g>
                   <path id="featureTrendPath" d="M70,300 L170,270 L270,250 L370,225 L470,200 L560,185"
                         fill="none" stroke="rgba(0,245,160,.95)" stroke-width="4" stroke-linecap="round"/>
-                  <g fill="rgba(234,234,234,.70)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">
-                    <text x="70" y="390" text-anchor="middle">1980</text>
-                    <text x="170" y="390" text-anchor="middle">1990</text>
-                    <text x="270" y="390" text-anchor="middle">2000</text>
-                    <text x="370" y="390" text-anchor="middle">2010</text>
-                    <text x="470" y="390" text-anchor="middle">2020</text>
-                    <text x="560" y="390" text-anchor="middle">2024</text>
+                  <g fill="rgba(234,234,234,.82)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="18">
+                    <text x="70" y="392" text-anchor="middle">1980</text>
+                    <text x="170" y="392" text-anchor="middle">1990</text>
+                    <text x="270" y="392" text-anchor="middle">2000</text>
+                    <text x="370" y="392" text-anchor="middle">2010</text>
+                    <text x="470" y="392" text-anchor="middle">2020</text>
+                    <text x="560" y="392" text-anchor="middle">2024</text>
                   </g>
                 </svg>
               </div>
@@ -611,6 +622,387 @@
 
   </div>
   <script>
+    const API_BASE = "../php/api/music_charts.php";
+
+    function apiUrl(params) {
+      const u = new URL(API_BASE, window.location.href);
+      Object.entries(params).forEach(([k, v]) => {
+        if (v !== undefined && v !== null && String(v) !== "") u.searchParams.set(k, String(v));
+      });
+      return u.toString();
+    }
+
+    async function apiGet(params) {
+      const res = await fetch(apiUrl(params));
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j.ok) {
+        const msg = j.message || j.error || res.statusText || "Request failed";
+        throw new Error(msg);
+      }
+      return j.data;
+    }
+
+    function artistSearchUrl(artistId, artistName) {
+      return (
+        "artist_search_result.html?artist_id=" +
+        encodeURIComponent(String(artistId)) +
+        "&artist_name=" +
+        encodeURIComponent(String(artistName))
+      );
+    }
+
+    async function searchArtistFromBar() {
+      const input = document.getElementById("searchInput");
+      const q = (input?.value || "").trim();
+      if (!q) {
+        alert("Enter an artist name.");
+        return;
+      }
+      try {
+        const rows = await apiGet({ action: "search_artists", q });
+        if (!Array.isArray(rows) || rows.length === 0) {
+          alert("No matching artist found.");
+          return;
+        }
+        const first = rows[0];
+        window.location.href = artistSearchUrl(String(first.artist_id), String(first.artist_name));
+      } catch (err) {
+        alert("Search failed: " + err.message);
+      }
+    }
+
+    function esc(s) {
+      return String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    let genreMixFocusGenre = null;
+
+    function genreMixDataGenre(el) {
+      return String(el?.getAttribute("data-genre") || "").trim();
+    }
+
+    function applyGenreMixFocus() {
+      const active = genreMixFocusGenre !== null && genreMixFocusGenre !== "";
+      const chart = document.getElementById("genreMixChartWrap");
+      if (chart) {
+        chart.querySelectorAll("path.genre-mix-layer").forEach((p) => {
+          const g = genreMixDataGenre(p);
+          const on = !active || g === genreMixFocusGenre;
+          if (on) {
+            p.style.opacity = "";
+            p.style.strokeOpacity = "";
+          } else {
+            p.style.opacity = "0.2";
+            p.style.strokeOpacity = "0.18";
+          }
+          p.style.pointerEvents = "";
+        });
+      }
+      document.querySelectorAll("#genreMixLegend .genre-tag[data-genre]").forEach((t) => {
+        const g = genreMixDataGenre(t);
+        const on = !active || g === genreMixFocusGenre;
+        t.setAttribute("aria-pressed", active && g === genreMixFocusGenre ? "true" : "false");
+        if (on) {
+          t.style.opacity = "";
+          t.style.color = "";
+        } else {
+          t.style.opacity = "0.35";
+          t.style.color = "rgba(150,155,165,.55)";
+        }
+      });
+      const resetBtn = document.getElementById("genreMixResetBtn");
+      if (resetBtn) {
+        resetBtn.hidden = !active;
+        resetBtn.setAttribute("aria-hidden", active ? "false" : "true");
+      }
+    }
+
+    function clearGenreMixFocus() {
+      genreMixFocusGenre = null;
+      applyGenreMixFocus();
+    }
+
+    /** Switch to another band, or clear if same band clicked again. */
+    function toggleGenreMixFocus(genre) {
+      const g = String(genre || "").trim();
+      if (!g) return;
+      genreMixFocusGenre = genreMixFocusGenre === g ? null : g;
+      applyGenreMixFocus();
+    }
+
+    function normRadar(f, v) {
+      const n = Number(v);
+      if (Number.isNaN(n)) return 0;
+      if (f === "tempo") return Math.min(1, Math.max(0, n / 200));
+      if (f === "loudness") return Math.min(1, Math.max(0, (n + 60) / 60));
+      return Math.min(1, Math.max(0, n));
+    }
+
+    /**
+     * Display-only: expand differences around a typical catalogue hub so
+     * switching genre moves the radar shape more noticeably (raw API values unchanged).
+     */
+    function radarVisualMagnitude(normalized01) {
+      const t = Number(normalized01);
+      if (Number.isNaN(t)) return 0.12;
+      const x = Math.min(1, Math.max(0, t));
+      const hub = 0.58;
+      const gain = 2.5;
+      const u = hub + (x - hub) * gain;
+      return Math.min(0.98, Math.max(0.1, u));
+    }
+
+    function radarPolygonPoints(avg) {
+      const keys = ["danceability", "energy", "valence", "acousticness", "tempo", "loudness"];
+      const cx = 300;
+      const cy = 227;
+      const R = 158;
+      return keys
+        .map((f, i) => {
+          const ang = -Math.PI / 2 + (i * (2 * Math.PI)) / keys.length;
+          const t = normRadar(f, avg[f]);
+          const r = R * radarVisualMagnitude(t);
+          return `${cx + r * Math.cos(ang)},${cy + r * Math.sin(ang)}`;
+        })
+        .join(" ");
+    }
+
+    function pulseStyleRadarPoly() {
+      const poly = document.getElementById("styleRadarPoly");
+      if (!poly) return;
+      poly.classList.remove("style-radar-pulse");
+      void poly.offsetWidth;
+      poly.classList.add("style-radar-pulse");
+      window.clearTimeout(poly._radarPulseTimer);
+      poly._radarPulseTimer = window.setTimeout(() => {
+        poly.classList.remove("style-radar-pulse");
+      }, 420);
+    }
+
+    function renderStyleSummary(avg) {
+      const root = document.getElementById("styleSummary");
+      if (!root) return;
+      const lines = [
+        ["danceability", avg.danceability],
+        ["energy", avg.energy],
+        ["valence", avg.valence],
+        ["acousticness", avg.acousticness],
+        ["tempo", avg.tempo],
+        ["loudness", avg.loudness],
+        ["avg duration", avg.avg_duration_label],
+      ];
+      root.innerHTML = lines
+        .map(([k, v]) => {
+          const t = v === undefined || v === null || v === "" ? "—" : String(v);
+          return `<div><b>${esc(k)}</b>: ${esc(t)}</div>`;
+        })
+        .join("");
+    }
+
+    function genreMixNormalizedKey(raw) {
+      const s = String(raw || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+      if (s === "hip hop" || s === "hip-hop" || s === "hiphop") return "hip-hop";
+      if (s === "r&b" || s === "r & b" || s === "rnb") return "r&b";
+      return s;
+    }
+
+    function renderGenreMixStackedChart(mix) {
+      const wrap = document.getElementById("genreMixChartWrap");
+      if (!wrap) return;
+      const decades = ["1980s", "1990s", "2000s", "2010s", "2020s"];
+      const hasAny = decades.some((d) => mix[d] && mix[d].length);
+      if (!hasAny) {
+        genreMixFocusGenre = null;
+        applyGenreMixFocus();
+        wrap.innerHTML =
+          '<p class="style-api-hint">No decade breakdown (need album years in 1980–2029 and artist_genres).</p>';
+        return;
+      }
+      const xs = [70, 190, 310, 430, 550];
+      const layers = [
+        { genre: "Pop", fill: "rgba(69,246,190,.28)", stroke: "#45f6be" },
+        { genre: "Rock", fill: "rgba(40,223,167,.30)", stroke: "#28dfa7" },
+        { genre: "Hip-Hop", fill: "rgba(22,195,144,.32)", stroke: "#16c390" },
+        { genre: "R&B", fill: "rgba(18,171,125,.34)", stroke: "#12ab7d" },
+        { genre: "Jazz", fill: "rgba(31,140,116,.36)", stroke: "#1f8c74" },
+        { genre: "Classical", fill: "rgba(46,111,103,.40)", stroke: "#2e6f67" },
+        { genre: "Electronic", fill: "rgba(63,93,97,.45)", stroke: "#3f5d61" },
+        { genre: "Country", fill: "rgba(80,79,91,.52)", stroke: "#6d626f" },
+      ];
+      const layerKey = (canonical) =>
+        canonical === "Hip-Hop" ? "hip-hop" : canonical === "R&B" ? "r&b" : canonical.toLowerCase();
+      const n = decades.length;
+      const m = layers.length;
+      const heights = decades.map((d) => {
+        const rows = mix[d] && mix[d].length ? mix[d] : [];
+        const countMap = {};
+        for (const x of rows) {
+          const k = genreMixNormalizedKey(x.genre);
+          countMap[k] = (countMap[k] || 0) + Number(x.track_count);
+        }
+        const get = (canonical) => countMap[layerKey(canonical)] || 0;
+        const c = layers.map((L) => get(L.genre));
+        const total = c.reduce((a, b) => a + b, 0);
+        if (total <= 0) return layers.map(() => 280 / m);
+        return c.map((v) => (v / total) * 280);
+      });
+      const bottomY = [];
+      const topY = [];
+      for (let j = 0; j < n; j++) {
+        bottomY[j] = [];
+        topY[j] = [];
+        let y = 360;
+        for (let i = 0; i < m; i++) {
+          bottomY[j][i] = y;
+          y -= heights[j][i];
+          topY[j][i] = y;
+        }
+      }
+      const paths = [];
+      for (let i = 0; i < m; i++) {
+        let d = `M${xs[0]},${bottomY[0][i]}`;
+        for (let j = 1; j < n; j++) d += ` L${xs[j]},${bottomY[j][i]}`;
+        for (let j = n - 1; j >= 0; j--) d += ` L${xs[j]},${topY[j][i]}`;
+        d += " Z";
+        const L = layers[i];
+        paths.push(
+          `<path class="genre-mix-layer" data-genre="${esc(L.genre)}" d="${d}" fill="${L.fill}" stroke="${L.stroke}" stroke-opacity="0.55" stroke-width="1.5" fill-opacity="1"/>`
+        );
+      }
+      const grid = `
+        <g pointer-events="none" stroke="rgba(255,255,255,.14)" stroke-width="2">
+          <line x1="70" y1="360" x2="560" y2="360"/>
+          <line x1="70" y1="60" x2="70" y2="360"/>
+        </g>
+        <g pointer-events="none" stroke="rgba(255,255,255,.08)" stroke-width="1">
+          <line x1="70" y1="300" x2="560" y2="300"/>
+          <line x1="70" y1="240" x2="560" y2="240"/>
+          <line x1="70" y1="180" x2="560" y2="180"/>
+          <line x1="70" y1="120" x2="560" y2="120"/>
+        </g>`;
+      const labels = [1980, 1990, 2000, 2010, 2020]
+        .map((lab, idx) => {
+          const x = xs[idx];
+          return `<text x="${x}" y="390" text-anchor="middle" fill="rgba(234,234,234,.70)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">${lab}</text>`;
+        })
+        .join("");
+      wrap.innerHTML = `
+        <svg viewBox="0 0 600 420" role="img" aria-label="Genre mix by decade">
+          ${grid}
+          <g>${paths.join("")}</g>
+          <g pointer-events="none">${labels}</g>
+        </svg>`;
+      const svg = wrap.querySelector("svg");
+      svg?.addEventListener("click", (e) => {
+        if (!genreMixFocusGenre) return;
+        if (e.target.closest?.("path.genre-mix-layer")) return;
+        clearGenreMixFocus();
+      });
+      wrap.querySelectorAll("path.genre-mix-layer").forEach((path) => {
+        path.addEventListener("click", () => {
+          toggleGenreMixFocus(genreMixDataGenre(path));
+        });
+      });
+      applyGenreMixFocus();
+    }
+
+    function analyzeTrendSeries(series) {
+      const decadesOrder = ["1980s", "1990s", "2000s", "2010s", "2020s"];
+      const xs = [70, 190, 310, 430, 550];
+      const vals = decadesOrder.map((d) => {
+        const row = (series || []).find((s) => s.decade === d);
+        return row ? Number(row.value) : NaN;
+      });
+      const finite = vals.filter((x) => !Number.isNaN(x));
+      if (finite.length === 0) {
+        return { d: "M70,360 L550,360", vmin: null, vmax: null };
+      }
+      let vmin = Math.min(...finite);
+      let vmax = Math.max(...finite);
+      if (vmax === vmin) {
+        vmin -= 1e-6;
+        vmax += 1e-6;
+      }
+      const pts = [];
+      for (let i = 0; i < vals.length; i++) {
+        const v = vals[i];
+        if (Number.isNaN(v)) continue;
+        const y = 360 - ((v - vmin) / (vmax - vmin)) * 280;
+        const yy = Math.max(70, Math.min(350, y));
+        pts.push(`${xs[i]},${yy}`);
+      }
+      if (pts.length === 0) return { d: "M70,360 L550,360", vmin: null, vmax: null };
+      if (pts.length === 1) {
+        const p = pts[0].split(",");
+        const d = `M${p[0]},${p[1]} L${Number(p[0]) + 80},${p[1]}`;
+        return { d, vmin, vmax };
+      }
+      return { d: "M" + pts.join(" L"), vmin, vmax };
+    }
+
+    function formatFeatureYTick(feature, v) {
+      if (!Number.isFinite(v)) return "";
+      if (feature === "tempo") return String(Math.round(v));
+      if (feature === "loudness") return v.toFixed(1);
+      return v.toFixed(2);
+    }
+
+    function renderFeatureTrendYTicks(vmin, vmax, feature) {
+      const g = document.getElementById("featureTrendYTicks");
+      if (!g) return;
+      if (vmin == null || vmax == null || !Number.isFinite(vmin) || !Number.isFinite(vmax)) {
+        g.innerHTML = "";
+        return;
+      }
+      const n = 5;
+      const parts = [];
+      for (let i = 0; i < n; i++) {
+        const frac = i / (n - 1);
+        const tv = vmin + frac * (vmax - vmin);
+        const y = 360 - frac * 280;
+        const label = formatFeatureYTick(feature || "danceability", tv);
+        parts.push(
+          `<line x1="70" y1="${y}" x2="78" y2="${y}" stroke="rgba(255,255,255,.12)" stroke-width="1"/>`
+        );
+        parts.push(
+          `<text x="62" y="${y + 5}" text-anchor="end" fill="rgba(234,234,234,.78)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15">${esc(
+            label
+          )}</text>`
+        );
+      }
+      g.innerHTML = parts.join("");
+    }
+
+    function updateFeatureTrendVisualization(series, feature) {
+      const { d, vmin, vmax } = analyzeTrendSeries(series);
+      document.getElementById("featureTrendPath")?.setAttribute("d", d);
+      renderFeatureTrendYTicks(vmin, vmax, feature);
+    }
+
+    async function loadStyleAnalytics() {
+      const sel = document.getElementById("styleGenreSelect");
+      const genreRaw = sel?.value || "all";
+      const payload = await apiGet({ action: "style_analytics", genre: genreRaw });
+      window.__stylePayload = payload;
+      const avg = payload.style_map?.feature_averages || {};
+      const poly = document.getElementById("styleRadarPoly");
+      poly?.setAttribute("points", radarPolygonPoints(avg));
+      pulseStyleRadarPoly();
+      renderStyleSummary(avg);
+      renderGenreMixStackedChart(payload.style_evolution?.genre_mix || {});
+      const activeBtn = document.querySelector("#featureTabs .mini.active");
+      const feat = activeBtn?.dataset?.feature || "danceability";
+      const series = payload.style_evolution?.feature_trends?.[feat] || [];
+      updateFeatureTrendVisualization(series, feat);
+    }
+
     const pageTabs = Array.from(document.querySelectorAll(".page-tab"));
     const analyticsPanel = document.getElementById("styleAnalyticsPanel");
     const managementPanel = document.getElementById("contentManagementPanel");
@@ -625,6 +1017,9 @@
         });
         analyticsPanel.classList.toggle("active", isAnalytics);
         managementPanel.classList.toggle("active", !isAnalytics);
+        if (isAnalytics) {
+          loadStyleAnalytics().catch((err) => console.error(err));
+        }
       });
     });
 
@@ -704,35 +1099,62 @@
 
     renderRows("songs");
 
-    const FEATURE_SERIES = {
-      danceability: [300, 270, 250, 225, 200, 185],
-      energy: [318, 292, 274, 252, 236, 220],
-      valence: [336, 320, 304, 289, 280, 268],
-      acousticness: [286, 272, 256, 240, 228, 214],
-      tempo: [322, 304, 286, 266, 248, 232],
-      loudness: [340, 325, 308, 292, 278, 264],
-      duration: [314, 300, 284, 270, 255, 242]
-    };
+    const genreMixLegendEl = document.getElementById("genreMixLegend");
+    genreMixLegendEl?.addEventListener("click", (e) => {
+      const tag = e.target.closest(".genre-tag[data-genre]");
+      if (!tag) return;
+      e.preventDefault();
+      toggleGenreMixFocus(genreMixDataGenre(tag));
+    });
+    genreMixLegendEl?.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const tag = e.target.closest(".genre-tag[data-genre]");
+      if (!tag) return;
+      e.preventDefault();
+      toggleGenreMixFocus(genreMixDataGenre(tag));
+    });
 
-    function toTrendPath(values) {
-      const xs = [70, 170, 270, 370, 470, 560];
-      return `M${xs.map((x, i) => `${x},${values[i]}`).join(" L")}`;
-    }
+    document.getElementById("genreMixResetBtn")?.addEventListener("click", () => {
+      clearGenreMixFocus();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape" || !genreMixFocusGenre) return;
+      const panel = document.getElementById("styleAnalyticsPanel");
+      if (!panel?.classList.contains("active")) return;
+      clearGenreMixFocus();
+    });
 
     const featureTabsEl = document.getElementById("featureTabs");
-    const featureTrendPathEl = document.getElementById("featureTrendPath");
     featureTabsEl?.addEventListener("click", (e) => {
       const btn = e.target.closest(".mini[data-feature]");
       if (!btn) return;
       const feature = btn.dataset.feature;
-      const values = FEATURE_SERIES[feature] || FEATURE_SERIES.danceability;
       featureTabsEl.querySelectorAll(".mini").forEach((tab) => tab.classList.remove("active"));
       btn.classList.add("active");
-      featureTrendPathEl?.setAttribute("d", toTrendPath(values));
+      const series =
+        (window.__stylePayload &&
+          window.__stylePayload.style_evolution &&
+          window.__stylePayload.style_evolution.feature_trends &&
+          window.__stylePayload.style_evolution.feature_trends[feature]) ||
+        [];
+      updateFeatureTrendVisualization(series, feature);
     });
+
+    document.getElementById("styleGenreSelect")?.addEventListener("change", () => {
+      loadStyleAnalytics().catch((err) => alert("Could not load style analytics.\n\n" + err.message));
+    });
+
+    loadStyleAnalytics().catch((err) => alert("Could not load style analytics.\n\n" + err.message));
 
     document.querySelector("#logoLoginEntry")?.addEventListener("click", () => {
       window.location.href = "login_page.html";
+    });
+
+    document.getElementById("searchInput")?.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      searchArtistFromBar();
     });
   </script>
 </body>

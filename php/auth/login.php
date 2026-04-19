@@ -19,7 +19,7 @@ if ($username === '' || $password === '') {
 try {
     $sql = "
         SELECT user_id, email, password_hash, role, is_active
-        FROM users
+        FROM USERS
         WHERE email = :username
         LIMIT 1
     ";

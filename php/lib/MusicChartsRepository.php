@@ -7,12 +7,18 @@ declare(strict_types=1);
  */
 final class MusicChartsRepository
 {
+    /** Rows returned for TOP CHARTS (songs / artists / albums) on the main charts page. */
+    private const TOP_CHARTS_LIMIT = 5;
+
+    /** Rows per tab in EXPLORE BY GENRES (songs / artists / albums cards). */
+    private const EXPLORE_BY_GENRE_LIMIT = 5;
+
     public function __construct(private PDO $pdo)
     {
     }
 
     /**
-     * TOP CHARTS — Song: rank by tracks.popularity.
+     * TOP CHARTS - Song: rank by tracks.popularity.
      * Cover: first album image (by earliest release_date among albums containing the track).
      */
     public function topSongs(?array $decadeRange, ?string $search): array
@@ -54,7 +60,7 @@ final class MusicChartsRepository
             {$decadeSql}
             {$searchSql}
             ORDER BY t.popularity DESC
-            LIMIT 100
+            LIMIT " . self::TOP_CHARTS_LIMIT . "
         ";
 
         $stmt = $this->pdo->prepare($sql);
@@ -69,12 +75,18 @@ final class MusicChartsRepository
     }
 
     /**
-     * TOP CHARTS — Artist: aggregate track popularity per artist.
+     * TOP CHARTS - Artist: aggregate track popularity per artist.
+     * Each `tracks.track_id` counts once toward SUM (remix / alternate cut = another row
+     * with another id, so both popularities add). No merge by track_name.
+     * When a decade is set, only tracks that appear on an album released in that range
+     * contribute to the sum (same rule as top songs). Otherwise the chart matches
+     * "all time" but artists with only other-decade catalogue would wrongly rank high.
      */
     public function topArtists(?array $decadeRange): array
     {
         $params = [':st' => CATALOG_STATUS_APPROVED];
-        $decadeSql = $this->artistHasTrackInDecadeSql('ar.artist_id', $decadeRange, $params);
+        $decadeTrackSql = $this->albumReleaseDecadeSql('t.track_id', $decadeRange, $params);
+        $decadeTopTrackSql = $this->albumReleaseDecadeSql('t2.track_id', $decadeRange, $params);
 
         $sql = "
             SELECT
@@ -86,6 +98,7 @@ final class MusicChartsRepository
                     FROM track_artists ta2
                     JOIN tracks t2 ON t2.track_id = ta2.track_id AND t2.status = :st
                     WHERE ta2.artist_id = ar.artist_id
+                    {$decadeTopTrackSql}
                     ORDER BY t2.popularity DESC
                     LIMIT 1
                 ) AS top_track_name,
@@ -94,6 +107,7 @@ final class MusicChartsRepository
                     FROM track_artists ta2
                     JOIN tracks t2 ON t2.track_id = ta2.track_id AND t2.status = :st
                     WHERE ta2.artist_id = ar.artist_id
+                    {$decadeTopTrackSql}
                     ORDER BY t2.popularity DESC
                     LIMIT 1
                 ) AS top_track_preview_url
@@ -101,10 +115,10 @@ final class MusicChartsRepository
             JOIN track_artists ta ON ta.artist_id = ar.artist_id
             JOIN tracks t ON t.track_id = ta.track_id AND t.status = :st
             WHERE ar.status = :st
-            {$decadeSql}
+            {$decadeTrackSql}
             GROUP BY ar.artist_id, ar.artist_name
             ORDER BY popularity_sum DESC
-            LIMIT 100
+            LIMIT " . self::TOP_CHARTS_LIMIT . "
         ";
 
         $stmt = $this->pdo->prepare($sql);
@@ -119,7 +133,9 @@ final class MusicChartsRepository
     }
 
     /**
-     * TOP CHARTS — Album: sum of constituent track popularity.
+     * TOP CHARTS - Album: sum of `tracks.popularity` over `album_tracks` for that album.
+     * Each distinct `track_id` on the album contributes one term; different versions are
+     * different ids and all count toward the album total.
      */
     public function topAlbums(?array $decadeRange): array
     {
@@ -151,7 +167,7 @@ final class MusicChartsRepository
             GROUP BY al.album_id, al.album_name, al.release_date, al.album_image_url
             {$having}
             ORDER BY popularity_sum DESC
-            LIMIT 100
+            LIMIT " . self::TOP_CHARTS_LIMIT . "
         ";
 
         $stmt = $this->pdo->prepare($sql);
@@ -183,7 +199,7 @@ final class MusicChartsRepository
         return $stmt->fetchAll();
     }
 
-    /** EXPLORE BY GENRES — list distinct genres for sidebar. */
+    /** EXPLORE BY GENRES - list distinct genres for sidebar. */
     public function listGenres(): array
     {
         $sql = "
@@ -225,10 +241,11 @@ final class MusicChartsRepository
     }
 
     /**
-     * EXPLORE — cards for a genre: type = songs | artists | albums.
+     * EXPLORE - cards for a genre: type = songs | artists | albums.
      */
-    public function exploreByGenre(string $genre, string $type, ?array $decadeRange, int $limit = 24): array
+    public function exploreByGenre(string $genre, string $type, ?array $decadeRange, int $limit = self::EXPLORE_BY_GENRE_LIMIT): array
     {
+        $limit = max(1, min(self::EXPLORE_BY_GENRE_LIMIT, $limit));
         $type = strtolower($type);
         return match ($type) {
             'songs' => $this->exploreSongsByGenre($genre, $decadeRange, $limit),
@@ -246,18 +263,18 @@ final class MusicChartsRepository
      *
      * @return array<string,mixed>|null
      */
-    public function artistSearchResult(?int $artistId, ?string $artistName): ?array
+    public function artistSearchResult(?string $artistId, ?string $artistName): ?array
     {
         $artist = $this->findArtist($artistId, $artistName);
         if ($artist === null) {
             return null;
         }
 
-        $artistIdInt = (int) $artist['artist_id'];
-        $tracks = $this->artistTopTracks($artistIdInt);
-        $albums = $this->artistAlbums($artistIdInt);
-        $popularitySum = $this->artistPopularitySum($artistIdInt);
-        $artistRank = $this->artistRankByPopularity($artistIdInt, $popularitySum);
+        $artistIdKey = (string) $artist['artist_id'];
+        $tracks = $this->artistTopTracks($artistIdKey);
+        $albums = $this->artistAlbums($artistIdKey);
+        $popularitySum = $this->artistPopularitySum($artistIdKey);
+        $artistRank = $this->artistRankByPopularity($artistIdKey, $popularitySum);
 
         $artist['popularity_sum'] = $popularitySum;
         $artist['artist_rank'] = $artistRank;
@@ -316,16 +333,40 @@ final class MusicChartsRepository
         return $rows;
     }
 
+    /** Same per-`track_id` SUM semantics as {@see topArtists()}. */
     private function exploreArtistsByGenre(string $genre, ?array $decadeRange, int $limit): array
     {
         $params = [':st' => CATALOG_STATUS_APPROVED, ':genre' => $genre];
-        $decadeSql = $this->artistHasTrackInDecadeSql('ar.artist_id', $decadeRange, $params);
+        $decadeSql = $this->albumReleaseDecadeSql('t.track_id', $decadeRange, $params);
 
         $sql = "
             SELECT
                 ar.artist_id,
                 ar.artist_name,
-                SUM(t.popularity) AS popularity_sum
+                SUM(t.popularity) AS popularity_sum,
+                COALESCE(
+                    (
+                        SELECT alx.album_image_url
+                        FROM album_artists aai
+                        JOIN albums alx ON alx.album_id = aai.album_id AND alx.status = :st
+                        WHERE aai.artist_id = ar.artist_id
+                            AND alx.album_image_url IS NOT NULL
+                            AND TRIM(alx.album_image_url) <> ''
+                        ORDER BY alx.release_date DESC, alx.album_id DESC
+                        LIMIT 1
+                    ),
+                    (
+                        SELECT alx2.album_image_url
+                        FROM track_artists ta2
+                        JOIN album_tracks at2 ON at2.track_id = ta2.track_id
+                        JOIN albums alx2 ON alx2.album_id = at2.album_id AND alx2.status = :st
+                        WHERE ta2.artist_id = ar.artist_id
+                            AND alx2.album_image_url IS NOT NULL
+                            AND TRIM(alx2.album_image_url) <> ''
+                        ORDER BY alx2.release_date DESC, alx2.album_id DESC
+                        LIMIT 1
+                    )
+                ) AS album_image_url
             FROM artists ar
             JOIN artist_genres ag ON ag.artist_id = ar.artist_id AND ag.genre = :genre
             JOIN track_artists ta ON ta.artist_id = ar.artist_id
@@ -342,7 +383,6 @@ final class MusicChartsRepository
         $rank = 1;
         foreach ($rows as &$row) {
             $row['rank'] = $rank++;
-            $row['cover_placeholder'] = null;
         }
         unset($row);
         return $rows;
@@ -401,9 +441,9 @@ final class MusicChartsRepository
         return $rows;
     }
 
-    private function findArtist(?int $artistId, ?string $artistName): ?array
+    private function findArtist(?string $artistId, ?string $artistName): ?array
     {
-        if ($artistId !== null && $artistId > 0) {
+        if ($artistId !== null && $artistId !== '') {
             $sql = "
                 SELECT ar.artist_id, ar.artist_name
                 FROM artists ar
@@ -443,7 +483,7 @@ final class MusicChartsRepository
         return null;
     }
 
-    private function artistTopTracks(int $artistId, int $limit = 10): array
+    private function artistTopTracks(string $artistId, int $limit = 10): array
     {
         $sql = "
             SELECT
@@ -451,6 +491,12 @@ final class MusicChartsRepository
                 t.track_name,
                 t.popularity,
                 t.preview_url,
+                (
+                    SELECT GROUP_CONCAT(DISTINCT arn.artist_name ORDER BY arn.artist_name SEPARATOR ', ')
+                    FROM track_artists tan
+                    JOIN artists arn ON arn.artist_id = tan.artist_id AND arn.status = :st
+                    WHERE tan.track_id = t.track_id
+                ) AS artist_names,
                 (
                     SELECT alx.album_name
                     FROM album_tracks atx
@@ -487,7 +533,7 @@ final class MusicChartsRepository
         return $rows;
     }
 
-    private function artistAlbums(int $artistId, int $limit = 30): array
+    private function artistAlbums(string $artistId, int $limit = 30): array
     {
         $sql = "
             SELECT
@@ -513,7 +559,7 @@ final class MusicChartsRepository
         return $stmt->fetchAll();
     }
 
-    private function artistPopularitySum(int $artistId): int
+    private function artistPopularitySum(string $artistId): int
     {
         $sql = "
             SELECT COALESCE(SUM(t.popularity), 0) AS popularity_sum
@@ -531,7 +577,7 @@ final class MusicChartsRepository
         return (int) ($row['popularity_sum'] ?? 0);
     }
 
-    private function artistRankByPopularity(int $artistId, int $popularitySum): int
+    private function artistRankByPopularity(string $artistId, int $popularitySum): int
     {
         $sql = "
             SELECT COUNT(*) + 1 AS artist_rank
@@ -733,27 +779,6 @@ final class MusicChartsRepository
             JOIN albums ald ON ald.album_id = atd.album_id AND ald.status = :st
             WHERE atd.track_id = {$trackIdExpr}
             AND YEAR(ald.release_date) BETWEEN :dy0 AND :dy1
-        ) ";
-    }
-
-    /**
-     * Artist is included if any of their tracks appears on an album with release in decade.
-     */
-    private function artistHasTrackInDecadeSql(string $artistIdExpr, ?array $decadeRange, array &$params): string
-    {
-        if ($decadeRange === null) {
-            return '';
-        }
-        if (!isset($params[':dy0'], $params[':dy1'])) {
-            $params[':dy0'] = $decadeRange[0];
-            $params[':dy1'] = $decadeRange[1];
-        }
-        return " AND EXISTS (
-            SELECT 1 FROM track_artists tax
-            JOIN album_tracks atx ON atx.track_id = tax.track_id
-            JOIN albums alx ON alx.album_id = atx.album_id AND alx.status = :st
-            WHERE tax.artist_id = {$artistIdExpr}
-            AND YEAR(alx.release_date) BETWEEN :dy0 AND :dy1
         ) ";
     }
 }

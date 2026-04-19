@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Music Charts – Wireframe Demo</title>
+  <title>Music Charts – MusicBox</title>
   <style>
     :root{
       --bg:#0b0b0b;
@@ -183,6 +183,13 @@
       cursor:pointer;
       font-weight:900;
       color:var(--accent);
+      font-size:16px;
+      line-height:1;
+      padding:0;
+    }
+    /* Song chart PREVIEW only (not artist OPEN ↗ which also uses .play). Green-on-dark reads larger than .card-play. */
+    #songTable .play{
+      font-size:12px;
     }
 
     .divider{height:1px;background:var(--border);margin:22px 0 0;}
@@ -246,6 +253,10 @@
       min-height: 220px;
     }
     .card:hover{transform: translateY(-2px); border-color: rgba(0,245,160,.45);}
+    /* Songs / albums: card not a link. Explore artists: cover+name wrapped in .artist-card-hit. */
+    .card.card--static{
+      cursor:default;
+    }
     .card .img{height:150px; position:relative;background:rgba(255,255,255,.04);}
     .card img{width:100%;height:100%;object-fit:cover;display:block}
     .card-play{
@@ -253,6 +264,7 @@
       right:10px;
       bottom:10px;
       z-index:2;
+      width:40px;height:40px;
       background:var(--accent);
       color:#000;
       border-color:rgba(0,245,160,.55);
@@ -273,6 +285,13 @@
     .card .meta{padding:12px}
     .card .meta .t{font-weight:900}
     .card .meta .a{color:var(--muted); margin-top:6px; font-size:13px}
+    a.artist-card-hit{
+      display:block;
+      color:inherit;
+      text-decoration:none;
+      cursor:pointer;
+    }
+    a.artist-card-hit:hover .t{color:var(--accent);}
 
     @media (max-width: 980px){
       .grid{grid-template-columns: repeat(3, minmax(0, 1fr));}
@@ -284,12 +303,18 @@
       .grid{grid-template-columns: repeat(2, minmax(0, 1fr));}
       .rank{width:44px}
     }
+
+    .play.is-playing{
+      background:rgba(0,245,160,.22);
+      border-color:rgba(0,245,160,.65);
+    }
+    #previewAudio{ position:absolute; width:0; height:0; opacity:0; pointer-events:none; }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <!-- Top bar (右侧链接已删除) -->
+    <!-- Top bar: logo + search -->
     <div class="topbar">
       <div class="logo" id="logoLoginEntry" title="Go to login">
         <div class="logo-badge">♪</div>
@@ -299,9 +324,9 @@
         </div>
       </div>
 
-      <div class="search" title="Search artists">
+      <div class="search" title="Type an artist name and press Enter to open their page">
         <span style="color:var(--muted);font-family:var(--mono)">⌕</span>
-        <input id="searchInput" placeholder="Search artists..." />
+        <input id="searchInput" placeholder="Search artist..." autocomplete="off" />
       </div>
     </div>
 
@@ -322,7 +347,7 @@
 
         <div class="filter">
           <label style="color:var(--muted);font-family:var(--mono);font-size:12px">DECADE</label>
-          <select class="select" id="topDecade">
+          <select class="select" id="topDecade" aria-label="Chart decade">
             <option value="all">All</option>
             <option value="1980s">1980s</option>
             <option value="1990s">1990s</option>
@@ -330,7 +355,6 @@
             <option value="2010s">2010s</option>
             <option value="2020s">2020s</option>
           </select>
-          <button class="btn primary" id="topApply">Apply</button>
         </div>
       </div>
 
@@ -383,7 +407,7 @@
           <!-- Left: 7 genres -->
           <div class="genrelist" id="genreList"></div>
 
-          <!-- Right: Decade + type tabs (无 Apply 按钮) -->
+          <!-- Right: decade + type tabs (no Apply button) -->
           <div class="exploreMain">
             <div class="exploreControls">
               <div style="display:flex;align-items:center;gap:8px;margin-right:auto">
@@ -412,188 +436,424 @@
     </section>
   </div>
 
+  <audio id="previewAudio" playsinline preload="none" aria-hidden="true"></audio>
+
 <script>
-// ---- same demo data as before (shortened for brevity) ----
-const COVERS = {
-  afterHours: "https://archive.org/download/mbid-fd7ebee8-8c64-4127-a9be-8e31ed6364e3/mbid-fd7ebee8-8c64-4127-a9be-8e31ed6364e3-28418011574_thumb500.jpg",
-  adele21: "https://archive.org/download/mbid-57440dfc-191c-32bd-ada0-14ac366c2a12/mbid-57440dfc-191c-32bd-ada0-14ac366c2a12-835722588_thumb500.jpg",
-  okComputer: "https://archive.org/download/mbid-fba5f8fe-c6c8-4511-8562-c9febf482674/mbid-fba5f8fe-c6c8-4511-8562-c9febf482674-26537574690_thumb500.jpg",
-  thriller: "https://archive.org/download/mbid-1d9b9dce-6584-37c7-a2a8-fabca91136c2/mbid-1d9b9dce-6584-37c7-a2a8-fabca91136c2-25091040839_thumb500.jpg",
-  outkast: "https://archive.org/download/mbid-468cd19e-d55c-46a2-a5a6-66292d2f0a90/mbid-468cd19e-d55c-46a2-a5a6-66292d2f0a90-23968933675_thumb500.jpg"
-};
+/** Load charts from local PHP + MySQL. Run from repo root: php -S 127.0.0.1:8080 */
+const API_BASE = "../php/api/music_charts.php";
+const PLACEHOLDER_COVER = "data:image/svg+xml," + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="%23181818" width="200" height="200"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23555" font-family="system-ui,sans-serif" font-size="14">No cover</text></svg>'
+);
 
-const TOP_SONGS = [
-  {rank:1, title:"Blinding Lights", artist:"The Weeknd", decade:"2020s", cover:COVERS.afterHours},
-  {rank:2, title:"Rolling in the Deep", artist:"Adele", decade:"2010s", cover:COVERS.adele21},
-  {rank:3, title:"Hey Ya!", artist:"OutKast", decade:"2000s", cover:COVERS.outkast},
-  {rank:4, title:"Karma Police", artist:"Radiohead", decade:"1990s", cover:COVERS.okComputer},
-  {rank:5, title:"Billie Jean", artist:"Michael Jackson", decade:"1980s", cover:COVERS.thriller}
-];
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
 
-const TOP_ARTISTS = [
-  {rank:1, artistId:1, artist:"The Weeknd", topTrack:"Blinding Lights", decade:"2020s"},
-  {rank:2, artistId:2, artist:"Adele", topTrack:"Rolling in the Deep", decade:"2010s"},
-  {rank:3, artistId:3, artist:"OutKast", topTrack:"Hey Ya!", decade:"2000s"},
-  {rank:4, artistId:4, artist:"Radiohead", topTrack:"Karma Police", decade:"1990s"},
-  {rank:5, artistId:5, artist:"Michael Jackson", topTrack:"Billie Jean", decade:"1980s"}
-];
-
-const TOP_ALBUMS = [
-  {rank:1, album:"After Hours", artist:"The Weeknd", decade:"2020s", cover:COVERS.afterHours},
-  {rank:2, album:"21", artist:"Adele", decade:"2010s", cover:COVERS.adele21},
-  {rank:3, album:"Speakerboxxx / The Love Below", artist:"OutKast", decade:"2000s", cover:COVERS.outkast},
-  {rank:4, album:"OK Computer", artist:"Radiohead", decade:"1990s", cover:COVERS.okComputer},
-  {rank:5, album:"Thriller (Special Edition)", artist:"Michael Jackson", decade:"1980s", cover:COVERS.thriller}
-];
-
-// 7 genres
-const GENRES = [
-  {key:"Pop", items:[]},
-  {key:"Rock", items:[]},
-  {key:"Hip-Hop", items:[]},
-  {key:"R&B", items:[]},
-  {key:"Jazz", items:[]},
-  {key:"Classical", items:[]},
-  {key:"Electronic", items:[]},
-  {key:"Country", items:[]}
-];
-
-// seed some demo cards into Pop for illustration
-GENRES[0].items = [
-  {rank:1, title:"Blinding Lights", artist:"The Weeknd", decade:"2020s", cover:COVERS.afterHours, type:"songs"},
-  {rank:2, title:"Rolling in the Deep", artist:"Adele", decade:"2010s", cover:COVERS.adele21, type:"songs"},
-  {rank:3, title:"After Hours", artist:"The Weeknd", decade:"2020s", cover:COVERS.afterHours, type:"albums"}
-];
-
-const $ = (s)=>document.querySelector(s);
-const $$ = (s)=>Array.from(document.querySelectorAll(s));
-
-function playMock(label){
-  alert("Preview (mock): " + label);
+function esc(s) {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+function escAttr(s) {
+  return esc(s).replace(/'/g, "&#39;");
+}
+function coverSrc(url) {
+  const u = String(url ?? "").trim();
+  return u ? u.replace(/&/g, "&amp;").replace(/"/g, "&quot;") : PLACEHOLDER_COVER;
 }
 
-function openArtistResult(artistId, artistName){
-  const url = `artist_search_result.html?artist_id=${encodeURIComponent(String(artistId))}&artist_name=${encodeURIComponent(artistName)}`;
-  window.location.href = url;
+function apiUrl(params) {
+  const u = new URL(API_BASE, window.location.href);
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && String(v) !== "") u.searchParams.set(k, String(v));
+  });
+  return u.toString();
 }
 
-// render TOP charts
-function renderTop(decade="all"){
-  const q = ($("#searchInput").value||"").toLowerCase();
-  const filterDecade = x => decade==="all" || x.decade===decade;
-  const filterSearch = t => !q || t.toLowerCase().includes(q);
-
-  // songs
-  const songs = TOP_SONGS.filter(filterDecade).filter(x=>filterSearch(x.title)||filterSearch(x.artist));
-  $("#songBody").innerHTML = songs.map(s=>`
-    <tr class="row">
-      <td class="rank">#${s.rank}</td>
-      <td><div class="cover"><img src="${s.cover}" loading="lazy"/></div></td>
-      <td><div class="main">${s.title}</div></td>
-      <td><div class="sub">${s.artist}</div></td>
-      <td><button class="play" onclick="playMock('${s.title}')">▶</button></td>
-    </tr>
-  `).join("");
-
-  // artists
-  const artists = TOP_ARTISTS.filter(filterDecade);
-  $("#artistBody").innerHTML = artists.map(a=>`
-    <tr class="row">
-      <td class="rank">#${a.rank}</td>
-      <td><div class="main">${a.artist}</div></td>
-      <td><div class="sub">${a.topTrack}</div></td>
-      <td><button class="play" onclick="openArtistResult('${a.artistId}', '${a.artist}')">↗</button></td>
-    </tr>
-  `).join("");
-
-  // albums
-  const albums = TOP_ALBUMS.filter(filterDecade);
-  $("#albumBody").innerHTML = albums.map(a=>`
-    <tr class="row">
-      <td class="rank">#${a.rank}</td>
-      <td><div class="cover"><img src="${a.cover}" loading="lazy"/></div></td>
-      <td><div class="main">${a.album}</div></td>
-      <td><div class="sub">${a.artist}</div></td>
-    </tr>
-  `).join("");
+async function apiGet(params) {
+  const res = await fetch(apiUrl(params));
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok || !j.ok) {
+    const msg = j.message || j.error || res.statusText || "Request failed";
+    throw new Error(msg);
+  }
+  return j.data;
 }
 
-// tabs switching
-$("#topTabs").addEventListener("click", e=>{
-  const btn = e.target.closest(".tab"); if(!btn) return;
-  $$("#topTabs .tab").forEach(x=>x.classList.remove("active"));
-  btn.classList.add("active");
-  const t = btn.dataset.tab;
-  $("#songTable").style.display = t==="songs"?"":"none";
-  $("#artistTable").style.display = t==="artists"?"":"none";
-  $("#albumTable").style.display = t==="albums"?"":"none";
-});
-
-$("#topApply").addEventListener("click", ()=>{
-  renderTop($("#topDecade").value);
-});
-
-// build left genre list
-let activeGenre = GENRES[0].key;
+let activeGenre = "";
 let activeGenreTab = "songs";
 
-function renderGenreGrid(){
-  const decade = $("#genreDecade").value;
-  const genre = GENRES.find(g=>g.key===activeGenre);
-  let items = (genre.items||[]).filter(x=>x.type===activeGenreTab);
-  if(decade!=="all") items = items.filter(x=>x.decade===decade);
-
-  $("#genreGrid").innerHTML = items.map(x=>`
-    <div class="card" onclick="alert('Open: ${x.title}')">
-      <div class="img">
-        <img src="${x.cover}" loading="lazy"/>
-        <div class="badge">#${x.rank}</div>
-        ${activeGenreTab==="songs" ? `
-          <button
-            class="play card-play"
-            onclick="event.stopPropagation(); playMock('${x.title}')"
-            title="Preview"
-          >▶</button>
-        ` : ``}
-      </div>
-      <div class="meta">
-        <div class="t">${x.title}</div>
-        <div class="a">${x.artist}</div>
-      </div>
-    </div>
-  `).join("");
+function resetPreviewButtons() {
+  document.querySelectorAll("button.js-preview.is-playing").forEach((b) => {
+    b.classList.remove("is-playing");
+    b.textContent = "▶";
+  });
 }
 
-const gl = $("#genreList");
-gl.innerHTML = GENRES.map(g=>`
-  <button class="genrebtn ${g.key===activeGenre?"active":""}" data-genre="${g.key}">${g.key}</button>
-`).join("");
+function playPreviewToggle(url, btn) {
+  const audio = document.getElementById("previewAudio");
+  if (!audio || !url || !btn) return;
+  const u = url.trim();
+  const same = audio.dataset.loaded === u;
+  if (same && !audio.paused) {
+    audio.pause();
+    resetPreviewButtons();
+    return;
+  }
+  if (same && audio.paused) {
+    resetPreviewButtons();
+    btn.classList.add("is-playing");
+    btn.textContent = "⏸";
+    audio.play().catch(function () {});
+    return;
+  }
+  resetPreviewButtons();
+  audio.pause();
+  audio.src = u;
+  audio.dataset.loaded = u;
+  audio.load();
+  btn.classList.add("is-playing");
+  btn.textContent = "⏸";
+  audio.play().catch(function () {});
+}
 
-gl.addEventListener("click", e=>{
-  const btn = e.target.closest(".genrebtn"); if(!btn) return;
-  activeGenre = btn.dataset.genre;
-  $$("#genreList .genrebtn").forEach(x=>x.classList.remove("active"));
+(function wirePreviewAudioEnded() {
+  const a = document.getElementById("previewAudio");
+  if (!a) return;
+  a.addEventListener("ended", resetPreviewButtons);
+})();
+
+function artistSearchUrl(artistId, artistName) {
+  return (
+    "artist_search_result.html?artist_id=" +
+    encodeURIComponent(String(artistId)) +
+    "&artist_name=" +
+    encodeURIComponent(String(artistName))
+  );
+}
+
+function openArtistResult(artistId, artistName) {
+  window.location.href = artistSearchUrl(artistId, artistName);
+}
+
+async function searchArtistFromBar() {
+  const q = ($("#searchInput").value || "").trim();
+  if (!q) {
+    alert("Enter an artist name.");
+    return;
+  }
+  try {
+    const rows = await apiGet({ action: "search_artists", q });
+    if (!Array.isArray(rows) || rows.length === 0) {
+      alert("No matching artist found.");
+      return;
+    }
+    const first = rows[0];
+    openArtistResult(String(first.artist_id), String(first.artist_name));
+  } catch (err) {
+    alert("Search failed: " + err.message);
+  }
+}
+
+function renderSongs(rows) {
+  const body = $("#songBody");
+  const list = Array.isArray(rows) ? rows : [];
+  body.innerHTML =
+    list
+      .map((s) => {
+        const prev = String(s.preview_url ?? "").trim();
+        const play = prev
+          ? `<button type="button" class="play js-preview" data-preview="${escAttr(prev)}">▶</button>`
+          : `<button type="button" class="play" disabled title="No preview">▶</button>`;
+        return `
+    <tr class="row">
+      <td class="rank">#${esc(s.rank)}</td>
+      <td><div class="cover"><img src="${coverSrc(s.album_image_url)}" loading="lazy" alt=""/></div></td>
+      <td><div class="main">${esc(s.track_name)}</div></td>
+      <td><div class="sub">${esc(s.artist_names)}</div></td>
+      <td>${play}</td>
+    </tr>`;
+      })
+      .join("") ||
+    `<tr><td colspan="5" style="padding:18px;color:var(--muted)">No tracks.</td></tr>`;
+}
+
+function renderArtists(rows) {
+  const body = $("#artistBody");
+  const list = Array.isArray(rows) ? rows : [];
+  body.innerHTML =
+    list
+      .map(
+        (a) => `
+    <tr class="row">
+      <td class="rank">#${esc(a.rank)}</td>
+      <td><div class="main">${esc(a.artist_name)}</div></td>
+      <td><div class="sub">${esc(a.top_track_name)}</div></td>
+      <td><button type="button" class="play js-artist" data-artist-id="${escAttr(
+          a.artist_id
+        )}" data-artist-name="${escAttr(a.artist_name)}">↗</button></td>
+    </tr>`
+      )
+      .join("") ||
+    `<tr><td colspan="4" style="padding:18px;color:var(--muted)">No artists.</td></tr>`;
+}
+
+function renderAlbums(rows) {
+  const body = $("#albumBody");
+  const list = Array.isArray(rows) ? rows : [];
+  body.innerHTML =
+    list
+      .map(
+        (a) => `
+    <tr class="row">
+      <td class="rank">#${esc(a.rank)}</td>
+      <td><div class="cover"><img src="${coverSrc(a.album_image_url)}" loading="lazy" alt=""/></div></td>
+      <td><div class="main">${esc(a.album_name)}</div></td>
+      <td><div class="sub">${esc(a.artist_names)}</div></td>
+    </tr>`
+      )
+      .join("") ||
+    `<tr><td colspan="4" style="padding:18px;color:var(--muted)">No albums.</td></tr>`;
+}
+
+async function loadTopCharts() {
+  const decade = $("#topDecade").value || "all";
+  const pa = document.getElementById("previewAudio");
+  if (pa) {
+    pa.pause();
+    delete pa.dataset.loaded;
+  }
+  resetPreviewButtons();
+  const songParams = { action: "top_songs", decade };
+  const [songs, artists, albums] = await Promise.all([
+    apiGet(songParams),
+    apiGet({ action: "top_artists", decade }),
+    apiGet({ action: "top_albums", decade }),
+  ]);
+  renderSongs(songs);
+  renderArtists(artists);
+  renderAlbums(albums);
+}
+
+function renderGenreButtons(genreKeys) {
+  const gl = $("#genreList");
+  if (!genreKeys.length) {
+    gl.innerHTML =
+      '<span style="color:var(--muted);padding:8px">No genres in database.</span>';
+    return;
+  }
+  if (!activeGenre || !genreKeys.includes(activeGenre)) activeGenre = genreKeys[0];
+  gl.innerHTML = genreKeys
+    .map(
+      (key) =>
+        `<button class="genrebtn ${key === activeGenre ? "active" : ""}" data-genre="${escAttr(
+          key
+        )}">${esc(key)}</button>`
+    )
+    .join("");
+}
+
+function mapExploreRow(row, tab) {
+  if (tab === "songs") {
+    return {
+      rank: row.rank,
+      title: row.track_name,
+      artist: row.artist_names,
+      cover: row.album_image_url,
+      preview: row.preview_url,
+    };
+  }
+  if (tab === "artists") {
+    return {
+      rank: row.rank,
+      title: row.artist_name,
+      artist: "",
+      cover: row.album_image_url ?? null,
+      preview: null,
+      artistId: row.artist_id,
+      artistName: row.artist_name,
+    };
+  }
+  return {
+    rank: row.rank,
+    title: row.album_name,
+    artist: row.artist_names,
+    cover: row.album_image_url,
+    preview: null,
+  };
+}
+
+function renderGenreGridFromItems(items) {
+  const tab = activeGenreTab;
+  const mapped = (items || []).map((r) => mapExploreRow(r, tab));
+  $("#genreGrid").innerHTML =
+    mapped
+      .map((x) => {
+        const showPlay = tab === "songs" && String(x.preview || "").trim();
+        const playBtn = showPlay
+          ? `<button type="button" class="play card-play js-preview" data-preview="${escAttr(
+              String(x.preview).trim()
+            )}" title="Preview">▶</button>`
+          : tab === "artists"
+          ? ""
+          : "";
+        const cardClass = "card card--static";
+        const subline = String(x.artist || "").trim()
+          ? `<div class="a">${esc(x.artist)}</div>`
+          : "";
+        const imgBlock = `<div class="img">
+        <img src="${coverSrc(x.cover)}" loading="lazy" alt=""/>
+        <div class="badge">#${esc(x.rank)}</div>
+        ${playBtn}
+      </div>`;
+        const metaBlock = `<div class="meta">
+        <div class="t">${esc(x.title)}</div>
+        ${subline}
+      </div>`;
+        const body =
+          tab === "artists" && x.artistId
+            ? `<a class="artist-card-hit" href="${escAttr(
+                artistSearchUrl(x.artistId, x.artistName)
+              )}" aria-label="Open ${escAttr(String(x.artistName || x.title))}">${imgBlock}${metaBlock}</a>`
+            : `${imgBlock}${metaBlock}`;
+        return `
+    <div class="${cardClass}">
+      ${body}
+    </div>`;
+      })
+      .join("") ||
+    `<div style="padding:18px;color:var(--muted)">No items for this genre.</div>`;
+}
+
+async function loadExplore() {
+  if (!activeGenre) {
+    $("#genreGrid").innerHTML = "";
+    return;
+  }
+  const pa = document.getElementById("previewAudio");
+  if (pa) {
+    pa.pause();
+    delete pa.dataset.loaded;
+  }
+  resetPreviewButtons();
+  const decade = $("#genreDecade").value;
+  const items = await apiGet({
+    action: "explore",
+    genre: activeGenre,
+    type: activeGenreTab,
+    decade,
+  });
+  renderGenreGridFromItems(items);
+}
+
+async function initGenres() {
+  const keys = await apiGet({ action: "genres" });
+  renderGenreButtons(keys);
+  await loadExplore();
+}
+
+$("#topTabs").addEventListener("click", (e) => {
+  const btn = e.target.closest(".tab");
+  if (!btn) return;
+  $$("#topTabs .tab").forEach((x) => x.classList.remove("active"));
   btn.classList.add("active");
-  renderGenreGrid();
+  const t = btn.dataset.tab;
+  $("#songTable").style.display = t === "songs" ? "" : "none";
+  $("#artistTable").style.display = t === "artists" ? "" : "none";
+  $("#albumTable").style.display = t === "albums" ? "" : "none";
 });
 
-$("#genreTabs").addEventListener("click", e=>{
-  const btn = e.target.closest(".tab"); if(!btn) return;
-  $$("#genreTabs .tab").forEach(x=>x.classList.remove("active"));
+$("#topDecade").addEventListener("change", async () => {
+  try {
+    await loadTopCharts();
+  } catch (err) {
+    console.error(err);
+    alert("Failed to load charts: " + err.message);
+  }
+});
+
+$("#searchInput").addEventListener("keydown", (e) => {
+  if (e.key !== "Enter") return;
+  e.preventDefault();
+  searchArtistFromBar();
+});
+
+$("#genreList").addEventListener("click", async (e) => {
+  const btn = e.target.closest(".genrebtn");
+  if (!btn) return;
+  activeGenre = btn.getAttribute("data-genre") || "";
+  $$("#genreList .genrebtn").forEach((x) => x.classList.remove("active"));
+  btn.classList.add("active");
+  try {
+    await loadExplore();
+  } catch (err) {
+    console.error(err);
+    alert("Explore failed: " + err.message);
+  }
+});
+
+$("#genreTabs").addEventListener("click", async (e) => {
+  const btn = e.target.closest(".tab");
+  if (!btn) return;
+  $$("#genreTabs .tab").forEach((x) => x.classList.remove("active"));
   btn.classList.add("active");
   activeGenreTab = btn.dataset.tab;
-  renderGenreGrid();
+  try {
+    await loadExplore();
+  } catch (err) {
+    console.error(err);
+    alert("Explore failed: " + err.message);
+  }
 });
 
-$("#genreDecade").addEventListener("change", renderGenreGrid);
+$("#genreDecade").addEventListener("change", async () => {
+  try {
+    await loadExplore();
+  } catch (err) {
+    console.error(err);
+  }
+});
 
-// init
-renderTop("all");
-renderGenreGrid();
+document.addEventListener("click", (e) => {
+  const prevBtn = e.target.closest(".js-preview");
+  if (prevBtn) {
+    e.preventDefault();
+    e.stopPropagation();
+    const u = prevBtn.getAttribute("data-preview");
+    if (u) playPreviewToggle(u, prevBtn);
+    return;
+  }
+  const artBtn = e.target.closest(".js-artist");
+  if (artBtn) {
+    e.preventDefault();
+    const id = artBtn.getAttribute("data-artist-id");
+    const name = artBtn.getAttribute("data-artist-name");
+    if (id && name) openArtistResult(id, name);
+  }
+});
 
-$("#logoLoginEntry").addEventListener("click", ()=>{
+$("#logoLoginEntry").addEventListener("click", () => {
   window.location.href = "login_page.html";
 });
+
+(async function boot() {
+  try {
+    await loadTopCharts();
+    await initGenres();
+  } catch (err) {
+    console.error(err);
+    alert(
+      "Could not load data from PHP/MySQL.\n\n" +
+        "1) From the project folder run: php -S 127.0.0.1:8080\n" +
+        "2) Open http://127.0.0.1:8080/html/music_charts.html\n" +
+        "3) If you see \"using password: NO\", export your DB password then start PHP, e.g.:\n   export MUSICBOX_DB_PASSWORD='your_password'\n   php -S 127.0.0.1:8080\n\n" +
+        "Error: " +
+        err.message
+    );
+  }
+})();
+
 </script>
 </body>
 </html>
