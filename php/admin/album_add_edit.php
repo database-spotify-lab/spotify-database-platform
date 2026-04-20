@@ -10,106 +10,126 @@ if ($user === null) {
     exit;
 }
 
-const ARTIST_GENRE_OPTIONS = [
-    'Pop',
-    'Rock',
-    'Hip-Hop',
-    'R&B',
-    'Jazz',
-    'Classical',
-    'Electronic',
-    'Country',
-];
-
-/**
- * @return list<string>
- */
-function read_artist_genres(PDO $pdo, string $artistId): array
+function esc(string $value): string
 {
-    $stmt = $pdo->prepare('SELECT genre FROM ARTIST_GENRES WHERE artist_id = :artist_id ORDER BY genre ASC');
-    $stmt->execute([':artist_id' => $artistId]);
-    $rows = $stmt->fetchAll();
-    $genres = [];
-    foreach ($rows as $row) {
-        $g = trim((string) ($row['genre'] ?? ''));
-        if ($g !== '') {
-            $genres[] = $g;
-        }
-    }
-    return $genres;
+    return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
-function build_artist_id(PDO $pdo): string
+function build_album_id(PDO $pdo): string
 {
     for ($i = 0; $i < 5; $i++) {
-        $id = 'adm_' . bin2hex(random_bytes(8));
-        $stmt = $pdo->prepare('SELECT 1 FROM ARTISTS WHERE artist_id = :artist_id LIMIT 1');
-        $stmt->execute([':artist_id' => $id]);
+        $id = 'adm_alb_' . bin2hex(random_bytes(6));
+        $stmt = $pdo->prepare('SELECT 1 FROM ALBUMS WHERE album_id = :album_id LIMIT 1');
+        $stmt->execute([':album_id' => $id]);
         if ($stmt->fetchColumn() === false) {
             return $id;
         }
     }
-    throw new RuntimeException('Failed to allocate unique artist id');
+    throw new RuntimeException('Failed to allocate unique album id');
+}
+
+function normalize_release_date(string $value): ?string
+{
+    $v = trim($value);
+    if ($v === '') {
+        return null;
+    }
+    $dt = DateTime::createFromFormat('Y-m-d', $v);
+    if ($dt === false || $dt->format('Y-m-d') !== $v) {
+        throw new RuntimeException('Release date must be YYYY-MM-DD.');
+    }
+    return $v;
+}
+
+function lookup_artist_id_by_name(PDO $pdo, string $artistName): ?string
+{
+    $name = trim($artistName);
+    if ($name === '') {
+        return null;
+    }
+    $stmt = $pdo->prepare('
+        SELECT artist_id
+        FROM ARTISTS
+        WHERE artist_name = :artist_name
+        ORDER BY artist_id ASC
+        LIMIT 1
+    ');
+    $stmt->execute([':artist_name' => $name]);
+    $row = $stmt->fetch();
+    if ($row === false) {
+        return null;
+    }
+    return (string) $row['artist_id'];
 }
 
 $pdo = db();
-$artistId = trim((string) ($_GET['artist_id'] ?? ''));
-$isEditMode = $artistId !== '';
+$albumId = trim((string) ($_GET['album_id'] ?? ''));
+$isEditMode = $albumId !== '';
 $pageError = '';
 $pageMessage = '';
 
-$artist = [
-    'artist_id' => '',
-    'artist_name' => '',
+$album = [
+    'album_id' => '',
+    'album_name' => '',
+    'release_date' => '',
+    'album_image_url' => '',
     'status' => CATALOG_STATUS_PENDING,
     'submitted_by' => $user['user_id'],
     'reviewed_by' => null,
 ];
-$selectedGenres = [];
+$mainArtistName = '';
 
 if ($isEditMode) {
     $stmt = $pdo->prepare('
-        SELECT artist_id, artist_name, status, submitted_by, reviewed_by
-        FROM ARTISTS
-        WHERE artist_id = :artist_id
+        SELECT
+            al.album_id,
+            al.album_name,
+            al.release_date,
+            al.album_image_url,
+            al.status,
+            al.submitted_by,
+            al.reviewed_by,
+            (
+                SELECT ar.artist_name
+                FROM ALBUM_ARTISTS aa2
+                INNER JOIN ARTISTS ar ON ar.artist_id = aa2.artist_id
+                WHERE aa2.album_id = al.album_id
+                ORDER BY ar.artist_name ASC
+                LIMIT 1
+            ) AS main_artist_name
+        FROM ALBUMS al
+        WHERE al.album_id = :album_id
         LIMIT 1
     ');
-    $stmt->execute([':artist_id' => $artistId]);
+    $stmt->execute([':album_id' => $albumId]);
     $row = $stmt->fetch();
     if ($row === false) {
-        $pageError = 'Artist not found.';
+        $pageError = 'Album not found.';
         $isEditMode = false;
     } else {
-        $artist = [
-            'artist_id' => (string) $row['artist_id'],
-            'artist_name' => (string) $row['artist_name'],
+        $album = [
+            'album_id' => (string) $row['album_id'],
+            'album_name' => (string) $row['album_name'],
+            'release_date' => $row['release_date'] !== null ? (string) $row['release_date'] : '',
+            'album_image_url' => $row['album_image_url'] !== null ? (string) $row['album_image_url'] : '',
             'status' => (string) $row['status'],
             'submitted_by' => (int) $row['submitted_by'],
             'reviewed_by' => $row['reviewed_by'] !== null ? (int) $row['reviewed_by'] : null,
         ];
-        $selectedGenres = read_artist_genres($pdo, (string) $row['artist_id']);
+        $mainArtistName = $row['main_artist_name'] !== null ? (string) $row['main_artist_name'] : '';
     }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = trim((string) ($_POST['action'] ?? 'save'));
-    $formArtistId = trim((string) ($_POST['artist_id'] ?? ''));
-    $name = trim((string) ($_POST['artist_name'] ?? ''));
+    $formAlbumId = trim((string) ($_POST['album_id'] ?? ''));
+    $albumName = trim((string) ($_POST['album_name'] ?? ''));
+    $releaseDateRaw = trim((string) ($_POST['release_date'] ?? ''));
+    $albumImageUrlRaw = trim((string) ($_POST['album_image_url'] ?? ''));
     $status = strtolower(trim((string) ($_POST['status'] ?? CATALOG_STATUS_PENDING)));
-    $postedGenres = $_POST['genres'] ?? [];
-    if (!is_array($postedGenres)) {
-        $postedGenres = [];
-    }
+    $mainArtistNameInput = trim((string) ($_POST['main_artist'] ?? ''));
 
-    $cleanGenres = [];
-    foreach ($postedGenres as $g) {
-        $genre = trim((string) $g);
-        if ($genre !== '') {
-            $cleanGenres[$genre] = true;
-        }
-    }
-    $selectedGenres = array_keys($cleanGenres);
-
+    $mainArtistName = $mainArtistNameInput;
     $allowedStatuses = [CATALOG_STATUS_PENDING, CATALOG_STATUS_APPROVED, CATALOG_STATUS_REJECTED];
     if (!in_array($status, $allowedStatuses, true)) {
         $status = CATALOG_STATUS_PENDING;
@@ -117,122 +137,132 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         if ($action === 'delete') {
-            if ($formArtistId === '') {
-                throw new RuntimeException('Missing artist id for delete.');
+            if ($formAlbumId === '') {
+                throw new RuntimeException('Missing album id for delete.');
             }
-            $stmt = $pdo->prepare('DELETE FROM ARTISTS WHERE artist_id = :artist_id');
-            $stmt->execute([':artist_id' => $formArtistId]);
+            $stmt = $pdo->prepare('DELETE FROM ALBUMS WHERE album_id = :album_id');
+            $stmt->execute([':album_id' => $formAlbumId]);
             if ($stmt->rowCount() < 1) {
-                throw new RuntimeException('Artist not found or already deleted.');
+                throw new RuntimeException('Album not found or already deleted.');
             }
-            header('Location: admin_page.php?msg=artist_deleted', true, 302);
+            header('Location: admin_page.php?msg=album_deleted', true, 302);
             exit;
         }
 
-        if ($name === '') {
-            throw new RuntimeException('Artist name is required.');
+        if ($albumName === '') {
+            throw new RuntimeException('Album name is required.');
+        }
+
+        $releaseDate = normalize_release_date($releaseDateRaw);
+        $albumImageUrl = $albumImageUrlRaw === '' ? null : $albumImageUrlRaw;
+
+        $mainArtistId = lookup_artist_id_by_name($pdo, $mainArtistNameInput);
+        if ($mainArtistNameInput !== '' && $mainArtistId === null) {
+            throw new RuntimeException('Main artist not found. Use an existing artist name exactly.');
         }
 
         $pdo->beginTransaction();
-        if ($formArtistId === '') {
-            $newArtistId = build_artist_id($pdo);
+        if ($formAlbumId === '') {
+            $newAlbumId = build_album_id($pdo);
             $stmt = $pdo->prepare('
-                INSERT INTO ARTISTS (artist_id, artist_name, status, submitted_by, reviewed_by)
-                VALUES (:artist_id, :artist_name, :status, :submitted_by, :reviewed_by)
+                INSERT INTO ALBUMS (album_id, album_name, release_date, album_image_url, status, submitted_by, reviewed_by)
+                VALUES (:album_id, :album_name, :release_date, :album_image_url, :status, :submitted_by, :reviewed_by)
             ');
             $stmt->execute([
-                ':artist_id' => $newArtistId,
-                ':artist_name' => $name,
+                ':album_id' => $newAlbumId,
+                ':album_name' => $albumName,
+                ':release_date' => $releaseDate,
+                ':album_image_url' => $albumImageUrl,
                 ':status' => $status,
                 ':submitted_by' => (int) $user['user_id'],
                 ':reviewed_by' => $status === CATALOG_STATUS_PENDING ? null : (int) $user['user_id'],
             ]);
-            $formArtistId = $newArtistId;
-            $pageMessage = 'Artist created successfully.';
+            $formAlbumId = $newAlbumId;
+            $pageMessage = 'Album created successfully.';
             $isEditMode = true;
         } else {
             $stmt = $pdo->prepare('
-                UPDATE ARTISTS
-                SET artist_name = :artist_name,
+                UPDATE ALBUMS
+                SET album_name = :album_name,
+                    release_date = :release_date,
+                    album_image_url = :album_image_url,
                     status = :status,
                     reviewed_by = :reviewed_by
-                WHERE artist_id = :artist_id
+                WHERE album_id = :album_id
             ');
             $stmt->execute([
-                ':artist_name' => $name,
+                ':album_name' => $albumName,
+                ':release_date' => $releaseDate,
+                ':album_image_url' => $albumImageUrl,
                 ':status' => $status,
                 ':reviewed_by' => $status === CATALOG_STATUS_PENDING ? null : (int) $user['user_id'],
-                ':artist_id' => $formArtistId,
+                ':album_id' => $formAlbumId,
             ]);
-            $pageMessage = 'Artist updated successfully.';
+            $pageMessage = 'Album updated successfully.';
             $isEditMode = true;
         }
 
-        $stmt = $pdo->prepare('DELETE FROM ARTIST_GENRES WHERE artist_id = :artist_id');
-        $stmt->execute([':artist_id' => $formArtistId]);
-        if ($selectedGenres !== []) {
-            $insertGenre = $pdo->prepare('
-                INSERT INTO ARTIST_GENRES (artist_id, genre)
-                VALUES (:artist_id, :genre)
+        $stmt = $pdo->prepare('DELETE FROM ALBUM_ARTISTS WHERE album_id = :album_id');
+        $stmt->execute([':album_id' => $formAlbumId]);
+        if ($mainArtistId !== null) {
+            $stmt = $pdo->prepare('
+                INSERT INTO ALBUM_ARTISTS (album_id, artist_id)
+                VALUES (:album_id, :artist_id)
             ');
-            foreach ($selectedGenres as $genre) {
-                $insertGenre->execute([
-                    ':artist_id' => $formArtistId,
-                    ':genre' => $genre,
-                ]);
-            }
+            $stmt->execute([
+                ':album_id' => $formAlbumId,
+                ':artist_id' => $mainArtistId,
+            ]);
         }
+
         $pdo->commit();
 
-        $artistId = $formArtistId;
+        $albumId = $formAlbumId;
         $stmt = $pdo->prepare('
-            SELECT artist_id, artist_name, status, submitted_by, reviewed_by
-            FROM ARTISTS
-            WHERE artist_id = :artist_id
+            SELECT album_id, album_name, release_date, album_image_url, status, submitted_by, reviewed_by
+            FROM ALBUMS
+            WHERE album_id = :album_id
             LIMIT 1
         ');
-        $stmt->execute([':artist_id' => $artistId]);
+        $stmt->execute([':album_id' => $albumId]);
         $row = $stmt->fetch();
         if ($row !== false) {
-            $artist = [
-                'artist_id' => (string) $row['artist_id'],
-                'artist_name' => (string) $row['artist_name'],
+            $album = [
+                'album_id' => (string) $row['album_id'],
+                'album_name' => (string) $row['album_name'],
+                'release_date' => $row['release_date'] !== null ? (string) $row['release_date'] : '',
+                'album_image_url' => $row['album_image_url'] !== null ? (string) $row['album_image_url'] : '',
                 'status' => (string) $row['status'],
                 'submitted_by' => (int) $row['submitted_by'],
                 'reviewed_by' => $row['reviewed_by'] !== null ? (int) $row['reviewed_by'] : null,
             ];
         }
-        $selectedGenres = read_artist_genres($pdo, $artistId);
     } catch (Throwable $e) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
         }
         $pageError = $e->getMessage();
-        $isEditMode = $formArtistId !== '';
+        $isEditMode = $formAlbumId !== '';
+        $album = [
+            'album_id' => $formAlbumId,
+            'album_name' => $albumName,
+            'release_date' => $releaseDateRaw,
+            'album_image_url' => $albumImageUrlRaw,
+            'status' => $status,
+            'submitted_by' => $album['submitted_by'],
+            'reviewed_by' => $album['reviewed_by'],
+        ];
     }
 }
 
-$isEditMode = trim((string) ($artist['artist_id'] ?? '')) !== '';
-
-$allGenreOptions = ARTIST_GENRE_OPTIONS;
-foreach ($selectedGenres as $g) {
-    if (!in_array($g, $allGenreOptions, true)) {
-        $allGenreOptions[] = $g;
-    }
-}
-sort($allGenreOptions, SORT_NATURAL | SORT_FLAG_CASE);
-
-function esc(string $value): string
-{
-    return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-}
+$isEditMode = trim((string) ($album['album_id'] ?? '')) !== '';
 ?>
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MusicBox Admin • Add / Edit Artist</title>
+  <title>MusicBox Admin • Add / Edit Album</title>
   <style>
     :root{
       --bg:#0b0b0b;
@@ -256,7 +286,7 @@ function esc(string $value): string
         radial-gradient(900px 500px at 90% 0px, rgba(0,194,255,.10), transparent 55%),
         var(--bg);
     }
-    .wrap{max-width:1040px;margin:22px auto;padding:0 18px 60px;}
+    .wrap{max-width:1120px;margin:22px auto;padding:0 18px 60px;}
     .shell{
       border:1px solid var(--border);
       border-radius:22px;
@@ -362,6 +392,11 @@ function esc(string $value): string
       font-size:13px;
       font-family:var(--mono);
     }
+    input:focus, select:focus{
+      border-color: rgba(0,245,160,.5);
+      box-shadow: 0 0 0 4px rgba(0,245,160,.12);
+    }
+    input::placeholder{color:#7f7f7f}
     .status-badge{
       display:inline-flex;
       align-items:center;
@@ -373,34 +408,6 @@ function esc(string $value): string
       font-size:12px;
       font-weight:700;
       padding:6px 12px;
-    }
-    .pills{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-    }
-    .pill-radio{
-      position:relative;
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:10px 14px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.04);
-      cursor:pointer;
-      font-family:var(--mono);
-      font-size:12px;
-      color:var(--text);
-      user-select:none;
-      transition: border-color .12s ease, background .12s ease;
-    }
-    .pill-radio:hover{border-color:rgba(0,245,160,.35)}
-    .pill-radio input{position:absolute;opacity:0;pointer-events:none;}
-    .pill-radio.active{
-      border-color: rgba(0,245,160,.55);
-      background: rgba(0,245,160,.10);
-      box-shadow: 0 0 0 4px rgba(0,245,160,.10);
     }
     .msg{
       margin-top:14px;
@@ -444,7 +451,7 @@ function esc(string $value): string
           <div class="logo-badge"><span style="display:inline-block;transform:translateY(1px);">♪</span></div>
           <div class="brand">
             <div class="name">MusicBox <span style="color:var(--muted);font-weight:900">Admin</span></div>
-            <div class="crumb">Artist • <?php echo $isEditMode ? 'Edit' : 'Add'; ?></div>
+            <div class="crumb">Album • <?php echo $isEditMode ? 'Edit' : 'Add'; ?></div>
           </div>
         </div>
       </div>
@@ -463,21 +470,27 @@ function esc(string $value): string
         <?php endif; ?>
 
         <form method="post" action="">
-          <input type="hidden" name="artist_id" value="<?php echo esc((string) $artist['artist_id']); ?>" />
+          <input type="hidden" name="album_id" value="<?php echo esc((string) $album['album_id']); ?>" />
 
           <div class="section">
-            <h3>Artist Info</h3>
+            <h3>Album Info</h3>
             <div class="grid">
-              <label for="artist_id_view">Artist ID</label>
-              <input id="artist_id_view" type="text" value="<?php echo esc((string) ($artist['artist_id'] ?: '(new artist)')); ?>" readonly />
+              <label for="album_id_view">Album ID</label>
+              <input id="album_id_view" type="text" value="<?php echo esc((string) ($album['album_id'] ?: '(new album)')); ?>" readonly />
 
-              <label for="artist_name">Artist Name</label>
-              <input id="artist_name" name="artist_name" type="text" placeholder="e.g., Taylor Swift" required value="<?php echo esc((string) $artist['artist_name']); ?>" />
+              <label for="album_name">Album Name</label>
+              <input id="album_name" name="album_name" type="text" placeholder="e.g., Midnights" required value="<?php echo esc((string) $album['album_name']); ?>" />
+
+              <label for="release_date">Release Date</label>
+              <input id="release_date" name="release_date" type="date" value="<?php echo esc((string) $album['release_date']); ?>" />
+
+              <label for="album_image_url">Album Cover URL</label>
+              <input id="album_image_url" name="album_image_url" type="url" placeholder="https://..." value="<?php echo esc((string) $album['album_image_url']); ?>" />
 
               <label for="status">Status</label>
               <select id="status" name="status">
                 <?php foreach ([CATALOG_STATUS_PENDING, CATALOG_STATUS_APPROVED, CATALOG_STATUS_REJECTED] as $statusOpt): ?>
-                  <option value="<?php echo esc($statusOpt); ?>" <?php echo strtolower((string) $artist['status']) === $statusOpt ? 'selected' : ''; ?>>
+                  <option value="<?php echo esc($statusOpt); ?>" <?php echo strtolower((string) $album['status']) === $statusOpt ? 'selected' : ''; ?>>
                     <?php echo esc($statusOpt); ?>
                   </option>
                 <?php endforeach; ?>
@@ -485,25 +498,17 @@ function esc(string $value): string
 
               <label>Workflow</label>
               <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <span class="status-badge">submitted_by: <?php echo esc((string) $artist['submitted_by']); ?></span>
-                <span class="status-badge">reviewed_by: <?php echo esc((string) ($artist['reviewed_by'] ?? 'NULL')); ?></span>
+                <span class="status-badge">submitted_by: <?php echo esc((string) $album['submitted_by']); ?></span>
+                <span class="status-badge">reviewed_by: <?php echo esc((string) ($album['reviewed_by'] ?? 'NULL')); ?></span>
               </div>
             </div>
           </div>
 
           <div class="section">
-            <h3>Artist Genre</h3>
+            <h3>Relations</h3>
             <div class="grid">
-              <label>Genre</label>
-              <div class="pills" id="genrePills">
-                <?php foreach ($allGenreOptions as $genre): ?>
-                  <?php $checked = in_array($genre, $selectedGenres, true); ?>
-                  <label class="pill-radio <?php echo $checked ? 'active' : ''; ?>">
-                    <input type="checkbox" name="genres[]" value="<?php echo esc($genre); ?>" <?php echo $checked ? 'checked' : ''; ?> />
-                    <?php echo esc($genre); ?>
-                  </label>
-                <?php endforeach; ?>
-              </div>
+              <label for="main_artist">Main Artist</label>
+              <input id="main_artist" name="main_artist" type="text" placeholder="e.g., Taylor Swift" value="<?php echo esc($mainArtistName); ?>" />
             </div>
           </div>
 
@@ -511,30 +516,12 @@ function esc(string $value): string
             <a class="btn secondary" href="admin_page.php">Back</a>
             <button class="btn" name="action" value="save" type="submit">Save</button>
             <?php if ($isEditMode): ?>
-              <button class="btn danger" name="action" value="delete" type="submit" onclick="return confirm('Delete this artist? This also removes related artist-genre links.');">Delete</button>
+              <button class="btn danger" name="action" value="delete" type="submit" onclick="return confirm('Delete this album? Related album-artist and album-track links will also be removed.');">Delete</button>
             <?php endif; ?>
           </div>
         </form>
       </div>
     </div>
   </div>
-
-  <script>
-    document.querySelectorAll("#genrePills .pill-radio").forEach((lab) => {
-      const input = lab.querySelector('input[type="checkbox"]');
-      if (!input) return;
-
-      lab.addEventListener("click", (e) => {
-        if (e.target && e.target.tagName === "INPUT") return;
-        e.preventDefault();
-        input.checked = !input.checked;
-        lab.classList.toggle("active", input.checked);
-      });
-
-      input.addEventListener("change", () => {
-        lab.classList.toggle("active", input.checked);
-      });
-    });
-  </script>
 </body>
 </html>
