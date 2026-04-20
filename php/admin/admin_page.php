@@ -1,13 +1,18 @@
+<?php
+declare(strict_types=1);
+
+require dirname(__DIR__) . '/includes/bootstrap.php';
+require_admin();
+
+$user = current_user();
+$emailDisplay = htmlspecialchars((string) ($user['email'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MusicBox — Admin</title>
-  <!-- Session-protected admin UI: use php/admin/admin_page.php -->
-  <script>
-    location.replace("../php/admin/admin_page.php");
-  </script>
   <style>
     :root{
       --bg:#070707;
@@ -42,7 +47,6 @@
 
     .wrap{ max-width:1400px; margin:22px auto 40px; padding:0 18px; }
 
-    /* Top bar */
     .topbar{
       display:flex;
       align-items:center;
@@ -94,6 +98,7 @@
       font-size:12px;
     }
     .pill b{ color:var(--text); letter-spacing:0; text-transform:none; font-family:var(--sans); font-size:13px; }
+
     .logout{
       display:inline-flex;
       align-items:center;
@@ -107,8 +112,11 @@
       font-size:12px;
       letter-spacing:.08em;
       text-transform:uppercase;
-      user-select:none;
+      text-decoration:none;
+      cursor:pointer;
     }
+    .logout:hover{ background:rgba(255,255,255,.07); }
+
     .createBtn{
       display:inline-flex;
       align-items:center;
@@ -127,7 +135,6 @@
     }
     .createBtn:hover{ background:rgba(24,243,163,.14); }
 
-    /* Sections */
     .section{
       margin-top:18px;
       border-radius:var(--radius);
@@ -157,7 +164,6 @@
 
     .cardBody{ padding:18px 18px 22px; }
 
-    /* Table-like form */
     .gridHeader, .row{
       display:grid;
       grid-template-columns: minmax(220px, 1.4fr) minmax(160px, 220px) minmax(140px, 200px) minmax(120px, auto);
@@ -241,10 +247,9 @@
       font-family:var(--sans);
     }
 
-    /* Review history */
     .reviewFilters{
       display:grid;
-      grid-template-columns: minmax(100px,1fr) minmax(110px,1fr) minmax(120px,160px) auto auto;
+      grid-template-columns: minmax(100px,1fr) minmax(110px,1fr) minmax(120px,160px) minmax(120px,140px) auto auto;
       gap:10px;
       align-items:center;
       margin-bottom:12px;
@@ -267,6 +272,10 @@
       border-color: rgba(24,243,163,.45);
       background: rgba(24,243,163,.14);
       color: var(--accent);
+    }
+    .reviewBtn:disabled{
+      opacity:0.45;
+      cursor:not-allowed;
     }
     .reviewTable{
       border:1px solid rgba(255,255,255,.08);
@@ -308,11 +317,23 @@
       font-family:var(--mono);
       font-size:12px;
       width:fit-content;
+      max-width:100%;
+      word-break:break-word;
     }
     .chip.status{
       border-color: rgba(24,243,163,.42);
       background: rgba(24,243,163,.12);
       color: var(--accent);
+    }
+    .chip.status.rejected{
+      border-color: rgba(255,94,94,.45);
+      background: rgba(255,94,94,.12);
+      color: var(--danger);
+    }
+    .chip.status.pending{
+      border-color: rgba(255,200,120,.35);
+      background: rgba(255,200,120,.10);
+      color: #ffc878;
     }
     .reviewAction{
       display:flex;
@@ -320,7 +341,7 @@
       gap:8px;
       flex-wrap:wrap;
     }
-    .reviewAction .reviewBtn{ padding:8px 12px; }
+    .reviewAction .reviewBtn{ padding:8px 12px; cursor:pointer; }
 
     .btnNeutral{
       border-color: rgba(255,255,255,.16);
@@ -333,12 +354,19 @@
       background: rgba(255,94,94,.10);
       color: var(--danger);
     }
-
     .btnAccent{
       border-color: rgba(24,243,163,.45);
       background: rgba(24,243,163,.12);
       color: var(--accent);
     }
+
+    .reviewMsg{
+      margin-bottom:12px;
+      font-family:var(--mono);
+      font-size:13px;
+      color:var(--muted);
+    }
+    .reviewMsg.err{ color: var(--danger); }
 
     @media (max-width: 980px){
       .gridHeader, .row{ grid-template-columns: 1fr; }
@@ -362,11 +390,11 @@
         </div>
       </div>
       <div class="spacer"></div>
+      <div class="pill"><span>SIGNED IN</span> <b><?php echo $emailDisplay; ?></b></div>
       <div class="pill"><span>ROLE</span> <b>ADMIN</b></div>
-      <div class="logout">Logout</div>
+      <a class="logout" href="../auth/logout.php">Logout</a>
     </div>
 
-    <!-- USER MANAGEMENT -->
     <section class="section" aria-label="User Management">
       <div class="sectionHeader">
         <div class="titleWrap">
@@ -450,26 +478,32 @@
       </div>
     </section>
 
-    <!-- REVIEW HISTORY -->
-    <section class="section" aria-label="Content Review">
+    <section class="section" aria-label="Catalog review">
       <div class="sectionHeader">
         <div class="titleWrap">
-          <div class="title">REVIEW HISTORY</div>
+          <div class="title">CATALOG REVIEW</div>
         </div>
       </div>
 
       <div class="cardBody">
+        <div id="reviewMsg" class="reviewMsg" hidden></div>
         <div class="reviewFilters">
-          <input class="input" placeholder="Item" />
-          <input class="input" placeholder="Artist" />
-          <select class="select">
-            <option selected>All types</option>
-            <option>Track</option>
-            <option>Album</option>
-            <option>Artist</option>
+          <input class="input" id="filterItem" placeholder="Item" autocomplete="off" />
+          <input class="input" id="filterArtist" placeholder="Artist" autocomplete="off" />
+          <select class="select" id="filterType">
+            <option value="all" selected>All types</option>
+            <option value="track">Track</option>
+            <option value="album">Album</option>
+            <option value="artist">Artist</option>
           </select>
-          <button class="reviewBtn primary" type="button">Search</button>
-          <button class="reviewBtn" type="button">Clear</button>
+          <select class="select" id="filterStatus">
+            <option value="all" selected>All statuses</option>
+            <option value="pending">pending</option>
+            <option value="approved">approved</option>
+            <option value="rejected">rejected</option>
+          </select>
+          <button class="reviewBtn primary" id="reviewSearchBtn" type="button">Search</button>
+          <button class="reviewBtn" id="reviewClearBtn" type="button">Clear</button>
         </div>
 
         <div class="reviewTable">
@@ -482,51 +516,147 @@
             <div>Status</div>
             <div style="text-align:right;">Action</div>
           </div>
-
-          <div class="reviewRow">
-            <div><span class="chip">Bad Blood</span></div>
-            <div>Taylor Swift</div>
-            <div><span class="chip">-</span></div>
-            <div><span class="chip">admin@musicbox.local</span></div>
-            <div><span class="chip">Track</span></div>
-            <div><span class="chip status">Approved</span></div>
-            <div class="reviewAction">
-              <button class="reviewBtn primary" type="button">Undo</button>
-              <button class="reviewBtn" type="button">Details</button>
-            </div>
-          </div>
-
-          <div class="reviewRow">
-            <div><span class="chip">Two Is Better Than One (feat. Taylor Swift)</span></div>
-            <div>BOYS LIKE GIRLS, Taylor Swift</div>
-            <div><span class="chip">-</span></div>
-            <div><span class="chip">admin@musicbox.local</span></div>
-            <div><span class="chip">Track</span></div>
-            <div><span class="chip status">Approved</span></div>
-            <div class="reviewAction">
-              <button class="reviewBtn primary" type="button">Undo</button>
-              <button class="reviewBtn" type="button">Details</button>
-            </div>
-          </div>
-
-          <div class="reviewRow">
-            <div><span class="chip">Anti-Hero</span></div>
-            <div>Taylor Swift</div>
-            <div><span class="chip">-</span></div>
-            <div><span class="chip">admin@musicbox.local</span></div>
-            <div><span class="chip">Track</span></div>
-            <div><span class="chip status">Approved</span></div>
-            <div class="reviewAction">
-              <button class="reviewBtn primary" type="button">Undo</button>
-              <button class="reviewBtn" type="button">Details</button>
-            </div>
-          </div>
+          <div id="reviewRows"></div>
         </div>
       </div>
     </section>
 
   </div>
   <script>
+    const reviewRows = document.getElementById("reviewRows");
+    const reviewMsg = document.getElementById("reviewMsg");
+    const filterItem = document.getElementById("filterItem");
+    const filterArtist = document.getElementById("filterArtist");
+    const filterType = document.getElementById("filterType");
+    const filterStatus = document.getElementById("filterStatus");
+
+    function showMsg(text, isErr) {
+      reviewMsg.hidden = false;
+      reviewMsg.textContent = text;
+      reviewMsg.classList.toggle("err", !!isErr);
+    }
+
+    function clearMsg() {
+      reviewMsg.hidden = true;
+      reviewMsg.textContent = "";
+      reviewMsg.classList.remove("err");
+    }
+
+    function esc(s) {
+      const d = document.createElement("div");
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function typeLabel(t) {
+      if (t === "track") return "Track";
+      if (t === "album") return "Album";
+      if (t === "artist") return "Artist";
+      return t;
+    }
+
+    function statusClass(st) {
+      const x = String(st || "").toLowerCase();
+      if (x === "rejected") return "rejected";
+      if (x === "pending") return "pending";
+      return "";
+    }
+
+    async function loadQueue() {
+      clearMsg();
+      const params = new URLSearchParams();
+      const st = filterStatus.value;
+      if (st && st !== "all") params.set("status", st);
+      const ty = filterType.value;
+      if (ty && ty !== "all") params.set("type", ty);
+      const it = filterItem.value.trim();
+      if (it) params.set("item", it);
+      const ar = filterArtist.value.trim();
+      if (ar) params.set("artist", ar);
+
+      const url = "review_queue.php?" + params.toString();
+      const res = await fetch(url, { credentials: "same-origin" });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j.ok) {
+        showMsg(j.error || res.statusText || "Failed to load queue", true);
+        reviewRows.innerHTML = "";
+        return;
+      }
+      renderRows(j.items || []);
+    }
+
+    function renderRows(items) {
+      if (!items.length) {
+        reviewRows.innerHTML =
+          '<div class="reviewRow"><div style="grid-column:1/-1;color:rgba(241,241,241,.55);">No matching rows.</div></div>';
+        return;
+      }
+      reviewRows.innerHTML = items.map((row) => {
+        const pending = String(row.status || "").toLowerCase() === "pending";
+        const chipStatus = esc(String(row.status || ""));
+        const actions = pending
+          ? `<button type="button" class="reviewBtn btnAccent js-approve" data-entity="${esc(
+              row.entity_type
+            )}" data-id="${esc(String(row.entity_id))}">Approve</button>
+               <button type="button" class="reviewBtn btnDanger js-reject" data-entity="${esc(
+              row.entity_type
+            )}" data-id="${esc(String(row.entity_id))}">Reject</button>`
+          : `<span style="opacity:.45;font-family:var(--mono);font-size:12px;">—</span>`;
+
+        const sub = row.submitted_email ? `<span class="chip">${esc(String(row.submitted_email))}</span>` : `<span class="chip">—</span>`;
+        const rev = row.reviewed_email ? `<span class="chip">${esc(String(row.reviewed_email))}</span>` : `<span class="chip">—</span>`;
+
+        return `<div class="reviewRow">
+            <div><span class="chip">${esc(String(row.item_name || ""))}</span></div>
+            <div>${esc(String(row.artists_label || "—"))}</div>
+            <div>${sub}</div>
+            <div>${rev}</div>
+            <div><span class="chip">${esc(typeLabel(row.entity_type))}</span></div>
+            <div><span class="chip status ${statusClass(row.status)}">${chipStatus}</span></div>
+            <div class="reviewAction">${actions}</div>
+          </div>`;
+      }).join("");
+    }
+
+    async function postAction(entity, id, action) {
+      clearMsg();
+      const res = await fetch("review_action.php", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ entity, id, action }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j.ok) {
+        showMsg(j.error || res.statusText || "Action failed", true);
+        return;
+      }
+      await loadQueue();
+    }
+
+    document.getElementById("reviewSearchBtn").addEventListener("click", () => loadQueue());
+    document.getElementById("reviewClearBtn").addEventListener("click", () => {
+      filterItem.value = "";
+      filterArtist.value = "";
+      filterType.value = "all";
+      filterStatus.value = "all";
+      loadQueue();
+    });
+
+    reviewRows.addEventListener("click", (e) => {
+      const ap = e.target.closest(".js-approve");
+      if (ap) {
+        postAction(ap.getAttribute("data-entity"), ap.getAttribute("data-id"), "approve");
+        return;
+      }
+      const rj = e.target.closest(".js-reject");
+      if (rj) {
+        postAction(rj.getAttribute("data-entity"), rj.getAttribute("data-id"), "reject");
+      }
+    });
+
+    loadQueue();
+
     const createUserBtn = document.getElementById("createUserBtn");
     const userMgmtBody = document.getElementById("userMgmtBody");
 

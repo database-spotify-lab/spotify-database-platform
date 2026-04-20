@@ -1,6 +1,57 @@
 <?php
 declare(strict_types=1);
 
+function ensure_session(): void
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+}
+
+/**
+ * @return array{user_id:int,email:string,role:string}|null
+ */
+function current_user(): ?array
+{
+    ensure_session();
+    if (empty($_SESSION['user_id']) || !is_numeric($_SESSION['user_id'])) {
+        return null;
+    }
+    $uid = (int) $_SESSION['user_id'];
+    if ($uid < 1) {
+        return null;
+    }
+    $email = (string) ($_SESSION['email'] ?? '');
+    $role = strtolower(trim((string) ($_SESSION['role'] ?? '')));
+    return [
+        'user_id' => $uid,
+        'email' => $email,
+        'role' => $role,
+    ];
+}
+
+/**
+ * HTML admin routes: redirect strangers to login.
+ */
+function require_admin(): void
+{
+    $u = current_user();
+    if ($u === null || $u['role'] !== 'admin') {
+        header('Location: ../../html/login_page.html?error=unauthorized', true, 302);
+        exit;
+    }
+}
+
+/** Admin-only JSON endpoints (always 401 JSON; fetch may not send Accept: application/json). */
+function require_admin_api(): void
+{
+    $u = current_user();
+    if ($u === null || $u['role'] !== 'admin') {
+        json_response(['ok' => false, 'error' => 'unauthorized'], 401);
+        exit;
+    }
+}
+
 function db(): PDO
 {
     static $pdo = null;
@@ -25,6 +76,10 @@ function db(): PDO
 
 /** Only surface moderated-approved catalogue rows (adjust if your seed uses other literals). */
 const CATALOG_STATUS_APPROVED = 'approved';
+
+const CATALOG_STATUS_PENDING = 'pending';
+
+const CATALOG_STATUS_REJECTED = 'rejected';
 
 /**
  * Maps UI decade keys to [startYear, endYear]. 'all' => null range (caller treats as no filter).
