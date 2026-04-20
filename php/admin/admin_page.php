@@ -6,6 +6,81 @@ require_admin();
 
 $user = current_user();
 $emailDisplay = htmlspecialchars((string) ($user['email'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+
+$userMessage = '';
+$userError = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && (string) ($_POST['form_action'] ?? '') === 'save_user') {
+    $postedUserId = trim((string) ($_POST['user_id'] ?? ''));
+    $email = strtolower(trim((string) ($_POST['email'] ?? '')));
+    $role = strtolower(trim((string) ($_POST['role'] ?? 'analyst')));
+    $isActiveRaw = trim((string) ($_POST['is_active'] ?? '1'));
+    $isActive = $isActiveRaw === '0' ? 0 : 1;
+    $allowedRoles = ['admin', 'analyst'];
+
+    try {
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new RuntimeException('Please provide a valid email.');
+        }
+        if (!in_array($role, $allowedRoles, true)) {
+            throw new RuntimeException('Role must be admin or analyst.');
+        }
+
+        $pdo = db();
+        if ($postedUserId === '') {
+            $nextIdStmt = $pdo->query('SELECT COALESCE(MAX(user_id), 0) + 1 AS next_id FROM USERS');
+            $nextId = (int) ($nextIdStmt->fetch()['next_id'] ?? 1);
+            $insert = $pdo->prepare('
+                INSERT INTO USERS (user_id, email, password_hash, role, is_active)
+                VALUES (:user_id, :email, :password_hash, :role, :is_active)
+            ');
+            $insert->execute([
+                ':user_id' => $nextId,
+                ':email' => $email,
+                ':password_hash' => 'temp_password_change_me',
+                ':role' => $role,
+                ':is_active' => $isActive,
+            ]);
+            $userMessage = 'User created successfully.';
+        } else {
+            $userId = (int) $postedUserId;
+            if ($userId < 1) {
+                throw new RuntimeException('Invalid user id.');
+            }
+            $update = $pdo->prepare('
+                UPDATE USERS
+                SET email = :email,
+                    role = :role,
+                    is_active = :is_active
+                WHERE user_id = :user_id
+            ');
+            $update->execute([
+                ':email' => $email,
+                ':role' => $role,
+                ':is_active' => $isActive,
+                ':user_id' => $userId,
+            ]);
+            if ($update->rowCount() < 1) {
+                $exists = $pdo->prepare('SELECT 1 FROM USERS WHERE user_id = :user_id LIMIT 1');
+                $exists->execute([':user_id' => $userId]);
+                if ($exists->fetchColumn() === false) {
+                    throw new RuntimeException('User record not found.');
+                }
+            }
+            $userMessage = 'User updated successfully.';
+        }
+    } catch (Throwable $e) {
+        $userError = $e->getMessage();
+    }
+}
+
+$usersRows = [];
+try {
+    $stmt = db()->query('SELECT user_id, email, role, is_active FROM USERS ORDER BY user_id ASC');
+    $usersRows = $stmt->fetchAll() ?: [];
+} catch (Throwable $e) {
+    $userError = $userError !== '' ? $userError : 'Failed to load users.';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -367,6 +442,26 @@ $emailDisplay = htmlspecialchars((string) ($user['email'] ?? ''), ENT_QUOTES | E
       color:var(--muted);
     }
     .reviewMsg.err{ color: var(--danger); }
+    .userMsg{
+      margin-bottom:12px;
+      font-family:var(--mono);
+      font-size:13px;
+      color:var(--muted);
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+    }
+    .userMsg.ok{
+      color:var(--accent);
+      border-color:rgba(24,243,163,.35);
+      background:rgba(24,243,163,.10);
+    }
+    .userMsg.err{
+      color:var(--danger);
+      border-color:rgba(255,94,94,.45);
+      background:rgba(255,94,94,.12);
+    }
 
     @media (max-width: 980px){
       .gridHeader, .row{ grid-template-columns: 1fr; }
@@ -404,77 +499,40 @@ $emailDisplay = htmlspecialchars((string) ($user['email'] ?? ''), ENT_QUOTES | E
       </div>
 
       <div class="cardBody" id="userMgmtBody">
+        <?php if ($userMessage !== ''): ?>
+          <div class="userMsg ok"><?php echo htmlspecialchars($userMessage, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></div>
+        <?php endif; ?>
+        <?php if ($userError !== ''): ?>
+          <div class="userMsg err"><?php echo htmlspecialchars($userError, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></div>
+        <?php endif; ?>
         <div class="gridHeader">
           <div>User</div>
           <div>Role</div>
           <div>Status</div>
           <div class="userAction">Action</div>
         </div>
-
-        <div class="row">
-          <input class="input" placeholder="new.user@musicbox.com" />
-          <select class="select">
-            <option>Admin</option>
-            <option selected>Analyst</option>
-          </select>
-          <select class="select">
-            <option selected>Active</option>
-            <option>Disabled</option>
-          </select>
-          <div class="userAction"><span class="btn">Save</span></div>
-        </div>
-
-        <div class="row">
-          <input class="input" value="muhui.wang" />
-          <select class="select">
-            <option>Admin</option>
-            <option selected>Analyst</option>
-          </select>
-          <select class="select">
-            <option selected>Active</option>
-            <option>Disabled</option>
-          </select>
-          <div class="userAction"><span class="btn">Save</span></div>
-        </div>
-
-        <div class="row">
-          <input class="input" value="sherry.wang" />
-          <select class="select">
-            <option selected>Admin</option>
-            <option>Analyst</option>
-          </select>
-          <select class="select">
-            <option selected>Active</option>
-            <option>Disabled</option>
-          </select>
-          <div class="userAction"><span class="btn">Save</span></div>
-        </div>
-
-        <div class="row">
-          <input class="input" value="alex.chen" />
-          <select class="select">
-            <option selected>Admin</option>
-            <option>Analyst</option>
-          </select>
-          <select class="select">
-            <option selected>Active</option>
-            <option>Disabled</option>
-          </select>
-          <div class="userAction"><span class="btn">Save</span></div>
-        </div>
-
-        <div class="row">
-          <input class="input" value="eva.park" />
-          <select class="select">
-            <option selected>Admin</option>
-            <option>Analyst</option>
-          </select>
-          <select class="select">
-            <option>Active</option>
-            <option selected>Disabled</option>
-          </select>
-          <div class="userAction"><span class="btn">Save</span></div>
-        </div>
+        <?php foreach ($usersRows as $urow): ?>
+          <?php
+            $uid = (int) ($urow['user_id'] ?? 0);
+            $email = (string) ($urow['email'] ?? '');
+            $role = strtolower((string) ($urow['role'] ?? 'analyst'));
+            $isActive = (int) ($urow['is_active'] ?? 0) === 1 ? '1' : '0';
+          ?>
+          <form method="post" action="" class="row">
+            <input type="hidden" name="form_action" value="save_user" />
+            <input type="hidden" name="user_id" value="<?php echo $uid; ?>" />
+            <input class="input" type="email" name="email" value="<?php echo htmlspecialchars($email, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required />
+            <select class="select" name="role">
+              <option value="admin" <?php echo $role === 'admin' ? 'selected' : ''; ?>>Admin</option>
+              <option value="analyst" <?php echo $role === 'analyst' ? 'selected' : ''; ?>>Analyst</option>
+            </select>
+            <select class="select" name="is_active">
+              <option value="1" <?php echo $isActive === '1' ? 'selected' : ''; ?>>Active</option>
+              <option value="0" <?php echo $isActive === '0' ? 'selected' : ''; ?>>Disabled</option>
+            </select>
+            <div class="userAction"><button class="btn" type="submit" style="cursor:pointer;">Save</button></div>
+          </form>
+        <?php endforeach; ?>
       </div>
     </section>
 
@@ -662,21 +720,23 @@ $emailDisplay = htmlspecialchars((string) ($user['email'] ?? ''), ENT_QUOTES | E
 
     createUserBtn.addEventListener("click", () => {
       const row = `
-        <div class="row" data-new-user-row="true">
-          <input class="input" placeholder="new.user@musicbox.com" />
-          <select class="select">
-            <option>Admin</option>
-            <option selected>Analyst</option>
+        <form method="post" action="" class="row" data-new-user-row="true">
+          <input type="hidden" name="form_action" value="save_user" />
+          <input type="hidden" name="user_id" value="" />
+          <input class="input" type="email" name="email" placeholder="new.user@musicbox.com" required />
+          <select class="select" name="role">
+            <option value="admin">Admin</option>
+            <option value="analyst" selected>Analyst</option>
           </select>
-          <select class="select">
-            <option selected>Active</option>
-            <option>Disabled</option>
+          <select class="select" name="is_active">
+            <option value="1" selected>Active</option>
+            <option value="0">Disabled</option>
           </select>
           <div class="userAction">
             <button class="btn btnNeutral cancelNewUserBtn" type="button" style="cursor:pointer;">Cancel</button>
-            <button class="btn" type="button" style="cursor:pointer;">Save</button>
+            <button class="btn" type="submit" style="cursor:pointer;">Save</button>
           </div>
-        </div>
+        </form>
       `;
       const header = userMgmtBody.querySelector(".gridHeader");
       if (header) header.insertAdjacentHTML("afterend", row);
