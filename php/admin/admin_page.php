@@ -487,6 +487,7 @@ try {
       <div class="spacer"></div>
       <div class="pill"><span>SIGNED IN</span> <b><?php echo $emailDisplay; ?></b></div>
       <div class="pill"><span>ROLE</span> <b>ADMIN</b></div>
+      <a class="createBtn" href="../audio_features/audio_features_page.php" style="text-decoration:none;">AUDIO_FEATURES</a>
       <a class="logout" href="../auth/logout.php">Logout</a>
     </div>
 
