@@ -663,10 +663,22 @@
 
   </div>
   <script>
-    const API_BASE = "../php/api/music_charts.php";
+    function pageBaseDir() {
+      const p = window.location.pathname;
+      if (p.endsWith("/")) return p;
+      const last = p.split("/").pop() || "";
+      if (/\.[a-z0-9]+$/i.test(last)) {
+        return p.slice(0, p.length - last.length);
+      }
+      return p + "/";
+    }
+    const IS_HTML_SUBDIR = window.location.pathname.includes("/html/");
+    const API_REL = IS_HTML_SUBDIR ? "../php/api/music_charts.php" : "php/api/music_charts.php";
+    const API_BASE = new URL(API_REL, window.location.origin + pageBaseDir()).href;
+    const PHP_ADMIN_BASE = IS_HTML_SUBDIR ? "../php/admin" : "php/admin";
 
     function apiUrl(params) {
-      const u = new URL(API_BASE, window.location.href);
+      const u = new URL(API_BASE);
       Object.entries(params).forEach(([k, v]) => {
         if (v !== undefined && v !== null && String(v) !== "") u.searchParams.set(k, String(v));
       });
@@ -1085,20 +1097,20 @@
       );
 
     function editUrlByType(type, id) {
-      if (type === "songs") return `../php/admin/track_add_edit.php?track_id=${encodeURIComponent(id)}`;
-      if (type === "artists") return `../php/admin/artist_add_edit.php?artist_id=${encodeURIComponent(id)}`;
-      return `../php/admin/album_add_edit.php?album_id=${encodeURIComponent(id)}`;
+      if (type === "songs") return `${PHP_ADMIN_BASE}/track_add_edit.php?track_id=${encodeURIComponent(id)}`;
+      if (type === "artists") return `${PHP_ADMIN_BASE}/artist_add_edit.php?artist_id=${encodeURIComponent(id)}`;
+      return `${PHP_ADMIN_BASE}/album_add_edit.php?album_id=${encodeURIComponent(id)}`;
     }
 
     function addUrlByType(type) {
-      if (type === "songs") return "../php/admin/track_add_edit.php";
-      if (type === "artists") return "../php/admin/artist_add_edit.php";
-      return "../php/admin/album_add_edit.php";
+      if (type === "songs") return `${PHP_ADMIN_BASE}/track_add_edit.php`;
+      if (type === "artists") return `${PHP_ADMIN_BASE}/artist_add_edit.php`;
+      return `${PHP_ADMIN_BASE}/album_add_edit.php`;
     }
 
     function currentManagementUrl() {
       const page = contentPageByType[activeContentType] || 1;
-      return `../../html/analytics_charts.html?tab=management&content_type=${encodeURIComponent(
+      return `../../analytics_charts.html?tab=management&content_type=${encodeURIComponent(
         activeContentType
       )}&content_page=${encodeURIComponent(String(page))}`;
     }

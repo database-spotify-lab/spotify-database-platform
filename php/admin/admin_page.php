@@ -60,14 +60,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (string) ($_POST['form_action'] ?? 
                 ':is_active' => $isActive,
                 ':user_id' => $userId,
             ]);
-            if ($update->rowCount() < 1) {
+            $affected = $update->rowCount();
+            if ($affected < 1) {
                 $exists = $pdo->prepare('SELECT 1 FROM USERS WHERE user_id = :user_id LIMIT 1');
                 $exists->execute([':user_id' => $userId]);
                 if ($exists->fetchColumn() === false) {
                     throw new RuntimeException('User record not found.');
                 }
+                // MySQL reports 0 "changed" rows when new values equal old values — not an error.
+                $userMessage = 'No database columns were changed (values may already match what you saved).';
+            } else {
+                $userMessage = 'User updated successfully (' . $affected . ' row).';
             }
-            $userMessage = 'User updated successfully.';
         }
     } catch (Throwable $e) {
         $userError = $e->getMessage();
@@ -480,7 +484,7 @@ try {
 <body>
   <div class="wrap">
     <div class="topbar">
-      <a class="logo" href="../../html/login_page.html" title="Back to login">
+      <a class="logo" href="../../login_page.html" title="Back to login">
         <div class="logo-badge">♪</div>
         <div class="brand">
           <div class="name">MusicBox</div>

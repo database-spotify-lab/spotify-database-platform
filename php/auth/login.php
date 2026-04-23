@@ -26,7 +26,7 @@ function login_write_session(array $user): void
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ../../html/login_page.html');
+    header('Location: ../../login_page.html');
     exit;
 }
 
@@ -34,7 +34,7 @@ $username = trim((string) ($_POST['username'] ?? ''));
 $password = (string) ($_POST['password'] ?? '');
 
 if ($username === '' || $password === '') {
-    header('Location: ../../html/login_page.html?error=missing_credentials');
+    header('Location: ../../login_page.html?error=missing_credentials');
     exit;
 }
 
@@ -50,7 +50,7 @@ try {
     $user = $stmt->fetch();
 
     if ($user === false || (int) ($user['is_active'] ?? 0) !== 1) {
-        header('Location: ../../html/login_page.html?error=invalid_credentials');
+        header('Location: ../../login_page.html?error=invalid_credentials');
         exit;
     }
 
@@ -66,7 +66,7 @@ try {
     }
 
     if (!$validPassword) {
-        header('Location: ../../html/login_page.html?error=invalid_credentials');
+        header('Location: ../../login_page.html?error=invalid_credentials');
         exit;
     }
 
@@ -74,7 +74,7 @@ try {
 
     $role = strtolower(trim((string) ($user['role'] ?? '')));
     if ($role === 'analyst') {
-        header('Location: ../../html/analytics_charts.html');
+        header('Location: ../../analytics_charts.html');
         exit;
     }
     if ($role === 'admin') {
@@ -82,7 +82,7 @@ try {
         exit;
     }
 
-    header('Location: ../../html/login_page.html?error=unauthorized_role');
+    header('Location: ../../login_page.html?error=unauthorized_role');
     exit;
 } catch (Throwable $e) {
     error_log(sprintf(
@@ -92,6 +92,6 @@ try {
         $e->getFile(),
         $e->getLine()
     ));
-    header('Location: ../../html/login_page.html?error=server_error');
+    header('Location: ../../login_page.html?error=server_error');
     exit;
 }

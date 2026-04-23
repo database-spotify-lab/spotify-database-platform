@@ -37,7 +37,7 @@ function require_admin(): void
 {
     $u = current_user();
     if ($u === null || $u['role'] !== 'admin') {
-        header('Location: ../../html/login_page.html?error=unauthorized', true, 302);
+        header('Location: ../../login_page.html?error=unauthorized', true, 302);
         exit;
     }
 }

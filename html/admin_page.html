@@ -6,7 +6,11 @@
   <title>MusicBox — Admin</title>
   <!-- Session-protected admin UI: use php/admin/admin_page.php -->
   <script>
-    location.replace("../php/admin/admin_page.php");
+    location.replace(
+      window.location.pathname.includes("/html/")
+        ? "../php/admin/admin_page.php"
+        : "php/admin/admin_page.php"
+    );
   </script>
   <style>
     :root{

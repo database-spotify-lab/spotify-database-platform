@@ -5,7 +5,7 @@ require dirname(__DIR__) . '/includes/bootstrap.php';
 
 $user = current_user();
 if ($user === null) {
-    header('Location: ../../html/login_page.html?error=unauthorized', true, 302);
+    header('Location: ../../login_page.html?error=unauthorized', true, 302);
     exit;
 }
 $isAdminEditor = (($user['role'] ?? '') === 'admin');
@@ -13,6 +13,7 @@ $roleLabel = $isAdminEditor ? 'Admin' : 'Analyst';
 $returnTo = trim((string) ($_GET['return_to'] ?? $_POST['return_to'] ?? ''));
 if (
     $returnTo !== ''
+    && !str_starts_with($returnTo, '../../analytics_charts.html')
     && !str_starts_with($returnTo, '../../html/analytics_charts.html')
     && $returnTo !== 'admin_page.php'
 ) {
@@ -20,7 +21,7 @@ if (
 }
 $backHref = $returnTo !== ''
     ? $returnTo
-    : ((($user['role'] ?? '') === 'admin') ? 'admin_page.php' : '../../html/analytics_charts.html?tab=management');
+    : ((($user['role'] ?? '') === 'admin') ? 'admin_page.php' : '../../analytics_charts.html?tab=management');
 
 const ARTIST_GENRE_OPTIONS = [
     'Pop',

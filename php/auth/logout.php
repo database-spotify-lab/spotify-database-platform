@@ -11,5 +11,5 @@ if (ini_get('session.use_cookies')) {
 }
 session_destroy();
 
-header('Location: ../../html/login_page.html', true, 302);
+header('Location: ../../login_page.html', true, 302);
 exit;

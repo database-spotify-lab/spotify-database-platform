@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * SQL aligned with schema: users, artists, albums, tracks,
- * track_artists, album_tracks, album_artists, artist_genres, audio_features.
+ * TRACK_ARTISTS, ALBUM_TRACKS, ALBUM_ARTISTS, ARTIST_GENRES, AUDIO_FEATURES.
  */
 final class MusicChartsRepository
 {
@@ -28,8 +28,8 @@ final class MusicChartsRepository
         $searchSql = '';
         if ($search !== null && $search !== '') {
             $searchSql = ' AND (t.track_name LIKE :sq OR EXISTS (
-                SELECT 1 FROM track_artists ta_s
-                JOIN artists ar_s ON ar_s.artist_id = ta_s.artist_id
+                SELECT 1 FROM TRACK_ARTISTS ta_s
+                JOIN ARTISTS ar_s ON ar_s.artist_id = ta_s.artist_id
                 WHERE ta_s.track_id = t.track_id AND ar_s.artist_name LIKE :sq
             ))';
             $params[':sq'] = '%' . $search . '%';
@@ -43,19 +43,19 @@ final class MusicChartsRepository
                 t.preview_url,
                 (
                     SELECT alx.album_image_url
-                    FROM album_tracks atx
-                    JOIN albums alx ON alx.album_id = atx.album_id
+                    FROM ALBUM_TRACKS atx
+                    JOIN ALBUMS alx ON alx.album_id = atx.album_id
                     WHERE atx.track_id = t.track_id AND alx.status = :st
                     ORDER BY alx.release_date ASC, alx.album_id ASC
                     LIMIT 1
                 ) AS album_image_url,
                 (
                     SELECT GROUP_CONCAT(DISTINCT arn.artist_name ORDER BY arn.artist_name SEPARATOR ', ')
-                    FROM track_artists tan
-                    JOIN artists arn ON arn.artist_id = tan.artist_id
+                    FROM TRACK_ARTISTS tan
+                    JOIN ARTISTS arn ON arn.artist_id = tan.artist_id
                     WHERE tan.track_id = t.track_id AND arn.status = :st
                 ) AS artist_names
-            FROM tracks t
+            FROM TRACKS t
             WHERE t.status = :st
             {$decadeSql}
             {$searchSql}
@@ -95,8 +95,8 @@ final class MusicChartsRepository
                 SUM(t.popularity) AS popularity_sum,
                 (
                     SELECT t2.track_name
-                    FROM track_artists ta2
-                    JOIN tracks t2 ON t2.track_id = ta2.track_id AND t2.status = :st
+                    FROM TRACK_ARTISTS ta2
+                    JOIN TRACKS t2 ON t2.track_id = ta2.track_id AND t2.status = :st
                     WHERE ta2.artist_id = ar.artist_id
                     {$decadeTopTrackSql}
                     ORDER BY t2.popularity DESC
@@ -104,16 +104,16 @@ final class MusicChartsRepository
                 ) AS top_track_name,
                 (
                     SELECT t2.preview_url
-                    FROM track_artists ta2
-                    JOIN tracks t2 ON t2.track_id = ta2.track_id AND t2.status = :st
+                    FROM TRACK_ARTISTS ta2
+                    JOIN TRACKS t2 ON t2.track_id = ta2.track_id AND t2.status = :st
                     WHERE ta2.artist_id = ar.artist_id
                     {$decadeTopTrackSql}
                     ORDER BY t2.popularity DESC
                     LIMIT 1
                 ) AS top_track_preview_url
-            FROM artists ar
-            JOIN track_artists ta ON ta.artist_id = ar.artist_id
-            JOIN tracks t ON t.track_id = ta.track_id AND t.status = :st
+            FROM ARTISTS ar
+            JOIN TRACK_ARTISTS ta ON ta.artist_id = ar.artist_id
+            JOIN TRACKS t ON t.track_id = ta.track_id AND t.status = :st
             WHERE ar.status = :st
             {$decadeTrackSql}
             GROUP BY ar.artist_id, ar.artist_name
@@ -133,7 +133,7 @@ final class MusicChartsRepository
     }
 
     /**
-     * TOP CHARTS - Album: sum of `tracks.popularity` over `album_tracks` for that album.
+     * TOP CHARTS - Album: sum of `tracks.popularity` over `ALBUM_TRACKS` for that album.
      * Each distinct `track_id` on the album contributes one term; different versions are
      * different ids and all count toward the album total.
      */
@@ -156,13 +156,13 @@ final class MusicChartsRepository
                 COALESCE(SUM(t.popularity), 0) AS popularity_sum,
                 (
                     SELECT GROUP_CONCAT(DISTINCT arx.artist_name ORDER BY arx.artist_name SEPARATOR ', ')
-                    FROM album_artists aax
-                    JOIN artists arx ON arx.artist_id = aax.artist_id
+                    FROM ALBUM_ARTISTS aax
+                    JOIN ARTISTS arx ON arx.artist_id = aax.artist_id
                     WHERE aax.album_id = al.album_id AND arx.status = :st
                 ) AS artist_names
-            FROM albums al
-            JOIN album_tracks at ON at.album_id = al.album_id
-            JOIN tracks t ON t.track_id = at.track_id AND t.status = :st
+            FROM ALBUMS al
+            JOIN ALBUM_TRACKS at ON at.album_id = al.album_id
+            JOIN TRACKS t ON t.track_id = at.track_id AND t.status = :st
             WHERE al.status = :st
             GROUP BY al.album_id, al.album_name, al.release_date, al.album_image_url
             {$having}
@@ -186,7 +186,7 @@ final class MusicChartsRepository
     {
         $sql = "
             SELECT artist_id, artist_name
-            FROM artists
+            FROM ARTISTS
             WHERE status = :st AND artist_name LIKE :q
             ORDER BY artist_name ASC
             LIMIT " . max(1, min(100, $limit));
@@ -204,8 +204,8 @@ final class MusicChartsRepository
     {
         $sql = "
             SELECT DISTINCT ag.genre
-            FROM artist_genres ag
-            JOIN artists ar ON ar.artist_id = ag.artist_id AND ar.status = :st
+            FROM ARTIST_GENRES ag
+            JOIN ARTISTS ar ON ar.artist_id = ag.artist_id AND ar.status = :st
             ORDER BY ag.genre ASC
         ";
         $stmt = $this->pdo->prepare($sql);
@@ -300,22 +300,22 @@ final class MusicChartsRepository
                 t.preview_url,
                 (
                     SELECT alx.album_image_url
-                    FROM album_tracks atx
-                    JOIN albums alx ON alx.album_id = atx.album_id
+                    FROM ALBUM_TRACKS atx
+                    JOIN ALBUMS alx ON alx.album_id = atx.album_id
                     WHERE atx.track_id = t.track_id AND alx.status = :st
                     ORDER BY alx.release_date ASC, alx.album_id ASC
                     LIMIT 1
                 ) AS album_image_url,
                 (
                     SELECT GROUP_CONCAT(DISTINCT arn.artist_name ORDER BY arn.artist_name SEPARATOR ', ')
-                    FROM track_artists tan
-                    JOIN artists arn ON arn.artist_id = tan.artist_id
+                    FROM TRACK_ARTISTS tan
+                    JOIN ARTISTS arn ON arn.artist_id = tan.artist_id
                     WHERE tan.track_id = t.track_id AND arn.status = :st
                 ) AS artist_names
-            FROM tracks t
-            JOIN track_artists ta ON ta.track_id = t.track_id
-            JOIN artists ar ON ar.artist_id = ta.artist_id AND ar.status = :st
-            JOIN artist_genres ag ON ag.artist_id = ar.artist_id AND ag.genre = :genre
+            FROM TRACKS t
+            JOIN TRACK_ARTISTS ta ON ta.track_id = t.track_id
+            JOIN ARTISTS ar ON ar.artist_id = ta.artist_id AND ar.status = :st
+            JOIN ARTIST_GENRES ag ON ag.artist_id = ar.artist_id AND ag.genre = :genre
             WHERE t.status = :st
             {$decadeSql}
             GROUP BY t.track_id, t.track_name, t.popularity, t.preview_url
@@ -347,8 +347,8 @@ final class MusicChartsRepository
                 COALESCE(
                     (
                         SELECT alx.album_image_url
-                        FROM album_artists aai
-                        JOIN albums alx ON alx.album_id = aai.album_id AND alx.status = :st
+                        FROM ALBUM_ARTISTS aai
+                        JOIN ALBUMS alx ON alx.album_id = aai.album_id AND alx.status = :st
                         WHERE aai.artist_id = ar.artist_id
                             AND alx.album_image_url IS NOT NULL
                             AND TRIM(alx.album_image_url) <> ''
@@ -357,9 +357,9 @@ final class MusicChartsRepository
                     ),
                     (
                         SELECT alx2.album_image_url
-                        FROM track_artists ta2
-                        JOIN album_tracks at2 ON at2.track_id = ta2.track_id
-                        JOIN albums alx2 ON alx2.album_id = at2.album_id AND alx2.status = :st
+                        FROM TRACK_ARTISTS ta2
+                        JOIN ALBUM_TRACKS at2 ON at2.track_id = ta2.track_id
+                        JOIN ALBUMS alx2 ON alx2.album_id = at2.album_id AND alx2.status = :st
                         WHERE ta2.artist_id = ar.artist_id
                             AND alx2.album_image_url IS NOT NULL
                             AND TRIM(alx2.album_image_url) <> ''
@@ -367,10 +367,10 @@ final class MusicChartsRepository
                         LIMIT 1
                     )
                 ) AS album_image_url
-            FROM artists ar
-            JOIN artist_genres ag ON ag.artist_id = ar.artist_id AND ag.genre = :genre
-            JOIN track_artists ta ON ta.artist_id = ar.artist_id
-            JOIN tracks t ON t.track_id = ta.track_id AND t.status = :st
+            FROM ARTISTS ar
+            JOIN ARTIST_GENRES ag ON ag.artist_id = ar.artist_id AND ag.genre = :genre
+            JOIN TRACK_ARTISTS ta ON ta.artist_id = ar.artist_id
+            JOIN TRACKS t ON t.track_id = ta.track_id AND t.status = :st
             WHERE ar.status = :st
             {$decadeSql}
             GROUP BY ar.artist_id, ar.artist_name
@@ -407,24 +407,24 @@ final class MusicChartsRepository
                 ts.popularity_sum,
                 (
                     SELECT GROUP_CONCAT(DISTINCT arx.artist_name ORDER BY arx.artist_name SEPARATOR ', ')
-                    FROM album_artists aax
-                    JOIN artists arx ON arx.artist_id = aax.artist_id
+                    FROM ALBUM_ARTISTS aax
+                    JOIN ARTISTS arx ON arx.artist_id = aax.artist_id
                     WHERE aax.album_id = al.album_id AND arx.status = :st
                 ) AS artist_names
-            FROM albums al
+            FROM ALBUMS al
             INNER JOIN (
                 SELECT at2.album_id, COALESCE(SUM(t2.popularity), 0) AS popularity_sum
-                FROM album_tracks at2
-                INNER JOIN tracks t2 ON t2.track_id = at2.track_id AND t2.status = :st
+                FROM ALBUM_TRACKS at2
+                INNER JOIN TRACKS t2 ON t2.track_id = at2.track_id AND t2.status = :st
                 GROUP BY at2.album_id
             ) ts ON ts.album_id = al.album_id
             WHERE al.status = :st
             {$decadeWhere}
             AND EXISTS (
                 SELECT 1
-                FROM album_artists aa
-                JOIN artists ar ON ar.artist_id = aa.artist_id AND ar.status = :st
-                JOIN artist_genres ag ON ag.artist_id = ar.artist_id AND ag.genre = :genre
+                FROM ALBUM_ARTISTS aa
+                JOIN ARTISTS ar ON ar.artist_id = aa.artist_id AND ar.status = :st
+                JOIN ARTIST_GENRES ag ON ag.artist_id = ar.artist_id AND ag.genre = :genre
                 WHERE aa.album_id = al.album_id
             )
             ORDER BY ts.popularity_sum DESC
@@ -446,7 +446,7 @@ final class MusicChartsRepository
         if ($artistId !== null && $artistId !== '') {
             $sql = "
                 SELECT ar.artist_id, ar.artist_name
-                FROM artists ar
+                FROM ARTISTS ar
                 WHERE ar.status = :st AND ar.artist_id = :artist_id
                 LIMIT 1
             ";
@@ -464,7 +464,7 @@ final class MusicChartsRepository
         if ($artistName !== null && $artistName !== '') {
             $sql = "
                 SELECT ar.artist_id, ar.artist_name
-                FROM artists ar
+                FROM ARTISTS ar
                 WHERE ar.status = :st AND ar.artist_name = :artist_name
                 ORDER BY ar.artist_id ASC
                 LIMIT 1
@@ -493,28 +493,28 @@ final class MusicChartsRepository
                 t.preview_url,
                 (
                     SELECT GROUP_CONCAT(DISTINCT arn.artist_name ORDER BY arn.artist_name SEPARATOR ', ')
-                    FROM track_artists tan
-                    JOIN artists arn ON arn.artist_id = tan.artist_id AND arn.status = :st
+                    FROM TRACK_ARTISTS tan
+                    JOIN ARTISTS arn ON arn.artist_id = tan.artist_id AND arn.status = :st
                     WHERE tan.track_id = t.track_id
                 ) AS artist_names,
                 (
                     SELECT alx.album_name
-                    FROM album_tracks atx
-                    JOIN albums alx ON alx.album_id = atx.album_id AND alx.status = :st
+                    FROM ALBUM_TRACKS atx
+                    JOIN ALBUMS alx ON alx.album_id = atx.album_id AND alx.status = :st
                     WHERE atx.track_id = t.track_id
                     ORDER BY alx.release_date ASC, alx.album_id ASC
                     LIMIT 1
                 ) AS album_name,
                 (
                     SELECT alx.album_image_url
-                    FROM album_tracks atx
-                    JOIN albums alx ON alx.album_id = atx.album_id AND alx.status = :st
+                    FROM ALBUM_TRACKS atx
+                    JOIN ALBUMS alx ON alx.album_id = atx.album_id AND alx.status = :st
                     WHERE atx.track_id = t.track_id
                     ORDER BY alx.release_date ASC, alx.album_id ASC
                     LIMIT 1
                 ) AS album_image_url
-            FROM track_artists ta
-            JOIN tracks t ON t.track_id = ta.track_id AND t.status = :st
+            FROM TRACK_ARTISTS ta
+            JOIN TRACKS t ON t.track_id = ta.track_id AND t.status = :st
             WHERE ta.artist_id = :artist_id
             ORDER BY t.popularity DESC, t.track_id ASC
             LIMIT " . max(1, min(100, $limit));
@@ -542,10 +542,10 @@ final class MusicChartsRepository
                 al.release_date,
                 al.album_image_url,
                 COALESCE(SUM(t.popularity), 0) AS popularity_sum
-            FROM album_artists aa
-            JOIN albums al ON al.album_id = aa.album_id AND al.status = :st
-            LEFT JOIN album_tracks at ON at.album_id = al.album_id
-            LEFT JOIN tracks t ON t.track_id = at.track_id AND t.status = :st
+            FROM ALBUM_ARTISTS aa
+            JOIN ALBUMS al ON al.album_id = aa.album_id AND al.status = :st
+            LEFT JOIN ALBUM_TRACKS at ON at.album_id = al.album_id
+            LEFT JOIN TRACKS t ON t.track_id = at.track_id AND t.status = :st
             WHERE aa.artist_id = :artist_id
             GROUP BY al.album_id, al.album_name, al.release_date, al.album_image_url
             ORDER BY al.release_date DESC, popularity_sum DESC
@@ -563,9 +563,9 @@ final class MusicChartsRepository
     {
         $sql = "
             SELECT COALESCE(SUM(t.popularity), 0) AS popularity_sum
-            FROM track_artists ta
-            JOIN tracks t ON t.track_id = ta.track_id AND t.status = :st
-            JOIN artists ar ON ar.artist_id = ta.artist_id AND ar.status = :st
+            FROM TRACK_ARTISTS ta
+            JOIN TRACKS t ON t.track_id = ta.track_id AND t.status = :st
+            JOIN ARTISTS ar ON ar.artist_id = ta.artist_id AND ar.status = :st
             WHERE ta.artist_id = :artist_id
         ";
         $stmt = $this->pdo->prepare($sql);
@@ -583,9 +583,9 @@ final class MusicChartsRepository
             SELECT COUNT(*) + 1 AS artist_rank
             FROM (
                 SELECT ar2.artist_id, COALESCE(SUM(t2.popularity), 0) AS popularity_sum
-                FROM artists ar2
-                JOIN track_artists ta2 ON ta2.artist_id = ar2.artist_id
-                JOIN tracks t2 ON t2.track_id = ta2.track_id AND t2.status = :st
+                FROM ARTISTS ar2
+                JOIN TRACK_ARTISTS ta2 ON ta2.artist_id = ar2.artist_id
+                JOIN TRACKS t2 ON t2.track_id = ta2.track_id AND t2.status = :st
                 WHERE ar2.status = :st
                 GROUP BY ar2.artist_id
             ) ranked
@@ -622,9 +622,9 @@ final class MusicChartsRepository
             $genreSql = "
                 AND EXISTS (
                     SELECT 1
-                    FROM track_artists tag
-                    JOIN artists ar_g ON ar_g.artist_id = tag.artist_id AND ar_g.status = :st
-                    JOIN artist_genres ag_g ON ag_g.artist_id = ar_g.artist_id AND ag_g.genre = :genre
+                    FROM TRACK_ARTISTS tag
+                    JOIN ARTISTS ar_g ON ar_g.artist_id = tag.artist_id AND ar_g.status = :st
+                    JOIN ARTIST_GENRES ag_g ON ag_g.artist_id = ar_g.artist_id AND ag_g.genre = :genre
                     WHERE tag.track_id = t.track_id
                 )
             ";
@@ -640,8 +640,8 @@ final class MusicChartsRepository
                 AVG(af.tempo) AS tempo,
                 AVG(af.loudness) AS loudness,
                 AVG(t.duration_ms) AS avg_duration_ms
-            FROM tracks t
-            JOIN audio_features af ON af.track_id = t.track_id
+            FROM TRACKS t
+            JOIN AUDIO_FEATURES af ON af.track_id = t.track_id
             WHERE t.status = :st
             {$genreSql}
         ";
@@ -680,12 +680,12 @@ final class MusicChartsRepository
                 END AS decade_label,
                 ag.genre,
                 COUNT(DISTINCT t.track_id) AS track_count
-            FROM tracks t
-            JOIN album_tracks at ON at.track_id = t.track_id
-            JOIN albums al ON al.album_id = at.album_id AND al.status = :st
-            JOIN track_artists ta ON ta.track_id = t.track_id
-            JOIN artists ar ON ar.artist_id = ta.artist_id AND ar.status = :st
-            JOIN artist_genres ag ON ag.artist_id = ar.artist_id
+            FROM TRACKS t
+            JOIN ALBUM_TRACKS at ON at.track_id = t.track_id
+            JOIN ALBUMS al ON al.album_id = at.album_id AND al.status = :st
+            JOIN TRACK_ARTISTS ta ON ta.track_id = t.track_id
+            JOIN ARTISTS ar ON ar.artist_id = ta.artist_id AND ar.status = :st
+            JOIN ARTIST_GENRES ag ON ag.artist_id = ar.artist_id
             WHERE t.status = :st
             GROUP BY decade_label, ag.genre
             HAVING decade_label IS NOT NULL
@@ -735,13 +735,13 @@ final class MusicChartsRepository
                     ELSE NULL
                 END AS decade_label,
                 AVG(af.{$feature}) AS feature_avg
-            FROM tracks t
-            JOIN audio_features af ON af.track_id = t.track_id
-            JOIN album_tracks at ON at.track_id = t.track_id
-            JOIN albums al ON al.album_id = at.album_id AND al.status = :st
-            JOIN track_artists ta ON ta.track_id = t.track_id
-            JOIN artists ar ON ar.artist_id = ta.artist_id AND ar.status = :st
-            JOIN artist_genres ag ON ag.artist_id = ar.artist_id
+            FROM TRACKS t
+            JOIN AUDIO_FEATURES af ON af.track_id = t.track_id
+            JOIN ALBUM_TRACKS at ON at.track_id = t.track_id
+            JOIN ALBUMS al ON al.album_id = at.album_id AND al.status = :st
+            JOIN TRACK_ARTISTS ta ON ta.track_id = t.track_id
+            JOIN ARTISTS ar ON ar.artist_id = ta.artist_id AND ar.status = :st
+            JOIN ARTIST_GENRES ag ON ag.artist_id = ar.artist_id
             WHERE t.status = :st
             {$genreSql}
             GROUP BY decade_label
@@ -775,8 +775,8 @@ final class MusicChartsRepository
         $params[':dy0'] = $decadeRange[0];
         $params[':dy1'] = $decadeRange[1];
         return " AND EXISTS (
-            SELECT 1 FROM album_tracks atd
-            JOIN albums ald ON ald.album_id = atd.album_id AND ald.status = :st
+            SELECT 1 FROM ALBUM_TRACKS atd
+            JOIN ALBUMS ald ON ald.album_id = atd.album_id AND ald.status = :st
             WHERE atd.track_id = {$trackIdExpr}
             AND YEAR(ald.release_date) BETWEEN :dy0 AND :dy1
         ) ";

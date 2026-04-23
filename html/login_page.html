@@ -189,7 +189,7 @@
     </div>
 
     <div class="content">
-      <form class="card" method="post" action="../php/auth/login.php" autocomplete="on">
+      <form id="loginForm" class="card" method="post" action="php/auth/login.php" autocomplete="on">
         <h1>LOGIN</h1>
 
         <div class="field">
@@ -215,5 +215,14 @@
       </form>
     </div>
   </div>
+  <script>
+    (function () {
+      var f = document.getElementById("loginForm");
+      if (!f) return;
+      f.action = window.location.pathname.includes("/html/")
+        ? "../php/auth/login.php"
+        : "php/auth/login.php";
+    })();
+  </script>
 </body>
 </html>

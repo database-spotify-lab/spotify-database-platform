@@ -359,7 +359,18 @@
 
 <script>
 /** Artist detail from PHP + MySQL (`music_charts.php?action=artist_search_result`). */
-const API_BASE = "../php/api/music_charts.php";
+function pageBaseDir() {
+  const p = window.location.pathname;
+  if (p.endsWith("/")) return p;
+  const last = p.split("/").pop() || "";
+  if (/\.[a-z0-9]+$/i.test(last)) {
+    return p.slice(0, p.length - last.length);
+  }
+  return p + "/";
+}
+const IS_HTML_SUBDIR = window.location.pathname.includes("/html/");
+const API_REL = IS_HTML_SUBDIR ? "../php/api/music_charts.php" : "php/api/music_charts.php";
+const API_BASE = new URL(API_REL, window.location.origin + pageBaseDir()).href;
 const PLACEHOLDER_COVER = "data:image/svg+xml," + encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="%23181818" width="200" height="200"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23555" font-family="system-ui,sans-serif" font-size="14">No cover</text></svg>'
 );
@@ -422,7 +433,7 @@ function playPreviewToggle(url, btn) {
 })();
 
 function apiUrl(params) {
-  const u = new URL(API_BASE, window.location.href);
+  const u = new URL(API_BASE);
   Object.entries(params).forEach(([k, v]) => {
     if (v !== undefined && v !== null && String(v) !== "") u.searchParams.set(k, String(v));
   });
@@ -554,7 +565,7 @@ document.addEventListener("click", (e) => {
 });
 
 $("#backBtn").addEventListener("click", () => {
-  window.location.href = "music_charts.html";
+  window.location.href = "index.html";
 });
 
 $("#searchInput").addEventListener("keydown", (e) => {

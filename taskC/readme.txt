@@ -1,9 +1,9 @@
 Task C - MusicBox Database Setup
 
 Files included:
-- create.sql: creates the MusicBox database and all tables
+- create.sql: creates the MusicBox database and all tables (数据库名字ywang506_1)
 - load.sql: loads the final dataset into the tables
-- users.csv: system seed data for application users
+- users.csv: system seed data for application users（所有表要大写）
 - artists.csv
 - albums.csv
 - tracks.csv
@@ -13,21 +13,21 @@ Files included:
 - artist_genres.csv
 - audio_features.csv
 - etl/etl.py: transforms the original spotify_top_10000.csv dataset into normalized CSV files
-- etl/output/: intermediate/generated ETL outputs
+- etl/output/: intermediate/generated ETL outputs（output删掉）
 
 Database name:
-- musicbox
+- musicbox(数据库名字ywang506_1)
 
 How to run:
 
 1. Open MySQL with local infile enabled:
-mysql --local-infile=1 -u root -p
+mysql --local-infile=1 -u ywang506 -p -h betaweb.csug.rochester.edu
 
 2. Run create.sql:
-source /Users/wmhjoy/Desktop/UR/Databases/project/milestone_3/spotify-database-platform/taskC/create.sql;
+source /Users/sherrywang/Desktop/Databases/spotify_database_coursework/taskC/create.sql;
 
 3. Use the database:
-USE musicbox;
+USE ywang506_1;
 
 4. If needed, clear old data in dependency order before reloading:
 DELETE FROM AUDIO_FEATURES;
@@ -41,7 +41,7 @@ DELETE FROM ARTISTS;
 DELETE FROM USERS;
 
 5. Run load.sql:
-source /Users/wmhjoy/Desktop/UR/Databases/project/milestone_3/spotify-database-platform/taskC/load.sql;
+source /Users/sherrywang/Desktop/Databases/spotify_database_coursework/taskC/load.sql;
 
 Tables populated:
 - USERS

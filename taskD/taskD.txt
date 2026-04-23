@@ -1,0 +1,16 @@
+Access the betaweb here:
+http://betaweb.csug.rochester.edu/~ywang506/musicbox/index.html
+
+Login Information:
+You can log in to explore different functionalities such as music analysis, content management, and the admin console.
+For Analyst: 
+- Username: analyst1@musicbox.com
+- Password: hash_analyst_001
+For Admin:
+- Username: admin@musicbox.com
+- Password: hash_admin_001
+
+Contribution for taskD:
+We all worked together on online sharing documents for the entire milestone.
+We all agree each of us contributed an equal amount of work to this assignment.
+Thus, each of us accomplished approximately half of the work.
