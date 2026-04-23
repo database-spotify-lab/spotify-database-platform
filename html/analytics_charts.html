@@ -347,6 +347,27 @@
       overflow:hidden;
       background:rgba(0,0,0,.20);
     }
+    .pager{
+      margin-top:10px;
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      gap:8px;
+      font-family:var(--mono);
+      font-size:12px;
+      color:var(--muted);
+    }
+    .pager-btn{
+      padding:7px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      font-family:var(--mono);
+      font-size:12px;
+      cursor:pointer;
+    }
+    .pager-btn:disabled{opacity:.45;cursor:not-allowed;}
     table{
       width:100%;
       border-collapse:collapse;
@@ -400,6 +421,21 @@
       letter-spacing:.06em;
       text-transform:uppercase;
       font-weight:700;
+    }
+    .status-badge.pending{
+      border-color:rgba(255,200,120,.45);
+      background:rgba(255,200,120,.10);
+      color:#ffc878;
+    }
+    .status-badge.approved{
+      border-color:rgba(0,245,160,.4);
+      background:rgba(0,245,160,.10);
+      color:var(--accent);
+    }
+    .status-badge.rejected{
+      border-color:rgba(255,94,94,.50);
+      background:rgba(255,94,94,.10);
+      color:#ff6b6b;
     }
     .btn-neutral{
       padding:8px 14px;
@@ -615,6 +651,11 @@
               </thead>
               <tbody id="contentTableBody"></tbody>
             </table>
+          </div>
+          <div class="pager">
+            <button class="pager-btn" id="contentPrevBtn" type="button">Prev</button>
+            <span id="contentPagerText">Page 1 / 1</span>
+            <button class="pager-btn" id="contentNextBtn" type="button">Next</button>
           </div>
         </div>
       </div>
@@ -1007,71 +1048,100 @@
     const analyticsPanel = document.getElementById("styleAnalyticsPanel");
     const managementPanel = document.getElementById("contentManagementPanel");
 
+    function setActivePage(page) {
+      const isAnalytics = page === "analytics";
+      pageTabs.forEach((t) => {
+        const active = t.dataset.page === page;
+        t.classList.toggle("active", active);
+        if (active) t.setAttribute("aria-current", "page");
+        else t.removeAttribute("aria-current");
+      });
+      analyticsPanel.classList.toggle("active", isAnalytics);
+      managementPanel.classList.toggle("active", !isAnalytics);
+      if (isAnalytics) {
+        loadStyleAnalytics().catch((err) => console.error(err));
+      }
+    }
+
     pageTabs.forEach((tab) => {
       tab.addEventListener("click", () => {
-        const isAnalytics = tab.dataset.page === "analytics";
-        pageTabs.forEach((t) => {
-          t.classList.toggle("active", t === tab);
-          if (t === tab) t.setAttribute("aria-current", "page");
-          else t.removeAttribute("aria-current");
-        });
-        analyticsPanel.classList.toggle("active", isAnalytics);
-        managementPanel.classList.toggle("active", !isAnalytics);
-        if (isAnalytics) {
-          loadStyleAnalytics().catch((err) => console.error(err));
-        }
+        setActivePage(tab.dataset.page === "management" ? "management" : "analytics");
       });
     });
 
     const contentTabs = Array.from(document.querySelectorAll(".content-tab"));
     const tableBody = document.getElementById("contentTableBody");
     const addContentBtn = document.getElementById("addContentBtn");
+    const contentPrevBtn = document.getElementById("contentPrevBtn");
+    const contentNextBtn = document.getElementById("contentNextBtn");
+    const contentPagerText = document.getElementById("contentPagerText");
     let activeContentType = "songs";
+    const contentPageByType = { songs: 1, artists: 1, albums: 1 };
+    const contentPagesByType = { songs: 1, artists: 1, albums: 1 };
+    const EMPTY_COVER =
+      "data:image/svg+xml;utf8," +
+      encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72"><rect width="72" height="72" fill="#1a1a1a"/><text x="36" y="40" text-anchor="middle" fill="#777" font-family="monospace" font-size="10">NO COVER</text></svg>'
+      );
 
-    const MOCK_COVERS = {
-      afterHours: "https://archive.org/download/mbid-fd7ebee8-8c64-4127-a9be-8e31ed6364e3/mbid-fd7ebee8-8c64-4127-a9be-8e31ed6364e3-28418011574_thumb500.jpg",
-      adele21: "https://archive.org/download/mbid-57440dfc-191c-32bd-ada0-14ac366c2a12/mbid-57440dfc-191c-32bd-ada0-14ac366c2a12-835722588_thumb500.jpg",
-      okComputer: "https://archive.org/download/mbid-fba5f8fe-c6c8-4511-8562-c9febf482674/mbid-fba5f8fe-c6c8-4511-8562-c9febf482674-26537574690_thumb500.jpg",
-      thriller: "https://archive.org/download/mbid-1d9b9dce-6584-37c7-a2a8-fabca91136c2/mbid-1d9b9dce-6584-37c7-a2a8-fabca91136c2-25091040839_thumb500.jpg",
-      outkast: "https://archive.org/download/mbid-468cd19e-d55c-46a2-a5a6-66292d2f0a90/mbid-468cd19e-d55c-46a2-a5a6-66292d2f0a90-23968933675_thumb500.jpg"
-    };
+    function editUrlByType(type, id) {
+      if (type === "songs") return `../php/admin/track_add_edit.php?track_id=${encodeURIComponent(id)}`;
+      if (type === "artists") return `../php/admin/artist_add_edit.php?artist_id=${encodeURIComponent(id)}`;
+      return `../php/admin/album_add_edit.php?album_id=${encodeURIComponent(id)}`;
+    }
 
-    const contentRows = {
-      songs: [
-        { name: "Blinding Lights", entity: "The Weeknd", status: "Approved", cover: MOCK_COVERS.afterHours },
-        { name: "Rolling in the Deep", entity: "Adele", status: "Approved", cover: MOCK_COVERS.adele21 },
-        { name: "Hey Ya!", entity: "OutKast", status: "Approved", cover: MOCK_COVERS.outkast },
-        { name: "Karma Police", entity: "Radiohead", status: "Approved", cover: MOCK_COVERS.okComputer },
-        { name: "Billie Jean", entity: "Michael Jackson", status: "Pending", cover: MOCK_COVERS.thriller }
-      ],
-      artists: [
-        { name: "The Weeknd", entity: "Artist", status: "Approved", cover: MOCK_COVERS.afterHours },
-        { name: "Adele", entity: "Artist", status: "Approved", cover: MOCK_COVERS.adele21 },
-        { name: "OutKast", entity: "Artist", status: "Approved", cover: MOCK_COVERS.outkast },
-        { name: "Radiohead", entity: "Artist", status: "Approved", cover: MOCK_COVERS.okComputer },
-        { name: "Michael Jackson", entity: "Artist", status: "Pending", cover: MOCK_COVERS.thriller }
-      ],
-      albums: [
-        { name: "After Hours", entity: "The Weeknd", status: "Approved", cover: MOCK_COVERS.afterHours },
-        { name: "21", entity: "Adele", status: "Approved", cover: MOCK_COVERS.adele21 },
-        { name: "Speakerboxxx / The Love Below", entity: "OutKast", status: "Approved", cover: MOCK_COVERS.outkast },
-        { name: "OK Computer", entity: "Radiohead", status: "Approved", cover: MOCK_COVERS.okComputer },
-        { name: "Thriller (Special Edition)", entity: "Michael Jackson", status: "Pending", cover: MOCK_COVERS.thriller }
-      ]
-    };
+    function addUrlByType(type) {
+      if (type === "songs") return "../php/admin/track_add_edit.php";
+      if (type === "artists") return "../php/admin/artist_add_edit.php";
+      return "../php/admin/album_add_edit.php";
+    }
 
-    function renderRows(type) {
-      const rows = contentRows[type] || [];
+    function currentManagementUrl() {
+      const page = contentPageByType[activeContentType] || 1;
+      return `../../html/analytics_charts.html?tab=management&content_type=${encodeURIComponent(
+        activeContentType
+      )}&content_page=${encodeURIComponent(String(page))}`;
+    }
+
+    async function renderRows(type) {
+      tableBody.innerHTML = `<tr><td colspan="4" style="color:var(--muted)">Loading...</td></tr>`;
+      const payload = await apiGet({
+        action: "content_management_list",
+        type,
+        page: contentPageByType[type] || 1,
+      });
+      const rows = Array.isArray(payload?.rows) ? payload.rows : [];
+      const pg = payload?.pagination || {};
+      const page = Number(pg.page || 1);
+      const pages = Number(pg.pages || 1);
+      const total = Number(pg.total || 0);
+      contentPageByType[type] = page;
+      contentPagesByType[type] = pages;
+      contentPagerText.textContent = `Page ${page} / ${pages} • ${total} rows`;
+      contentPrevBtn.disabled = page <= 1;
+      contentNextBtn.disabled = page >= pages;
+      if (!rows.length) {
+        tableBody.innerHTML = `<tr><td colspan="4" style="color:var(--muted)">No rows found.</td></tr>`;
+        return;
+      }
       tableBody.innerHTML = rows.map((row) => {
+        const nm = esc(String(row.name || ""));
+        const ent = esc(String(row.entity || "—"));
+        const st = esc(String(row.status || ""));
+        const statusClass = String(row.status || "").trim().toLowerCase();
+        const id = String(row.entity_id || "");
+        const cover = String(row.cover_url || "").trim() || EMPTY_COVER;
+        const editUrl =
+          editUrlByType(type, id) + `&return_to=${encodeURIComponent(currentManagementUrl())}`;
         return `
           <tr>
-            <td class="cover-cell"><img class="cover-thumb" src="${row.cover}" alt="${row.name} cover" loading="lazy" /></td>
+            <td class="cover-cell"><img class="cover-thumb" src="${esc(cover)}" alt="${nm} cover" loading="lazy" /></td>
             <td>
-              <div class="entity-name">${row.name}</div>
-              <div class="entity-sub">${row.entity}</div>
+              <div class="entity-name">${nm}</div>
+              <div class="entity-sub">${ent}</div>
             </td>
-            <td><span class="status-badge">${row.status}</span></td>
-            <td class="action-cell"><button class="btn-neutral" type="button">Edit</button></td>
+            <td><span class="status-badge ${esc(statusClass)}">${st}</span></td>
+            <td class="action-cell"><a class="btn-neutral js-content-edit" href="${esc(editUrl)}">Edit</a></td>
           </tr>
         `;
       }).join("");
@@ -1083,21 +1153,35 @@
         activeContentType = type;
         contentTabs.forEach((t) => t.classList.toggle("active", t === tab));
         addContentBtn.textContent = `+ Add ${type.slice(0, 1).toUpperCase()}${type.slice(1, -1)}`;
-        renderRows(type);
+        renderRows(type).catch((err) => {
+          tableBody.innerHTML = `<tr><td colspan="4" style="color:#ff7d7d">Failed to load rows: ${esc(err.message || "unknown error")}</td></tr>`;
+        });
       });
     });
 
     addContentBtn.addEventListener("click", () => {
-      if (activeContentType === "songs") {
-        window.location.href = "track_add_edit_mockup_dark_v2.html";
-      } else if (activeContentType === "artists") {
-        window.location.href = "artist_add_edit.html";
-      } else if (activeContentType === "albums") {
-        window.location.href = "album_add_edit.html";
-      }
+      const to =
+        addUrlByType(activeContentType) + `?return_to=${encodeURIComponent(currentManagementUrl())}`;
+      window.location.href = to;
     });
 
-    renderRows("songs");
+    contentPrevBtn?.addEventListener("click", () => {
+      const cur = contentPageByType[activeContentType] || 1;
+      if (cur <= 1) return;
+      contentPageByType[activeContentType] = cur - 1;
+      renderRows(activeContentType).catch((err) => {
+        tableBody.innerHTML = `<tr><td colspan="4" style="color:#ff7d7d">Failed to load rows: ${esc(err.message || "unknown error")}</td></tr>`;
+      });
+    });
+    contentNextBtn?.addEventListener("click", () => {
+      const cur = contentPageByType[activeContentType] || 1;
+      const maxp = contentPagesByType[activeContentType] || 1;
+      if (cur >= maxp) return;
+      contentPageByType[activeContentType] = cur + 1;
+      renderRows(activeContentType).catch((err) => {
+        tableBody.innerHTML = `<tr><td colspan="4" style="color:#ff7d7d">Failed to load rows: ${esc(err.message || "unknown error")}</td></tr>`;
+      });
+    });
 
     const genreMixLegendEl = document.getElementById("genreMixLegend");
     genreMixLegendEl?.addEventListener("click", (e) => {
@@ -1145,7 +1229,27 @@
       loadStyleAnalytics().catch((err) => alert("Could not load style analytics.\n\n" + err.message));
     });
 
-    loadStyleAnalytics().catch((err) => alert("Could not load style analytics.\n\n" + err.message));
+    const initialTab = new URLSearchParams(window.location.search).get("tab");
+    const initialType = new URLSearchParams(window.location.search).get("content_type");
+    const initialPageRaw = new URLSearchParams(window.location.search).get("content_page");
+    const initialPageNum = Number(initialPageRaw || "1");
+    if (["songs", "artists", "albums"].includes(String(initialType || ""))) {
+      activeContentType = String(initialType);
+      contentTabs.forEach((t) => t.classList.toggle("active", t.dataset.content === activeContentType));
+      addContentBtn.textContent = `+ Add ${activeContentType.slice(0, 1).toUpperCase()}${activeContentType.slice(1, -1)}`;
+    }
+    if (Number.isFinite(initialPageNum) && initialPageNum > 0) {
+      contentPageByType[activeContentType] = Math.floor(initialPageNum);
+    }
+    if (initialTab === "management") {
+      setActivePage("management");
+    } else {
+      setActivePage("analytics");
+    }
+
+    renderRows(activeContentType).catch((err) => {
+      tableBody.innerHTML = `<tr><td colspan="4" style="color:#ff7d7d">Failed to load rows: ${esc(err.message || "unknown error")}</td></tr>`;
+    });
 
     document.querySelector("#logoLoginEntry")?.addEventListener("click", () => {
       window.location.href = "login_page.html";

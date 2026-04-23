@@ -1,0 +1,6 @@
+track_id,track_name,popularity,duration_ms,explicit,preview_url,status,submitted_by,reviewed_by
+t1,Blank Space,95,231000,0,https://example.com/blankspace.mp3,approved,2,1
+t2,Blinding Lights,98,200040,0,https://example.com/blindinglights.mp3,approved,2,1
+t3,vampire,92,219724,1,https://example.com/vampire.mp3,pending,4,
+t4,Kill Bill,94,153947,1,https://example.com/killbill.mp3,approved,4,3
+t5,Marvins Room,88,347133,1,https://example.com/marvinsroom.mp3,rejected,2,1

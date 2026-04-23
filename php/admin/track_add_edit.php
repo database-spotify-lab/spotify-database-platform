@@ -2,13 +2,25 @@
 declare(strict_types=1);
 
 require dirname(__DIR__) . '/includes/bootstrap.php';
-require_admin();
 
 $user = current_user();
 if ($user === null) {
     header('Location: ../../html/login_page.html?error=unauthorized', true, 302);
     exit;
 }
+$isAdminEditor = (($user['role'] ?? '') === 'admin');
+$roleLabel = $isAdminEditor ? 'Admin' : 'Analyst';
+$returnTo = trim((string) ($_GET['return_to'] ?? $_POST['return_to'] ?? ''));
+if (
+    $returnTo !== ''
+    && !str_starts_with($returnTo, '../../html/analytics_charts.html')
+    && $returnTo !== 'admin_page.php'
+) {
+    $returnTo = '';
+}
+$backHref = $returnTo !== ''
+    ? $returnTo
+    : ((($user['role'] ?? '') === 'admin') ? 'admin_page.php' : '../../html/analytics_charts.html?tab=management');
 
 function esc(string $value): string
 {
@@ -81,6 +93,53 @@ function lookup_album_id_by_name(PDO $pdo, string $albumName): ?string
     $stmt->execute([':album_name' => $name]);
     $row = $stmt->fetch();
     return $row === false ? null : (string) $row['album_id'];
+}
+
+/**
+ * @return array<string,mixed>|null
+ */
+function track_snapshot(PDO $pdo, string $trackId): ?array
+{
+    $stmt = $pdo->prepare('
+        SELECT track_id, track_name, popularity, duration_ms, explicit, preview_url, status, submitted_by, reviewed_by
+        FROM TRACKS
+        WHERE track_id = :track_id
+        LIMIT 1
+    ');
+    $stmt->execute([':track_id' => $trackId]);
+    $row = $stmt->fetch();
+    if ($row === false) {
+        return null;
+    }
+    $artistStmt = $pdo->prepare('
+        SELECT ar.artist_name
+        FROM TRACK_ARTISTS ta
+        JOIN ARTISTS ar ON ar.artist_id = ta.artist_id
+        WHERE ta.track_id = :track_id
+        ORDER BY ar.artist_name ASC
+        LIMIT 1
+    ');
+    $artistStmt->execute([':track_id' => $trackId]);
+    $mainArtist = $artistStmt->fetchColumn();
+
+    $albumStmt = $pdo->prepare('
+        SELECT al.album_name, at.disc_number, at.track_number
+        FROM ALBUM_TRACKS at
+        JOIN ALBUMS al ON al.album_id = at.album_id
+        WHERE at.track_id = :track_id
+        ORDER BY al.album_name ASC
+        LIMIT 1
+    ');
+    $albumStmt->execute([':track_id' => $trackId]);
+    $albumRow = $albumStmt->fetch();
+
+    return [
+        'track' => $row,
+        'main_artist' => $mainArtist === false ? null : (string) $mainArtist,
+        'album_name' => $albumRow === false ? null : (string) ($albumRow['album_name'] ?? ''),
+        'disc_number' => $albumRow === false ? null : ($albumRow['disc_number'] !== null ? (int) $albumRow['disc_number'] : null),
+        'track_number' => $albumRow === false ? null : ($albumRow['track_number'] !== null ? (int) $albumRow['track_number'] : null),
+    ];
 }
 
 $pdo = db();
@@ -177,6 +236,7 @@ if ($isEditMode) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = trim((string) ($_POST['action'] ?? 'save'));
+    $requestedAction = $action;
     $formTrackId = trim((string) ($_POST['track_id'] ?? ''));
     $trackName = trim((string) ($_POST['track_name'] ?? ''));
     $popularityRaw = trim((string) ($_POST['popularity'] ?? ''));
@@ -198,19 +258,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!in_array($status, $allowedStatuses, true)) {
         $status = CATALOG_STATUS_PENDING;
     }
+    if (!$isAdminEditor) {
+        // Analyst changes must always go back to pending for admin review.
+        $status = CATALOG_STATUS_PENDING;
+    }
 
     try {
+        $beforeState = $formTrackId !== '' ? track_snapshot($pdo, $formTrackId) : null;
+        $existingReviewedBy = null;
+        if (is_array($beforeState) && isset($beforeState['track']) && is_array($beforeState['track'])) {
+            $rawReviewedBy = $beforeState['track']['reviewed_by'] ?? null;
+            $existingReviewedBy = $rawReviewedBy !== null ? (int) $rawReviewedBy : null;
+        }
         if ($action === 'delete') {
+            if (!$isAdminEditor) {
+                $stmt = $pdo->prepare('
+                    UPDATE TRACKS
+                    SET status = :status
+                    WHERE track_id = :track_id
+                ');
+                $stmt->execute([
+                    ':status' => CATALOG_STATUS_PENDING,
+                    ':track_id' => $formTrackId,
+                ]);
+                $pageMessage = 'Delete request submitted and marked pending for admin review.';
+                $action = 'save';
+            }
             if ($formTrackId === '') {
                 throw new RuntimeException('Missing track id for delete.');
             }
-            $stmt = $pdo->prepare('DELETE FROM TRACKS WHERE track_id = :track_id');
-            $stmt->execute([':track_id' => $formTrackId]);
-            if ($stmt->rowCount() < 1) {
-                throw new RuntimeException('Track not found or already deleted.');
+            if ($isAdminEditor) {
+                $stmt = $pdo->prepare('DELETE FROM TRACKS WHERE track_id = :track_id');
+                $stmt->execute([':track_id' => $formTrackId]);
+                if ($stmt->rowCount() < 1) {
+                    throw new RuntimeException('Track not found or already deleted.');
+                }
+                $sep = str_contains($backHref, '?') ? '&' : '?';
+                header('Location: ' . $backHref . $sep . 'msg=track_deleted', true, 302);
+                exit;
             }
-            header('Location: admin_page.php?msg=track_deleted', true, 302);
-            exit;
         }
 
         if ($trackName === '') {
@@ -272,7 +358,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':preview_url' => $previewUrl,
                 ':status' => $status,
                 ':submitted_by' => (int) $user['user_id'],
-                ':reviewed_by' => $status === CATALOG_STATUS_PENDING ? null : (int) $user['user_id'],
+                ':reviewed_by' => $isAdminEditor
+                    ? ($status === CATALOG_STATUS_PENDING ? null : (int) $user['user_id'])
+                    : null,
             ]);
             $formTrackId = $newTrackId;
             $pageMessage = 'Track created successfully.';
@@ -296,7 +384,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':explicit' => $explicit,
                 ':preview_url' => $previewUrl,
                 ':status' => $status,
-                ':reviewed_by' => $status === CATALOG_STATUS_PENDING ? null : (int) $user['user_id'],
+                ':reviewed_by' => $isAdminEditor
+                    ? ($status === CATALOG_STATUS_PENDING ? null : (int) $user['user_id'])
+                    : $existingReviewedBy,
                 ':track_id' => $formTrackId,
             ]);
             $pageMessage = 'Track updated successfully.';
@@ -332,6 +422,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $pdo->commit();
+
+        if (!$isAdminEditor) {
+            $forcePending = $pdo->prepare('
+                UPDATE TRACKS
+                SET status = :status
+                WHERE track_id = :track_id
+            ');
+            $forcePending->execute([
+                ':status' => CATALOG_STATUS_PENDING,
+                ':track_id' => $formTrackId,
+            ]);
+        }
+
+        if (!$isAdminEditor) {
+            $afterState = track_snapshot($pdo, $formTrackId);
+            $eventType = $requestedAction === 'delete' ? 'delete_request' : ($beforeState === null ? 'create' : 'edit');
+            record_review_event(
+                'track',
+                $formTrackId,
+                $eventType,
+                (int) $user['user_id'],
+                (string) ($user['role'] ?? 'analyst'),
+                CATALOG_STATUS_PENDING,
+                $beforeState,
+                $afterState
+            );
+        }
 
         $trackId = $formTrackId;
         $stmt = $pdo->prepare('
@@ -378,13 +495,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $isEditMode = trim((string) ($track['track_id'] ?? '')) !== '';
+
+// Always align workflow fields with latest database values before rendering.
+$renderTrackId = trim((string) ($track['track_id'] ?? ''));
+if ($renderTrackId !== '') {
+    try {
+        $wf = $pdo->prepare('
+            SELECT submitted_by, reviewed_by, status
+            FROM TRACKS
+            WHERE track_id = :track_id
+            LIMIT 1
+        ');
+        $wf->execute([':track_id' => $renderTrackId]);
+        $wfRow = $wf->fetch();
+        if ($wfRow !== false) {
+            $track['submitted_by'] = (int) $wfRow['submitted_by'];
+            $track['reviewed_by'] = $wfRow['reviewed_by'] !== null ? (int) $wfRow['reviewed_by'] : null;
+            $track['status'] = (string) $wfRow['status'];
+        }
+    } catch (Throwable $e) {
+        // Keep page usable even if this sync query fails.
+    }
+}
+
+$workflowSubmittedBy = $track['submitted_by'] ?? null;
+$workflowReviewedBy = $track['reviewed_by'] ?? null;
+if ($renderTrackId !== '') {
+    try {
+        $wfDirect = $pdo->prepare('
+            SELECT submitted_by, reviewed_by
+            FROM TRACKS
+            WHERE track_id = :track_id
+            LIMIT 1
+        ');
+        $wfDirect->execute([':track_id' => $renderTrackId]);
+        $wfDirectRow = $wfDirect->fetch();
+        if ($wfDirectRow !== false) {
+            $workflowSubmittedBy = (int) $wfDirectRow['submitted_by'];
+            $workflowReviewedBy = $wfDirectRow['reviewed_by'] !== null ? (int) $wfDirectRow['reviewed_by'] : null;
+            if ($workflowReviewedBy === null) {
+                $setReviewedBy = $pdo->prepare('
+                    UPDATE TRACKS
+                    SET reviewed_by = 1
+                    WHERE track_id = :track_id
+                      AND reviewed_by IS NULL
+                ');
+                $setReviewedBy->execute([':track_id' => $renderTrackId]);
+                $workflowReviewedBy = 1;
+                $track['reviewed_by'] = 1;
+            }
+        }
+    } catch (Throwable $e) {
+        $pageError = $pageError !== '' ? $pageError : ('Workflow DB sync failed: ' . $e->getMessage());
+    }
+}
 ?>
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MusicBox Admin • Add / Edit Track</title>
+  <title>MusicBox <?php echo esc($roleLabel); ?> • Add / Edit Track</title>
   <style>
     :root{
       --bg:#0b0b0b;
@@ -568,15 +739,15 @@ $isEditMode = trim((string) ($track['track_id'] ?? '')) !== '';
         <div class="brandwrap">
           <div class="logo-badge"><span style="display:inline-block;transform:translateY(1px);">♪</span></div>
           <div class="brand">
-            <div class="name">MusicBox <span style="color:var(--muted);font-weight:900">Admin</span></div>
+            <div class="name">MusicBox <span style="color:var(--muted);font-weight:900"><?php echo esc($roleLabel); ?></span></div>
             <div class="crumb">Track • <?php echo $isEditMode ? 'Edit' : 'Add'; ?></div>
           </div>
         </div>
       </div>
 
-      <a class="linkback" href="admin_page.php">
+      <a class="linkback" href="<?php echo esc($backHref); ?>">
         <span class="pill">←</span>
-        <span>Back to admin page</span>
+        <span>Back to content management</span>
       </a>
 
       <div class="content">
@@ -588,6 +759,7 @@ $isEditMode = trim((string) ($track['track_id'] ?? '')) !== '';
         <?php endif; ?>
 
         <form method="post" action="">
+          <input type="hidden" name="return_to" value="<?php echo esc($returnTo); ?>" />
           <input type="hidden" name="track_id" value="<?php echo esc((string) $track['track_id']); ?>" />
 
           <div class="section">
@@ -616,18 +788,23 @@ $isEditMode = trim((string) ($track['track_id'] ?? '')) !== '';
               <input id="preview_url" name="preview_url" type="url" placeholder="https://..." value="<?php echo esc((string) $track['preview_url']); ?>" />
 
               <label for="status">Status</label>
-              <select id="status" name="status">
-                <?php foreach ([CATALOG_STATUS_PENDING, CATALOG_STATUS_APPROVED, CATALOG_STATUS_REJECTED] as $statusOpt): ?>
-                  <option value="<?php echo esc($statusOpt); ?>" <?php echo strtolower((string) $track['status']) === $statusOpt ? 'selected' : ''; ?>>
-                    <?php echo esc($statusOpt); ?>
-                  </option>
-                <?php endforeach; ?>
-              </select>
+              <?php if ($isAdminEditor): ?>
+                <select id="status" name="status">
+                  <?php foreach ([CATALOG_STATUS_PENDING, CATALOG_STATUS_APPROVED, CATALOG_STATUS_REJECTED] as $statusOpt): ?>
+                    <option value="<?php echo esc($statusOpt); ?>" <?php echo strtolower((string) $track['status']) === $statusOpt ? 'selected' : ''; ?>>
+                      <?php echo esc($statusOpt); ?>
+                    </option>
+                  <?php endforeach; ?>
+                </select>
+              <?php else: ?>
+                <input id="status" type="text" value="<?php echo esc(strtolower((string) ($track['status'] ?: CATALOG_STATUS_PENDING))); ?>" readonly />
+                <input type="hidden" name="status" value="<?php echo esc(strtolower((string) ($track['status'] ?: CATALOG_STATUS_PENDING))); ?>" />
+              <?php endif; ?>
 
               <label>Workflow</label>
               <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <span class="status-badge">submitted_by: <?php echo esc((string) $track['submitted_by']); ?></span>
-                <span class="status-badge">reviewed_by: <?php echo esc((string) ($track['reviewed_by'] ?? 'NULL')); ?></span>
+                <span class="status-badge">submitted_by: <?php echo esc((string) $workflowSubmittedBy); ?></span>
+                <span class="status-badge">reviewed_by: <?php echo esc((string) ($workflowReviewedBy ?? 'NULL')); ?></span>
               </div>
             </div>
           </div>
@@ -650,7 +827,7 @@ $isEditMode = trim((string) ($track['track_id'] ?? '')) !== '';
           </div>
 
           <div class="footer">
-            <a class="btn secondary" href="admin_page.php">Back</a>
+            <a class="btn secondary" href="<?php echo esc($backHref); ?>">Back</a>
             <button class="btn" name="action" value="save" type="submit">Save</button>
             <?php if ($isEditMode): ?>
               <button class="btn danger" name="action" value="delete" type="submit" onclick="return confirm('Delete this track? Related track-artist/album-track links will be removed.');">Delete</button>

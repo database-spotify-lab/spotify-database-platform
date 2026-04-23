@@ -1,4 +1,4 @@
-USE musicbox;
+USE ywang506_1;
 
 LOAD DATA LOCAL INFILE '/Users/sherrywang/Desktop/Databases/spotify_database_coursework/taskC/users.csv'
 INTO TABLE USERS

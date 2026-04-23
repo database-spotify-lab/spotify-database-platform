@@ -140,6 +140,9 @@ try {
       gap:10px;
       min-width:220px;
       font-weight:800;
+      color:inherit;
+      text-decoration:none;
+      cursor:pointer;
     }
 
     .logo-badge{
@@ -477,13 +480,13 @@ try {
 <body>
   <div class="wrap">
     <div class="topbar">
-      <div class="logo">
+      <a class="logo" href="../../html/login_page.html" title="Back to login">
         <div class="logo-badge">♪</div>
         <div class="brand">
           <div class="name">MusicBox</div>
           <div class="sub">Discover your sound.</div>
         </div>
-      </div>
+      </a>
       <div class="spacer"></div>
       <div class="pill"><span>SIGNED IN</span> <b><?php echo $emailDisplay; ?></b></div>
       <div class="pill"><span>ROLE</span> <b>ADMIN</b></div>
@@ -652,14 +655,11 @@ try {
       reviewRows.innerHTML = items.map((row) => {
         const pending = String(row.status || "").toLowerCase() === "pending";
         const chipStatus = esc(String(row.status || ""));
-        const actions = pending
-          ? `<button type="button" class="reviewBtn btnAccent js-approve" data-entity="${esc(
-              row.entity_type
-            )}" data-id="${esc(String(row.entity_id))}">Approve</button>
-               <button type="button" class="reviewBtn btnDanger js-reject" data-entity="${esc(
-              row.entity_type
-            )}" data-id="${esc(String(row.entity_id))}">Reject</button>`
-          : `<span style="opacity:.45;font-family:var(--mono);font-size:12px;">—</span>`;
+        const detailHref = row.latest_event_id
+          ? `review_detail.php?event_id=${encodeURIComponent(String(row.latest_event_id))}&entity=${encodeURIComponent(String(row.entity_type || ""))}&id=${encodeURIComponent(String(row.entity_id || ""))}`
+          : `review_detail.php?entity=${encodeURIComponent(String(row.entity_type || ""))}&id=${encodeURIComponent(String(row.entity_id || ""))}`;
+        const detailBtn = `<a class="reviewBtn" href="${detailHref}">Details</a>`;
+        const actions = detailBtn;
 
         const sub = row.submitted_email ? `<span class="chip">${esc(String(row.submitted_email))}</span>` : `<span class="chip">—</span>`;
         const rev = row.reviewed_email ? `<span class="chip">${esc(String(row.reviewed_email))}</span>` : `<span class="chip">—</span>`;
@@ -686,7 +686,13 @@ try {
       });
       const j = await res.json().catch(() => ({}));
       if (!res.ok || !j.ok) {
-        showMsg(j.error || res.statusText || "Action failed", true);
+        let msg = j.error || res.statusText || "Action failed";
+        if (msg === "details_not_viewed") {
+          msg = "Please open Details for this record before Approve/Reject.";
+        } else if (msg === "missing_detail_event") {
+          msg = "No detail event found for this record yet.";
+        }
+        showMsg(msg, true);
         return;
       }
       await loadQueue();
@@ -699,18 +705,6 @@ try {
       filterType.value = "all";
       filterStatus.value = "all";
       loadQueue();
-    });
-
-    reviewRows.addEventListener("click", (e) => {
-      const ap = e.target.closest(".js-approve");
-      if (ap) {
-        postAction(ap.getAttribute("data-entity"), ap.getAttribute("data-id"), "approve");
-        return;
-      }
-      const rj = e.target.closest(".js-reject");
-      if (rj) {
-        postAction(rj.getAttribute("data-entity"), rj.getAttribute("data-id"), "reject");
-      }
     });
 
     loadQueue();

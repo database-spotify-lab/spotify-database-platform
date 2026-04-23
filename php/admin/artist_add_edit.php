@@ -2,13 +2,25 @@
 declare(strict_types=1);
 
 require dirname(__DIR__) . '/includes/bootstrap.php';
-require_admin();
 
 $user = current_user();
 if ($user === null) {
     header('Location: ../../html/login_page.html?error=unauthorized', true, 302);
     exit;
 }
+$isAdminEditor = (($user['role'] ?? '') === 'admin');
+$roleLabel = $isAdminEditor ? 'Admin' : 'Analyst';
+$returnTo = trim((string) ($_GET['return_to'] ?? $_POST['return_to'] ?? ''));
+if (
+    $returnTo !== ''
+    && !str_starts_with($returnTo, '../../html/analytics_charts.html')
+    && $returnTo !== 'admin_page.php'
+) {
+    $returnTo = '';
+}
+$backHref = $returnTo !== ''
+    ? $returnTo
+    : ((($user['role'] ?? '') === 'admin') ? 'admin_page.php' : '../../html/analytics_charts.html?tab=management');
 
 const ARTIST_GENRE_OPTIONS = [
     'Pop',
@@ -52,6 +64,28 @@ function build_artist_id(PDO $pdo): string
     throw new RuntimeException('Failed to allocate unique artist id');
 }
 
+/**
+ * @return array<string,mixed>|null
+ */
+function artist_snapshot(PDO $pdo, string $artistId): ?array
+{
+    $stmt = $pdo->prepare('
+        SELECT artist_id, artist_name, status, submitted_by, reviewed_by
+        FROM ARTISTS
+        WHERE artist_id = :artist_id
+        LIMIT 1
+    ');
+    $stmt->execute([':artist_id' => $artistId]);
+    $row = $stmt->fetch();
+    if ($row === false) {
+        return null;
+    }
+    return [
+        'artist' => $row,
+        'genres' => read_artist_genres($pdo, $artistId),
+    ];
+}
+
 $pdo = db();
 $artistId = trim((string) ($_GET['artist_id'] ?? ''));
 $isEditMode = $artistId !== '';
@@ -93,6 +127,7 @@ if ($isEditMode) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = trim((string) ($_POST['action'] ?? 'save'));
+    $requestedAction = $action;
     $formArtistId = trim((string) ($_POST['artist_id'] ?? ''));
     $name = trim((string) ($_POST['artist_name'] ?? ''));
     $status = strtolower(trim((string) ($_POST['status'] ?? CATALOG_STATUS_PENDING)));
@@ -114,19 +149,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!in_array($status, $allowedStatuses, true)) {
         $status = CATALOG_STATUS_PENDING;
     }
+    if (!$isAdminEditor) {
+        // Analyst changes must always go back to pending for admin review.
+        $status = CATALOG_STATUS_PENDING;
+    }
 
     try {
+        $beforeState = $formArtistId !== '' ? artist_snapshot($pdo, $formArtistId) : null;
+        $existingReviewedBy = null;
+        if (is_array($beforeState) && isset($beforeState['artist']) && is_array($beforeState['artist'])) {
+            $rawReviewedBy = $beforeState['artist']['reviewed_by'] ?? null;
+            $existingReviewedBy = $rawReviewedBy !== null ? (int) $rawReviewedBy : null;
+        }
         if ($action === 'delete') {
+            if (!$isAdminEditor) {
+                $stmt = $pdo->prepare('
+                    UPDATE ARTISTS
+                    SET status = :status
+                    WHERE artist_id = :artist_id
+                ');
+                $stmt->execute([
+                    ':status' => CATALOG_STATUS_PENDING,
+                    ':artist_id' => $formArtistId,
+                ]);
+                $pageMessage = 'Delete request submitted and marked pending for admin review.';
+                $action = 'save';
+            }
             if ($formArtistId === '') {
                 throw new RuntimeException('Missing artist id for delete.');
             }
-            $stmt = $pdo->prepare('DELETE FROM ARTISTS WHERE artist_id = :artist_id');
-            $stmt->execute([':artist_id' => $formArtistId]);
-            if ($stmt->rowCount() < 1) {
-                throw new RuntimeException('Artist not found or already deleted.');
+            if ($isAdminEditor) {
+                $stmt = $pdo->prepare('DELETE FROM ARTISTS WHERE artist_id = :artist_id');
+                $stmt->execute([':artist_id' => $formArtistId]);
+                if ($stmt->rowCount() < 1) {
+                    throw new RuntimeException('Artist not found or already deleted.');
+                }
+                $sep = str_contains($backHref, '?') ? '&' : '?';
+                header('Location: ' . $backHref . $sep . 'msg=artist_deleted', true, 302);
+                exit;
             }
-            header('Location: admin_page.php?msg=artist_deleted', true, 302);
-            exit;
         }
 
         if ($name === '') {
@@ -145,7 +206,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':artist_name' => $name,
                 ':status' => $status,
                 ':submitted_by' => (int) $user['user_id'],
-                ':reviewed_by' => $status === CATALOG_STATUS_PENDING ? null : (int) $user['user_id'],
+                ':reviewed_by' => $isAdminEditor
+                    ? ($status === CATALOG_STATUS_PENDING ? null : (int) $user['user_id'])
+                    : null,
             ]);
             $formArtistId = $newArtistId;
             $pageMessage = 'Artist created successfully.';
@@ -161,7 +224,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([
                 ':artist_name' => $name,
                 ':status' => $status,
-                ':reviewed_by' => $status === CATALOG_STATUS_PENDING ? null : (int) $user['user_id'],
+                ':reviewed_by' => $isAdminEditor
+                    ? ($status === CATALOG_STATUS_PENDING ? null : (int) $user['user_id'])
+                    : $existingReviewedBy,
                 ':artist_id' => $formArtistId,
             ]);
             $pageMessage = 'Artist updated successfully.';
@@ -183,6 +248,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         $pdo->commit();
+
+        if (!$isAdminEditor) {
+            $forcePending = $pdo->prepare('
+                UPDATE ARTISTS
+                SET status = :status
+                WHERE artist_id = :artist_id
+            ');
+            $forcePending->execute([
+                ':status' => CATALOG_STATUS_PENDING,
+                ':artist_id' => $formArtistId,
+            ]);
+        }
+
+        if (!$isAdminEditor) {
+            $afterState = artist_snapshot($pdo, $formArtistId);
+            $eventType = $requestedAction === 'delete' ? 'delete_request' : ($beforeState === null ? 'create' : 'edit');
+            record_review_event(
+                'artist',
+                $formArtistId,
+                $eventType,
+                (int) $user['user_id'],
+                (string) ($user['role'] ?? 'analyst'),
+                CATALOG_STATUS_PENDING,
+                $beforeState,
+                $afterState
+            );
+        }
 
         $artistId = $formArtistId;
         $stmt = $pdo->prepare('
@@ -214,6 +306,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $isEditMode = trim((string) ($artist['artist_id'] ?? '')) !== '';
 
+// Always align workflow fields with latest database values before rendering.
+$renderArtistId = trim((string) ($artist['artist_id'] ?? ''));
+if ($renderArtistId !== '') {
+    try {
+        $wf = $pdo->prepare('
+            SELECT submitted_by, reviewed_by, status
+            FROM ARTISTS
+            WHERE artist_id = :artist_id
+            LIMIT 1
+        ');
+        $wf->execute([':artist_id' => $renderArtistId]);
+        $wfRow = $wf->fetch();
+        if ($wfRow !== false) {
+            $artist['submitted_by'] = (int) $wfRow['submitted_by'];
+            $artist['reviewed_by'] = $wfRow['reviewed_by'] !== null ? (int) $wfRow['reviewed_by'] : null;
+            $artist['status'] = (string) $wfRow['status'];
+        }
+    } catch (Throwable $e) {
+        // Keep page usable even if this sync query fails.
+    }
+}
+
+$workflowSubmittedBy = $artist['submitted_by'] ?? null;
+$workflowReviewedBy = $artist['reviewed_by'] ?? null;
+if ($renderArtistId !== '') {
+    $wfDirect = $pdo->prepare('
+        SELECT submitted_by, reviewed_by
+        FROM ARTISTS
+        WHERE artist_id = :artist_id
+        LIMIT 1
+    ');
+    $wfDirect->execute([':artist_id' => $renderArtistId]);
+    $wfDirectRow = $wfDirect->fetch();
+    if ($wfDirectRow !== false) {
+        $workflowSubmittedBy = (int) $wfDirectRow['submitted_by'];
+        $workflowReviewedBy = $wfDirectRow['reviewed_by'] !== null ? (int) $wfDirectRow['reviewed_by'] : null;
+        if ($workflowReviewedBy === null) {
+            $setReviewedBy = $pdo->prepare('
+                UPDATE ARTISTS
+                SET reviewed_by = 1
+                WHERE artist_id = :artist_id
+                  AND reviewed_by IS NULL
+            ');
+            $setReviewedBy->execute([':artist_id' => $renderArtistId]);
+            $workflowReviewedBy = 1;
+            $artist['reviewed_by'] = 1;
+        }
+    }
+}
+
 $allGenreOptions = ARTIST_GENRE_OPTIONS;
 foreach ($selectedGenres as $g) {
     if (!in_array($g, $allGenreOptions, true)) {
@@ -232,7 +374,7 @@ function esc(string $value): string
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MusicBox Admin • Add / Edit Artist</title>
+  <title>MusicBox <?php echo esc($roleLabel); ?> • Add / Edit Artist</title>
   <style>
     :root{
       --bg:#0b0b0b;
@@ -443,15 +585,15 @@ function esc(string $value): string
         <div class="brandwrap">
           <div class="logo-badge"><span style="display:inline-block;transform:translateY(1px);">♪</span></div>
           <div class="brand">
-            <div class="name">MusicBox <span style="color:var(--muted);font-weight:900">Admin</span></div>
+            <div class="name">MusicBox <span style="color:var(--muted);font-weight:900"><?php echo esc($roleLabel); ?></span></div>
             <div class="crumb">Artist • <?php echo $isEditMode ? 'Edit' : 'Add'; ?></div>
           </div>
         </div>
       </div>
 
-      <a class="linkback" href="admin_page.php">
+      <a class="linkback" href="<?php echo esc($backHref); ?>">
         <span class="pill">←</span>
-        <span>Back to admin page</span>
+        <span>Back to content management</span>
       </a>
 
       <div class="content">
@@ -463,6 +605,7 @@ function esc(string $value): string
         <?php endif; ?>
 
         <form method="post" action="">
+          <input type="hidden" name="return_to" value="<?php echo esc($returnTo); ?>" />
           <input type="hidden" name="artist_id" value="<?php echo esc((string) $artist['artist_id']); ?>" />
 
           <div class="section">
@@ -475,18 +618,23 @@ function esc(string $value): string
               <input id="artist_name" name="artist_name" type="text" placeholder="e.g., Taylor Swift" required value="<?php echo esc((string) $artist['artist_name']); ?>" />
 
               <label for="status">Status</label>
-              <select id="status" name="status">
-                <?php foreach ([CATALOG_STATUS_PENDING, CATALOG_STATUS_APPROVED, CATALOG_STATUS_REJECTED] as $statusOpt): ?>
-                  <option value="<?php echo esc($statusOpt); ?>" <?php echo strtolower((string) $artist['status']) === $statusOpt ? 'selected' : ''; ?>>
-                    <?php echo esc($statusOpt); ?>
-                  </option>
-                <?php endforeach; ?>
-              </select>
+              <?php if ($isAdminEditor): ?>
+                <select id="status" name="status">
+                  <?php foreach ([CATALOG_STATUS_PENDING, CATALOG_STATUS_APPROVED, CATALOG_STATUS_REJECTED] as $statusOpt): ?>
+                    <option value="<?php echo esc($statusOpt); ?>" <?php echo strtolower((string) $artist['status']) === $statusOpt ? 'selected' : ''; ?>>
+                      <?php echo esc($statusOpt); ?>
+                    </option>
+                  <?php endforeach; ?>
+                </select>
+              <?php else: ?>
+                <input id="status" type="text" value="<?php echo esc(strtolower((string) ($artist['status'] ?: CATALOG_STATUS_PENDING))); ?>" readonly />
+                <input type="hidden" name="status" value="<?php echo esc(strtolower((string) ($artist['status'] ?: CATALOG_STATUS_PENDING))); ?>" />
+              <?php endif; ?>
 
               <label>Workflow</label>
               <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <span class="status-badge">submitted_by: <?php echo esc((string) $artist['submitted_by']); ?></span>
-                <span class="status-badge">reviewed_by: <?php echo esc((string) ($artist['reviewed_by'] ?? 'NULL')); ?></span>
+                <span class="status-badge">submitted_by: <?php echo esc((string) $workflowSubmittedBy); ?></span>
+                <span class="status-badge">reviewed_by: <?php echo esc((string) ($workflowReviewedBy ?? 'NULL')); ?></span>
               </div>
             </div>
           </div>
@@ -508,7 +656,7 @@ function esc(string $value): string
           </div>
 
           <div class="footer">
-            <a class="btn secondary" href="admin_page.php">Back</a>
+            <a class="btn secondary" href="<?php echo esc($backHref); ?>">Back</a>
             <button class="btn" name="action" value="save" type="submit">Save</button>
             <?php if ($isEditMode): ?>
               <button class="btn danger" name="action" value="delete" type="submit" onclick="return confirm('Delete this artist? This also removes related artist-genre links.');">Delete</button>

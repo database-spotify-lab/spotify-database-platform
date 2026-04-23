@@ -18,7 +18,21 @@ function review_queue_fetch_artists(PDO $pdo, array $opts): array
             ar.artist_name AS artists_label,
             su.email AS submitted_email,
             ru.email AS reviewed_email,
-            ar.status AS status
+            ar.status AS status,
+            (
+                SELECT re.event_id
+                FROM REVIEW_EVENTS re
+                WHERE re.entity_type = 'artist' AND re.entity_id = ar.artist_id
+                ORDER BY re.event_id DESC
+                LIMIT 1
+            ) AS latest_event_id,
+            (
+                SELECT re.action_type
+                FROM REVIEW_EVENTS re
+                WHERE re.entity_type = 'artist' AND re.entity_id = ar.artist_id
+                ORDER BY re.event_id DESC
+                LIMIT 1
+            ) AS latest_action_type
         FROM ARTISTS ar
         JOIN USERS su ON su.user_id = ar.submitted_by
         LEFT JOIN USERS ru ON ru.user_id = ar.reviewed_by
@@ -57,7 +71,21 @@ function review_queue_fetch_albums(PDO $pdo, array $opts): array
             COALESCE(GROUP_CONCAT(DISTINCT ar2.artist_name ORDER BY ar2.artist_name SEPARATOR ', '), '') AS artists_label,
             su.email AS submitted_email,
             ru.email AS reviewed_email,
-            al.status AS status
+            al.status AS status,
+            (
+                SELECT re.event_id
+                FROM REVIEW_EVENTS re
+                WHERE re.entity_type = 'album' AND re.entity_id = al.album_id
+                ORDER BY re.event_id DESC
+                LIMIT 1
+            ) AS latest_event_id,
+            (
+                SELECT re.action_type
+                FROM REVIEW_EVENTS re
+                WHERE re.entity_type = 'album' AND re.entity_id = al.album_id
+                ORDER BY re.event_id DESC
+                LIMIT 1
+            ) AS latest_action_type
         FROM ALBUMS al
         JOIN USERS su ON su.user_id = al.submitted_by
         LEFT JOIN USERS ru ON ru.user_id = al.reviewed_by
@@ -107,7 +135,21 @@ function review_queue_fetch_tracks(PDO $pdo, array $opts): array
             COALESCE(GROUP_CONCAT(DISTINCT ar2.artist_name ORDER BY ar2.artist_name SEPARATOR ', '), '') AS artists_label,
             su.email AS submitted_email,
             ru.email AS reviewed_email,
-            t.status AS status
+            t.status AS status,
+            (
+                SELECT re.event_id
+                FROM REVIEW_EVENTS re
+                WHERE re.entity_type = 'track' AND re.entity_id = t.track_id
+                ORDER BY re.event_id DESC
+                LIMIT 1
+            ) AS latest_event_id,
+            (
+                SELECT re.action_type
+                FROM REVIEW_EVENTS re
+                WHERE re.entity_type = 'track' AND re.entity_id = t.track_id
+                ORDER BY re.event_id DESC
+                LIMIT 1
+            ) AS latest_action_type
         FROM TRACKS t
         JOIN USERS su ON su.user_id = t.submitted_by
         LEFT JOIN USERS ru ON ru.user_id = t.reviewed_by
@@ -145,6 +187,7 @@ function review_queue_fetch_tracks(PDO $pdo, array $opts): array
 }
 
 try {
+    ensure_review_events_table();
     $statusParam = isset($_GET['status']) ? trim((string) $_GET['status']) : '';
     $statusFilter = null;
     if ($statusParam !== '' && strtolower($statusParam) !== 'all') {
@@ -190,10 +233,23 @@ try {
     usort(
         $rows,
         static function (array $a, array $b): int {
-            $sa = (string) ($a['status'] ?? '');
-            $sb = (string) ($b['status'] ?? '');
-            if ($sa !== $sb) {
-                return $sa <=> $sb;
+            $statusRank = static function (?string $s): int {
+                $x = strtolower(trim((string) $s));
+                if ($x === CATALOG_STATUS_PENDING) {
+                    return 0;
+                }
+                if ($x === CATALOG_STATUS_REJECTED) {
+                    return 1;
+                }
+                if ($x === CATALOG_STATUS_APPROVED) {
+                    return 2;
+                }
+                return 9;
+            };
+            $ra = $statusRank((string) ($a['status'] ?? ''));
+            $rb = $statusRank((string) ($b['status'] ?? ''));
+            if ($ra !== $rb) {
+                return $ra <=> $rb;
             }
             return strcasecmp((string) ($a['item_name'] ?? ''), (string) ($b['item_name'] ?? ''));
         }

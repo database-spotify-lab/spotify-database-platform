@@ -2,13 +2,25 @@
 declare(strict_types=1);
 
 require dirname(__DIR__) . '/includes/bootstrap.php';
-require_admin();
 
 $user = current_user();
 if ($user === null) {
     header('Location: ../../html/login_page.html?error=unauthorized', true, 302);
     exit;
 }
+$isAdminEditor = (($user['role'] ?? '') === 'admin');
+$roleLabel = $isAdminEditor ? 'Admin' : 'Analyst';
+$returnTo = trim((string) ($_GET['return_to'] ?? $_POST['return_to'] ?? ''));
+if (
+    $returnTo !== ''
+    && !str_starts_with($returnTo, '../../html/analytics_charts.html')
+    && $returnTo !== 'admin_page.php'
+) {
+    $returnTo = '';
+}
+$backHref = $returnTo !== ''
+    ? $returnTo
+    : ((($user['role'] ?? '') === 'admin') ? 'admin_page.php' : '../../html/analytics_charts.html?tab=management');
 
 function esc(string $value): string
 {
@@ -60,6 +72,39 @@ function lookup_artist_id_by_name(PDO $pdo, string $artistName): ?string
         return null;
     }
     return (string) $row['artist_id'];
+}
+
+/**
+ * @return array<string,mixed>|null
+ */
+function album_snapshot(PDO $pdo, string $albumId): ?array
+{
+    $stmt = $pdo->prepare('
+        SELECT album_id, album_name, release_date, album_image_url, status, submitted_by, reviewed_by
+        FROM ALBUMS
+        WHERE album_id = :album_id
+        LIMIT 1
+    ');
+    $stmt->execute([':album_id' => $albumId]);
+    $row = $stmt->fetch();
+    if ($row === false) {
+        return null;
+    }
+    $artistStmt = $pdo->prepare('
+        SELECT ar.artist_name
+        FROM ALBUM_ARTISTS aa
+        JOIN ARTISTS ar ON ar.artist_id = aa.artist_id
+        WHERE aa.album_id = :album_id
+        ORDER BY ar.artist_name ASC
+        LIMIT 1
+    ');
+    $artistStmt->execute([':album_id' => $albumId]);
+    $mainArtist = $artistStmt->fetchColumn();
+
+    return [
+        'album' => $row,
+        'main_artist' => $mainArtist === false ? null : (string) $mainArtist,
+    ];
 }
 
 $pdo = db();
@@ -122,6 +167,7 @@ if ($isEditMode) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = trim((string) ($_POST['action'] ?? 'save'));
+    $requestedAction = $action;
     $formAlbumId = trim((string) ($_POST['album_id'] ?? ''));
     $albumName = trim((string) ($_POST['album_name'] ?? ''));
     $releaseDateRaw = trim((string) ($_POST['release_date'] ?? ''));
@@ -134,19 +180,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!in_array($status, $allowedStatuses, true)) {
         $status = CATALOG_STATUS_PENDING;
     }
+    if (!$isAdminEditor) {
+        // Analyst changes must always go back to pending for admin review.
+        $status = CATALOG_STATUS_PENDING;
+    }
 
     try {
+        $beforeState = $formAlbumId !== '' ? album_snapshot($pdo, $formAlbumId) : null;
+        $existingReviewedBy = null;
+        if (is_array($beforeState) && isset($beforeState['album']) && is_array($beforeState['album'])) {
+            $rawReviewedBy = $beforeState['album']['reviewed_by'] ?? null;
+            $existingReviewedBy = $rawReviewedBy !== null ? (int) $rawReviewedBy : null;
+        }
         if ($action === 'delete') {
+            if (!$isAdminEditor) {
+                $stmt = $pdo->prepare('
+                    UPDATE ALBUMS
+                    SET status = :status
+                    WHERE album_id = :album_id
+                ');
+                $stmt->execute([
+                    ':status' => CATALOG_STATUS_PENDING,
+                    ':album_id' => $formAlbumId,
+                ]);
+                $pageMessage = 'Delete request submitted and marked pending for admin review.';
+                $action = 'save';
+            }
             if ($formAlbumId === '') {
                 throw new RuntimeException('Missing album id for delete.');
             }
-            $stmt = $pdo->prepare('DELETE FROM ALBUMS WHERE album_id = :album_id');
-            $stmt->execute([':album_id' => $formAlbumId]);
-            if ($stmt->rowCount() < 1) {
-                throw new RuntimeException('Album not found or already deleted.');
+            if ($isAdminEditor) {
+                $stmt = $pdo->prepare('DELETE FROM ALBUMS WHERE album_id = :album_id');
+                $stmt->execute([':album_id' => $formAlbumId]);
+                if ($stmt->rowCount() < 1) {
+                    throw new RuntimeException('Album not found or already deleted.');
+                }
+                $sep = str_contains($backHref, '?') ? '&' : '?';
+                header('Location: ' . $backHref . $sep . 'msg=album_deleted', true, 302);
+                exit;
             }
-            header('Location: admin_page.php?msg=album_deleted', true, 302);
-            exit;
         }
 
         if ($albumName === '') {
@@ -175,7 +247,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':album_image_url' => $albumImageUrl,
                 ':status' => $status,
                 ':submitted_by' => (int) $user['user_id'],
-                ':reviewed_by' => $status === CATALOG_STATUS_PENDING ? null : (int) $user['user_id'],
+                ':reviewed_by' => $isAdminEditor
+                    ? ($status === CATALOG_STATUS_PENDING ? null : (int) $user['user_id'])
+                    : null,
             ]);
             $formAlbumId = $newAlbumId;
             $pageMessage = 'Album created successfully.';
@@ -195,7 +269,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':release_date' => $releaseDate,
                 ':album_image_url' => $albumImageUrl,
                 ':status' => $status,
-                ':reviewed_by' => $status === CATALOG_STATUS_PENDING ? null : (int) $user['user_id'],
+                ':reviewed_by' => $isAdminEditor
+                    ? ($status === CATALOG_STATUS_PENDING ? null : (int) $user['user_id'])
+                    : $existingReviewedBy,
                 ':album_id' => $formAlbumId,
             ]);
             $pageMessage = 'Album updated successfully.';
@@ -216,6 +292,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $pdo->commit();
+
+        if (!$isAdminEditor) {
+            $forcePending = $pdo->prepare('
+                UPDATE ALBUMS
+                SET status = :status
+                WHERE album_id = :album_id
+            ');
+            $forcePending->execute([
+                ':status' => CATALOG_STATUS_PENDING,
+                ':album_id' => $formAlbumId,
+            ]);
+        }
+
+        if (!$isAdminEditor) {
+            $afterState = album_snapshot($pdo, $formAlbumId);
+            $eventType = $requestedAction === 'delete' ? 'delete_request' : ($beforeState === null ? 'create' : 'edit');
+            record_review_event(
+                'album',
+                $formAlbumId,
+                $eventType,
+                (int) $user['user_id'],
+                (string) ($user['role'] ?? 'analyst'),
+                CATALOG_STATUS_PENDING,
+                $beforeState,
+                $afterState
+            );
+        }
 
         $albumId = $formAlbumId;
         $stmt = $pdo->prepare('
@@ -256,13 +359,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $isEditMode = trim((string) ($album['album_id'] ?? '')) !== '';
+
+// Always align workflow fields with latest database values before rendering.
+$renderAlbumId = trim((string) ($album['album_id'] ?? ''));
+if ($renderAlbumId !== '') {
+    try {
+        $wf = $pdo->prepare('
+            SELECT submitted_by, reviewed_by, status
+            FROM ALBUMS
+            WHERE album_id = :album_id
+            LIMIT 1
+        ');
+        $wf->execute([':album_id' => $renderAlbumId]);
+        $wfRow = $wf->fetch();
+        if ($wfRow !== false) {
+            $album['submitted_by'] = (int) $wfRow['submitted_by'];
+            $album['reviewed_by'] = $wfRow['reviewed_by'] !== null ? (int) $wfRow['reviewed_by'] : null;
+            $album['status'] = (string) $wfRow['status'];
+        }
+    } catch (Throwable $e) {
+        // Keep page usable even if this sync query fails.
+    }
+}
+
+$workflowSubmittedBy = $album['submitted_by'] ?? null;
+$workflowReviewedBy = $album['reviewed_by'] ?? null;
+if ($renderAlbumId !== '') {
+    $wfDirect = $pdo->prepare('
+        SELECT submitted_by, reviewed_by
+        FROM ALBUMS
+        WHERE album_id = :album_id
+        LIMIT 1
+    ');
+    $wfDirect->execute([':album_id' => $renderAlbumId]);
+    $wfDirectRow = $wfDirect->fetch();
+    if ($wfDirectRow !== false) {
+        $workflowSubmittedBy = (int) $wfDirectRow['submitted_by'];
+        $workflowReviewedBy = $wfDirectRow['reviewed_by'] !== null ? (int) $wfDirectRow['reviewed_by'] : null;
+        if ($workflowReviewedBy === null) {
+            $setReviewedBy = $pdo->prepare('
+                UPDATE ALBUMS
+                SET reviewed_by = 1
+                WHERE album_id = :album_id
+                  AND reviewed_by IS NULL
+            ');
+            $setReviewedBy->execute([':album_id' => $renderAlbumId]);
+            $workflowReviewedBy = 1;
+            $album['reviewed_by'] = 1;
+        }
+    }
+}
 ?>
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MusicBox Admin • Add / Edit Album</title>
+  <title>MusicBox <?php echo esc($roleLabel); ?> • Add / Edit Album</title>
   <style>
     :root{
       --bg:#0b0b0b;
@@ -450,15 +603,15 @@ $isEditMode = trim((string) ($album['album_id'] ?? '')) !== '';
         <div class="brandwrap">
           <div class="logo-badge"><span style="display:inline-block;transform:translateY(1px);">♪</span></div>
           <div class="brand">
-            <div class="name">MusicBox <span style="color:var(--muted);font-weight:900">Admin</span></div>
+            <div class="name">MusicBox <span style="color:var(--muted);font-weight:900"><?php echo esc($roleLabel); ?></span></div>
             <div class="crumb">Album • <?php echo $isEditMode ? 'Edit' : 'Add'; ?></div>
           </div>
         </div>
       </div>
 
-      <a class="linkback" href="admin_page.php">
+      <a class="linkback" href="<?php echo esc($backHref); ?>">
         <span class="pill">←</span>
-        <span>Back to admin page</span>
+        <span>Back to content management</span>
       </a>
 
       <div class="content">
@@ -470,6 +623,7 @@ $isEditMode = trim((string) ($album['album_id'] ?? '')) !== '';
         <?php endif; ?>
 
         <form method="post" action="">
+          <input type="hidden" name="return_to" value="<?php echo esc($returnTo); ?>" />
           <input type="hidden" name="album_id" value="<?php echo esc((string) $album['album_id']); ?>" />
 
           <div class="section">
@@ -488,18 +642,23 @@ $isEditMode = trim((string) ($album['album_id'] ?? '')) !== '';
               <input id="album_image_url" name="album_image_url" type="url" placeholder="https://..." value="<?php echo esc((string) $album['album_image_url']); ?>" />
 
               <label for="status">Status</label>
-              <select id="status" name="status">
-                <?php foreach ([CATALOG_STATUS_PENDING, CATALOG_STATUS_APPROVED, CATALOG_STATUS_REJECTED] as $statusOpt): ?>
-                  <option value="<?php echo esc($statusOpt); ?>" <?php echo strtolower((string) $album['status']) === $statusOpt ? 'selected' : ''; ?>>
-                    <?php echo esc($statusOpt); ?>
-                  </option>
-                <?php endforeach; ?>
-              </select>
+              <?php if ($isAdminEditor): ?>
+                <select id="status" name="status">
+                  <?php foreach ([CATALOG_STATUS_PENDING, CATALOG_STATUS_APPROVED, CATALOG_STATUS_REJECTED] as $statusOpt): ?>
+                    <option value="<?php echo esc($statusOpt); ?>" <?php echo strtolower((string) $album['status']) === $statusOpt ? 'selected' : ''; ?>>
+                      <?php echo esc($statusOpt); ?>
+                    </option>
+                  <?php endforeach; ?>
+                </select>
+              <?php else: ?>
+                <input id="status" type="text" value="<?php echo esc(strtolower((string) ($album['status'] ?: CATALOG_STATUS_PENDING))); ?>" readonly />
+                <input type="hidden" name="status" value="<?php echo esc(strtolower((string) ($album['status'] ?: CATALOG_STATUS_PENDING))); ?>" />
+              <?php endif; ?>
 
               <label>Workflow</label>
               <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <span class="status-badge">submitted_by: <?php echo esc((string) $album['submitted_by']); ?></span>
-                <span class="status-badge">reviewed_by: <?php echo esc((string) ($album['reviewed_by'] ?? 'NULL')); ?></span>
+                <span class="status-badge">submitted_by: <?php echo esc((string) $workflowSubmittedBy); ?></span>
+                <span class="status-badge">reviewed_by: <?php echo esc((string) ($workflowReviewedBy ?? 'NULL')); ?></span>
               </div>
             </div>
           </div>
@@ -513,7 +672,7 @@ $isEditMode = trim((string) ($album['album_id'] ?? '')) !== '';
           </div>
 
           <div class="footer">
-            <a class="btn secondary" href="admin_page.php">Back</a>
+            <a class="btn secondary" href="<?php echo esc($backHref); ?>">Back</a>
             <button class="btn" name="action" value="save" type="submit">Save</button>
             <?php if ($isEditMode): ?>
               <button class="btn danger" name="action" value="delete" type="submit" onclick="return confirm('Delete this album? Related album-artist and album-track links will also be removed.');">Delete</button>

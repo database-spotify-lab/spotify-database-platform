@@ -49,11 +49,35 @@ $idColumn = $entity === 'artist' ? 'artist_id' : ($entity === 'album' ? 'album_i
 
 try {
     $pdo = db();
+    ensure_review_events_table();
+    ensure_review_event_views_table();
     $existsSql = "SELECT 1 FROM {$table} WHERE {$idColumn} = :id LIMIT 1";
     $exists = $pdo->prepare($existsSql);
     $exists->execute([':id' => $entityId]);
     if ($exists->fetchColumn() === false) {
         json_response(['ok' => false, 'error' => 'not_found'], 404);
+        exit;
+    }
+
+    $eventStmt = $pdo->prepare('
+        SELECT event_id
+        FROM REVIEW_EVENTS
+        WHERE entity_type = :entity_type
+          AND entity_id = :entity_id
+        ORDER BY event_id DESC
+        LIMIT 1
+    ');
+    $eventStmt->execute([
+        ':entity_type' => $entity,
+        ':entity_id' => $entityId,
+    ]);
+    $latestEventId = $eventStmt->fetchColumn();
+    if ($latestEventId === false) {
+        json_response(['ok' => false, 'error' => 'missing_detail_event'], 400);
+        exit;
+    }
+    if (!has_review_event_view((int) $latestEventId, (int) $reviewerId)) {
+        json_response(['ok' => false, 'error' => 'details_not_viewed'], 400);
         exit;
     }
 
