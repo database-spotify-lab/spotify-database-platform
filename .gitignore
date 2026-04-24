@@ -7,6 +7,7 @@ __pycache__/
 
 # Demo video (large binary)
 demo.mov
+spotify_top_10000.csv
 
 # Local SQL files (do not upload)
 taskC/create_local.sql

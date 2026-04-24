@@ -1,22 +1,21 @@
 Task C - MusicBox Database Setup
 
 Files included:
-- create.sql: creates the MusicBox database and all tables (数据库名字ywang506_1)
+- create.sql: creates the ywang506_1 database and all tables
 - load.sql: loads the final dataset into the tables
-- users.csv: system seed data for application users（所有表要大写）
-- artists.csv
-- albums.csv
-- tracks.csv
-- track_artists.csv
-- album_artists.csv
-- album_tracks.csv
-- artist_genres.csv
-- audio_features.csv
-- etl/etl.py: transforms the original spotify_top_10000.csv dataset into normalized CSV files
-- etl/output/: intermediate/generated ETL outputs（output删掉）
+- users.csv: system seed data for USERS
+- artists.csv: data for ARTISTS
+- albums.csv: data for ALBUMS
+- tracks.csv: data for TRACKS
+- track_artists.csv: data for TRACK_ARTISTS
+- album_artists.csv: data for ALBUM_ARTISTS
+- album_tracks.csv: data for ALBUM_TRACKS
+- artist_genres.csv: data for ARTIST_GENRES
+- audio_features.csv: data for AUDIO_FEATURES
+- etl/etl.py: transforms the original dataset into normalized CSV files
 
 Database name:
-- musicbox(数据库名字ywang506_1)
+- ywang506_1
 
 How to run:
 
@@ -29,18 +28,8 @@ source /Users/sherrywang/Desktop/Databases/spotify_database_coursework/taskC/cre
 3. Use the database:
 USE ywang506_1;
 
-4. If needed, clear old data in dependency order before reloading:
-DELETE FROM AUDIO_FEATURES;
-DELETE FROM ARTIST_GENRES;
-DELETE FROM ALBUM_TRACKS;
-DELETE FROM TRACK_ARTISTS;
-DELETE FROM ALBUM_ARTISTS;
-DELETE FROM TRACKS;
-DELETE FROM ALBUMS;
-DELETE FROM ARTISTS;
-DELETE FROM USERS;
 
-5. Run load.sql:
+4. Run load.sql:
 source /Users/sherrywang/Desktop/Databases/spotify_database_coursework/taskC/load.sql;
 
 Tables populated:
@@ -55,10 +44,13 @@ Tables populated:
 - AUDIO_FEATURES
 
 Notes:
-- Music-related tables are populated from a full ETL transformation of the original spotify_top_10000.csv dataset.
+- Data source: The original dataset used for this project is the Kaggle dataset "Top 10000 Songs on Spotify 1950-Now" by Joe Beach Capital:
+  https://www.kaggle.com/datasets/joebeachcapital/top-10000-spotify-songs-1960-now
+  The selected source file is top_10000_1950-now.csv.
+- - Music-related tables are populated from a full ETL transformation of this Spotify dataset into normalized relational tables.
 - Track, album, and artist identifiers are based on Spotify URI-derived real IDs when available; stable fallback IDs are generated only when source URIs are missing.
 - The USERS table remains system seed data for the prototype and only includes the roles used by the current HTML design: admin and analyst.
 - Workflow fields such as status, submitted_by, and reviewed_by are assigned to support the prototype’s content management and review logic.
-- Many-to-many artist relationships are preserved through TRACK_ARTISTS and ALBUM_ARTISTS.
+- Relationship tables such as TRACK_ARTISTS, ALBUM_ARTISTS, ALBUM_TRACKS, and ARTIST_GENRES preserve artist relationships, album-track ordering, and mapped genre information from the normalized dataset.
 - ARTIST_GENRES stores the frontend-aligned mapped genre categories (Pop, Rock, Hip-Hop, R&B, Jazz, Classical, Electronic, Country) rather than the original fine-grained Spotify genre strings.
 - The column `key` in AUDIO_FEATURES is handled carefully in SQL because it is a reserved word.
