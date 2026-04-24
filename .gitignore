@@ -7,3 +7,7 @@ __pycache__/
 
 # Demo video (large binary)
 demo.mov
+
+# Local SQL files (do not upload)
+taskC/create_local.sql
+taskC/load_local.sql

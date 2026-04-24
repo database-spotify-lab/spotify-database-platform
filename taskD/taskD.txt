@@ -1,6 +1,8 @@
 Access the betaweb here:
 http://betaweb.csug.rochester.edu/~ywang506/musicbox/index.html
 
+We have also recorded a demo video to showcase the system and its functionality, which provides a clear walkthrough of the key features and user interactions.
+
 Login Information:
 You can log in to explore different functionalities such as music analysis, content management, and the admin console.
 For Analyst: 
