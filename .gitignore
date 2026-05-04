@@ -12,3 +12,4 @@ spotify_top_10000.csv
 # Local SQL files (do not upload)
 taskC/create_local.sql
 taskC/load_local.sql
+spotify_top_10000.csv
